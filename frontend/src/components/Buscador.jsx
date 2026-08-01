@@ -22,13 +22,15 @@ const Buscador = ({ onBuscar }) => {
   };
 
   return (
-    <div className="buscador-container p-3">
+    <div className="buscador-container p-3 shadow-sm rounded bg-light border">
+      <h5 className="mb-3 fw-bold text-center">Buscar Noticias</h5>
+
       <div className="mb-3">
-        <label className="form-label">Título</label>
+        <label className="form-label">🔍 Título o palabra clave</label>
         <input
           type="text"
           className="form-control"
-          placeholder="Título de la noticia"
+          placeholder="Ej: carnaval, obras, deporte..."
           value={filtro}
           onChange={(e) => {
             setFiltro(e.target.value);
@@ -38,7 +40,7 @@ const Buscador = ({ onBuscar }) => {
       </div>
 
       <div className="mb-3">
-        <label className="form-label">Desde</label>
+        <label className="form-label">📅 Desde</label>
         <input
           type="date"
           className="form-control"
@@ -51,7 +53,7 @@ const Buscador = ({ onBuscar }) => {
       </div>
 
       <div className="mb-3">
-        <label className="form-label">Hasta</label>
+        <label className="form-label">📅 Hasta</label>
         <input
           type="date"
           className="form-control"
@@ -63,7 +65,7 @@ const Buscador = ({ onBuscar }) => {
         />
       </div>
 
-      <button className="btn btn-outline-danger w-100" onClick={limpiarFiltros}>
+      <button className="btn btn-outline-danger w-100 fw-bold" onClick={limpiarFiltros}>
         Limpiar filtros
       </button>
     </div>

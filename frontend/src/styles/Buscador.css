@@ -16,3 +16,12 @@
   font-weight: bold;
   border: 2px solid #df0204;
 }
+.buscador-container input,
+.buscador-container label {
+  font-size: 0.95rem;
+}
+
+.buscador-container h5 {
+  color: #a31e4a;
+  font-family: 'Segoe UI', sans-serif;
+}

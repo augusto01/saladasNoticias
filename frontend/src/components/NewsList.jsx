@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import '../styles/NewsList.css';
 
+
 const NewsList = () => {
   const noticias = [
     {

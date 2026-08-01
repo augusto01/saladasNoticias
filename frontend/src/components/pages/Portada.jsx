@@ -1,21 +1,21 @@
 import React from 'react'
-import NoticiasList from '../NewsList.jsx';
+import NewsList from '../NewsList.jsx';
 import Aside from '../Aside.jsx';
 
 import '../../styles/Portada.css';
 
 const Portada = () => {
   return (
-    <div className="container my-4">
+    
       <div className="row">
-        <div className="col-md-8">
-          <NoticiasList />
+        <div className="col-md-9">
+          <NewsList />
         </div>
-        <div className="col-md-4">
+        <div className="col-md-3">
           <Aside />
         </div>
       </div>
-    </div>
+   
   )
 }
 
