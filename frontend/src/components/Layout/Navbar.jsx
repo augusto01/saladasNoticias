@@ -1,57 +1,117 @@
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect, useRef } from "react";
+import { NavLink, useLocation } from "react-router-dom";
+import { Menu, X } from "lucide-react";
+import "../../styles/Navbar.css";
 
-import '../../styles/Navbar.css';
+const LINKS = [
+  { label: "Portada", path: "/" },
+  { label: "Noticias", path: "/noticias" },
+  { label: "Ejecutivo", path: "/ejecutivo" },
+  { label: "HCD", path: "/hcd" },
+  { label: "Boletines", path: "/boletines" },
+  { label: "Carta Orgánica", path: "/carta-organica" },
+  { label: "Visítanos", path: "/ubicacion" },
+  { label: "Galería", path: "/galeria" },
+  { label: "Contacto", path: "/contacto" },
+];
 
-const Navbar = () => {
-  const links = [
-    { label: 'Portada', path: '/' },
-    { label: 'Noticias', path: '/noticias' },
-    { label: 'Ejecutivo', path: '/ejecutivo' },
-    { label: 'HCD', path: '/hcd' },
-    { label: 'Boletines', path: '/boletines' },
-    { label: 'Carta Orgánica', path: '/carta-organica' },
-    { label: 'Visítanos', path: '/ubicacion' },
-    { label: 'Galería', path: '/galeria' },
-    { label: 'Contacto', path: '/contacto' },
-  ];
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const menuRef = useRef(null);
+  const buttonRef = useRef(null);
+  const location = useLocation();
+
+  const handleToggle = () => setIsOpen((prev) => !prev);
+  const handleClose = () => setIsOpen(false);
+
+  // Cerrar al cambiar de página
+  useEffect(() => {
+    handleClose();
+  }, [location.pathname]);
+
+  // Click fuera del menú
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        isOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(e.target) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(e.target)
+      ) {
+        handleClose();
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
+  // Redimensionar ventana
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 992) {
+        handleClose();
+      }
+    };
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-dark custom-navbar">
-      <div className="container-fluid justify-content-center">
-       
+    <header className="navbar">
+      <div className="navbar-container">
+        
+        {/* LOGO MUNICIPALIDAD */}
+        <NavLink to="/" className="navbar-logo" onClick={handleClose}>
+          <img
+            src="/logo.png"
+            alt="Logo Municipalidad"
+            className="navbar-logo-img"
+            onError={(e) => {
+              e.currentTarget.style.display = "none";
+            }}
+          />
+          <span className="navbar-logo-text">SALADAS INFORMA</span>
+        </NavLink>
 
+        {/* BOTÓN MOBILE DROPDOWN CON EFECTO */}
         <button
-          className="navbar-toggler"
+          ref={buttonRef}
           type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarContent"
-          aria-controls="navbarContent"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
+          className={`navbar-toggle ${isOpen ? "active" : ""}`}
+          onClick={handleToggle}
+          aria-label={isOpen ? "Cerrar menú" : "Abrir menú"}
         >
-          <span className="navbar-toggler-icon"></span>
+          <span className="navbar-toggle-icon">
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </span>
         </button>
 
-        <div className="collapse navbar-collapse justify-content-center" id="navbarContent">
-          <ul className="navbar-nav text-center">
-            {links.map((link, idx) => (
-              <li className="nav-item" key={idx}>
+        {/* NAVEGACIÓN */}
+        <nav
+          ref={menuRef}
+          className={`navbar-menu ${isOpen ? "open" : ""}`}
+        >
+          <ul className="navbar-links">
+            {LINKS.map((link) => (
+              <li key={link.path}>
                 <NavLink
-                  className={({ isActive }) =>
-                    `nav-link ${isActive ? 'active-link' : ''}`
-                  }
                   to={link.path}
+                  onClick={handleClose}
+                  className={({ isActive }) =>
+                    isActive ? "navbar-link active" : "navbar-link"
+                  }
                 >
                   {link.label}
                 </NavLink>
               </li>
             ))}
-
           </ul>
-        </div>
-      </div>
-    </nav>
-  );
-};
+        </nav>
 
-export default Navbar;
+      </div>
+    </header>
+  );
+}

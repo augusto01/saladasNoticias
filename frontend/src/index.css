@@ -1,14 +1,41 @@
-/* src/App.css o src/index.css */
-
-html, body, #root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+/* 1. Reset global para ocupar el 100% real de la pantalla */
+*, *::before, *::after {
+  box-sizing: border-box;
 }
 
-body {
+html, body {
+  width: 100%;
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Evita scrollbar horizontal indeseado */
+}
+
+/* 2. Contenedor principal de React */
+#root {
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  background-color: #f5f5f5;
+}
+
+/* 3. Variables Globales (SOLO variables van dentro de :root) */
+:root {
+  /* Colores Principales (Amarillos) */
+  --color-primary: #FFC107;        /* Amarillo cálido / Bootstrap Warning */
+  --color-primary-hover: #E0A800;  /* Amarillo más oscuro para hovers */
+  --color-accent: #FFD54F;         /* Amarillo claro para badges / destellos */
+
+  /* Escala de Grises (Fondos y Textos) */
+  --bg-dark: #1E2229;              /* Gris muy oscuro para Navbar y Footer */
+  --bg-card: #282C34;              /* Gris oscuro secundario para tarjetas */
+  --bg-light: #F8F9FA;             /* Gris ultra claro para fondos de sección */
+  
+  /* Textos */
+  --text-primary: #212529;         /* Gris casi negro para lecturas principales */
+  --text-muted: #6C757D;           /* Gris medio para fechas, autores */
+  --text-light: #F8F9FA;           /* Texto claro sobre fondos oscuros */
+
+  /* Bordes y Separadores */
+  --border-color: #DEE2E6;         /* Gris claro para divisiones */
 }

@@ -1,0 +1,48 @@
+.sponsors-section {
+  background-color: #e9ecef; /* Gris suave de transición antes del footer */
+  border-top: 3px solid var(--color-primary, #FFC107);
+}
+
+.sponsors-title {
+  color: #343a40;
+  letter-spacing: 1.5px;
+  font-size: 0.9rem;
+}
+
+.title-underline {
+  width: 50px;
+  height: 3px;
+  background-color: var(--color-primary, #FFC107);
+  margin-top: 4px;
+}
+
+.sponsor-card {
+  background: #ffffff;
+  border-radius: 8px;
+  border: 1px solid #dee2e6;
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.sponsor-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.sponsor-logo {
+  max-height: 65px;
+  object-fit: contain;
+  filter: grayscale(80%);
+  opacity: 0.85;
+  transition: filter 0.3s ease, opacity 0.3s ease;
+}
+
+.sponsor-card:hover .sponsor-logo {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/* Ajuste de controles oscuros para el carrusel de sponsors */
+.sponsors-carousel .carousel-control-prev-icon,
+.sponsors-carousel .carousel-control-next-icon {
+  filter: invert(100%);
+}
