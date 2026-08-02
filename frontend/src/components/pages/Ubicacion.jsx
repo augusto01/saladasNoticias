@@ -25,35 +25,35 @@ const Ubicacion = () => {
       name: 'Comparsa Iberá',
       badge: 'Tradición y Gloria',
       logo: '/img/iberalogo.jpg',
-      url: 'https://www.instagram.com/comparsaiberaoficial/',
+      url: 'https://www.instagram.com/comparsaibera/',
       desc: 'Iberá es pasional, legendaria y gigante. Reconocida por sus temáticas históricas y despliegues escénicos de máxima categoría, enamora a las tribunas con trajes bordados a mano, plumas majestuosas y una hinchada fervorosa.'
     },
     {
       name: 'Comparsa Coé Berá',
       badge: 'Fuerza y Esplendor',
       logo: '/img/logo_coebera.jpg',
-      url: 'https://www.instagram.com/coeberaoficial/',
-      desc: 'Fiel a su significado ("Brillo del Alba"), Coé Berá deslumbra año a año con propuestas vanguardistas, imponentes carrozas alegóricas y solistas que derrochan elegancia y simpatía.'
+      url: 'https://www.instagram.com/comparsacoebera/',
+      desc: ' Coé Berá deslumbra año a año con propuestas vanguardistas, imponentes carrozas alegóricas y solistas que derrochan elegancia y simpatía.'
     },
     {
       name: 'Comparsa Xangô',
       badge: 'Mística y Energía',
       logo: '/img/logo_xango.jpeg',
-      url: 'https://www.instagram.com/comparsa_xango/',
+      url: 'https://www.instagram.com/xango.saladas/',
       desc: 'Pura potencia, mística y color. Xangô transmite una energía arrolladora desde el primer minuto. Sus coreografías milimétricas y vestuarios conceptuales hacen bailar a las gradas completas.'
     },
     {
       name: 'Comparsa Carisma Show',
       badge: 'Alegría y Juventud',
       logo: '/img/logo-carisma.png',
-      url: 'https://www.instagram.com/carismashow.oficial/',
+      url: 'https://www.instagram.com/_carismashow/',
       desc: 'El encanto, la frescura y la pasión contagiosa de Saladas. Carisma Show enamora a grandes y chicos con una propuesta colorida, llena de ritmo y entusiasmo familiar.'
     },
     {
       name: 'Agrupación Musical Sambatuque',
       badge: 'Ritmo e Impacto',
       logo: '/img/sambatuque.jpg',
-      url: 'https://www.instagram.com/sambatuquesaladas/',
+      url: 'https://www.instagram.com/sambatuque_ok/',
       desc: '¡La máquina del sonido! La batería de Sambatuque marca el compás del corazón saladeño con cortes potentes y ritmos frenéticos que convierten cada noche en una fiesta.'
     }
   ];
@@ -65,7 +65,7 @@ const Ubicacion = () => {
       type: 'Básquetbol & Multideporte',
       badge: 'Básquet / Liga Federal',
       logo: '/img/atletico.jpg',
-      url: 'https://www.instagram.com/atleticosaladasoficial/',
+      url: 'https://www.instagram.com/atleticosaladasok/',
       desc: 'Institución histórica animadora de torneos provinciales y nacionales. Pasión roja y blanca que llena estadios en cada jornada de básquetbol.'
     },
     {
@@ -73,7 +73,7 @@ const Ubicacion = () => {
       type: 'Básquetbol & Social',
       badge: 'Básquet Tradicional',
       logo: '/img/antorcha.jpg',
-      url: 'https://www.instagram.com/club_antorcha_saladas/',
+      url: 'https://www.instagram.com/club.antorcha/',
       desc: 'Cuna de grandes glorias del básquet saladeño. Protagonista del clásico más apasionado de la región y pilar social de la comunidad.'
     },
     {
@@ -97,7 +97,7 @@ const Ubicacion = () => {
       type: 'Fútbol Formativo',
       badge: 'Formativa & Cantera',
       logo: '/img/academia_saladas.jpg',
-      url: 'https://www.instagram.com/academia.saladas/',
+      url: 'https://www.instagram.com/don_bosco_saladas/',
       desc: 'Enfocados en el desarrollo y la excelencia formativa de jóvenes talentos deportivos con valores, disciplina y competencia.'
     },
     {
