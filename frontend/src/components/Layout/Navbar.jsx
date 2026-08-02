@@ -4,15 +4,8 @@ import { Menu, X } from "lucide-react";
 import "../../styles/Navbar.css";
 
 const LINKS = [
-  { label: "Portada", path: "/" },
-  { label: "Noticias", path: "/noticias" },
-  { label: "Ejecutivo", path: "/ejecutivo" },
-  { label: "HCD", path: "/hcd" },
-  { label: "Boletines", path: "/boletines" },
-  { label: "Carta Orgánica", path: "/carta-organica" },
+  { label: "Noticias", path: "/" },
   { label: "Visítanos", path: "/ubicacion" },
-  { label: "Galería", path: "/galeria" },
-  { label: "Contacto", path: "/contacto" },
 ];
 
 export default function Navbar() {
@@ -24,12 +17,10 @@ export default function Navbar() {
   const handleToggle = () => setIsOpen((prev) => !prev);
   const handleClose = () => setIsOpen(false);
 
-  // Cerrar al cambiar de página
   useEffect(() => {
     handleClose();
   }, [location.pathname]);
 
-  // Click fuera del menú
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (
@@ -47,7 +38,6 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  // Redimensionar ventana
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 992) {
@@ -63,20 +53,16 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar-container">
         
-        {/* LOGO MUNICIPALIDAD */}
+        {/* LOGO */}
         <NavLink to="/" className="navbar-logo" onClick={handleClose}>
           <img
-            src="/logo.png"
-            alt="Logo Municipalidad"
+            src="/img/logo_app.png"
+            alt="Logo Saladas Informa"
             className="navbar-logo-img"
-            onError={(e) => {
-              e.currentTarget.style.display = "none";
-            }}
           />
-          <span className="navbar-logo-text">SALADAS INFORMA</span>
         </NavLink>
 
-        {/* BOTÓN MOBILE DROPDOWN CON EFECTO */}
+        {/* BOTÓN MOBILE */}
         <button
           ref={buttonRef}
           type="button"

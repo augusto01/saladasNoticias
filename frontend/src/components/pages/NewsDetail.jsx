@@ -47,7 +47,7 @@ export default function NewsDetail() {
       <div className="news-detail-container not-found">
         <h2>Noticia no encontrada</h2>
         <p>La noticia que estás buscando no existe o fue removida.</p>
-        <Link to="/noticias" className="back-btn">
+        <Link to="/" className="back-btn">
           <ArrowLeft size={18} /> Volver a Noticias
         </Link>
       </div>
@@ -57,7 +57,7 @@ export default function NewsDetail() {
   return (
     <article className="news-detail-container">
       {/* BOTÓN VOLVER */}
-      <Link to="/noticias" className="back-btn">
+      <Link to="/" className="back-btn">
         <ArrowLeft size={18} /> Volver a Noticias
       </Link>
 

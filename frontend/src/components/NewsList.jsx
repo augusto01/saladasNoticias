@@ -44,10 +44,10 @@ export default function NewsList() {
       {/* BANNER INSTITUCIONAL / HERO TOP */}
       <section className="news-hero">
         <div className="news-hero-content">
-          <span className="hero-tag">PORTAL INFORMATIVO</span>
-          <h1 className="hero-title">Noticias del Municipio</h1>
+          <span className="hero-tag">Hola Saladeño!</span>
+          <h1 className="hero-title-main">Noticias del Municipio</h1>
           <p className="hero-subtitle">
-            Mantente al día con las últimas novedades, obras y eventos de la ciudad.
+            Mantente al día con las últimas novedades, obras y eventos de nuestra queridad ciudad de Saladas. Aquí encontrarás información oficial, comunicados y noticias relevantes para la comunidad.
           </p>
         </div>
       </section>
