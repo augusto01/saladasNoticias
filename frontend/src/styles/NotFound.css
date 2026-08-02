@@ -1,0 +1,153 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --nf-bg: #f8fafc;
+  --nf-card-bg: #ffffff;
+  --nf-text: #1a202c;
+  --nf-text-muted: #64748b;
+  --nf-accent: #ffc107;         /* Dorado / Amarillo */
+  --nf-accent-hover: #e0a800;
+  --nf-accent-light: rgba(255, 193, 7, 0.12);
+  --nf-border: #e2e8f0;
+}
+
+.notfound-container {
+  font-family: 'Poppins', sans-serif;
+  min-height: calc(100vh - 120px); /* Ocupa la mayor parte de la pantalla */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem;
+  background-color: var(--nf-bg);
+}
+
+.notfound-card {
+  background-color: var(--nf-card-bg);
+  border: 1px solid var(--nf-border);
+  border-radius: 16px;
+  padding: 3rem 2rem;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+  animation: fadeIn 0.4s ease-out;
+}
+
+/* ÍCONO SUPERIOR */
+.notfound-icon-wrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  background-color: var(--nf-accent-light);
+  color: #b78103;
+  border-radius: 50%;
+  margin-bottom: 1.5rem;
+}
+
+/* TEXTOS Y NÚMERO DE ERROR */
+.notfound-code {
+  font-size: 4.5rem;
+  font-weight: 800;
+  color: var(--nf-text);
+  line-height: 1;
+  margin: 0 0 0.5rem 0;
+  letter-spacing: -1px;
+}
+
+.notfound-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--nf-text);
+  margin: 0 0 0.75rem 0;
+}
+
+.notfound-description {
+  font-size: 0.95rem;
+  color: var(--nf-text-muted);
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+}
+
+/* BOTONES DE ACCIÓN */
+.notfound-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.notfound-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+/* Botón Primario (Dorado) */
+.notfound-btn-primary {
+  background-color: var(--nf-accent);
+  color: #1a202c;
+  border: 1px solid var(--nf-accent);
+}
+
+.notfound-btn-primary:hover {
+  background-color: var(--nf-accent-hover);
+  border-color: var(--nf-accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
+}
+
+/* Botón Secundario (Borde gris) */
+.notfound-btn-secondary {
+  background-color: transparent;
+  color: var(--nf-text);
+  border: 1.5px solid var(--nf-border);
+}
+
+.notfound-btn-secondary:hover {
+  background-color: #f1f5f9;
+  border-color: #cbd5e1;
+  transform: translateY(-2px);
+}
+
+/* ANIMACIÓN DE ENTRADA */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .notfound-card {
+    padding: 2rem 1.25rem;
+  }
+
+  .notfound-code {
+    font-size: 3.5rem;
+  }
+
+  .notfound-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .notfound-btn {
+    width: 100%;
+  }
+}

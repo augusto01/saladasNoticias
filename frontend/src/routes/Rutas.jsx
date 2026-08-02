@@ -26,37 +26,44 @@ import CarismaShow from '../components/pages/comparsas/CarismaShow';
 import Ibera from '../components/pages/comparsas/Ibera';
 import Xango from '../components/pages/comparsas/Xango';
 
-// Detalle de Noticia (Componente Nuevo)
+// Detalle de Noticia
 import NewsDetail from '../components/pages/NewsDetail';
+
+// Página 404
+import NotFound from '../components/pages/NotFound';
 
 const Rutas = () => {
   return (
     <Routes>
+      {/* Las rutas que estan comentadas son las que no estan activas en este momento pero pueden servir para despues */}
       <Route path="/" element={<Portada />} />
       <Route path="/noticias" element={<Noticias />} />
       <Route path="/noticias/:id" element={<NewsDetail />} />
-      <Route path="/ejecutivo" element={<Ejecutivo />} />
-      <Route path="/hcd" element={<HCD />} />
-      <Route path="/boletines" element={<Boletines />} />
-      <Route path="/carta-organica" element={<CartaOrganica />} />
+      {/* <Route path="/ejecutivo" element={<Ejecutivo />} /> */}
+      {/* <Route path="/hcd" element={<HCD />} /> */}
+      {/* <Route path="/boletines" element={<Boletines />} /> */}
+      {/* <Route path="/carta-organica" element={<CartaOrganica />} /> */}
       <Route path="/ubicacion" element={<Ubicacion />} />
-      <Route path="/galeria" element={<Galeria />} />
-      <Route path="/contacto" element={<Contacto />} />
+      {/* <Route path="/galeria" element={<Galeria />} /> */}
+      {/*<Route path="/contacto" element={<Contacto />} />
 
       {/* Servicios */}
-      <Route path="/turnos" element={<Turnos />} />
-      <Route path="/entradas" element={<Entradas />} />
+      {/* <Route path="/turnos" element={<Turnos />} /> */}
+      {/* <Route path="/entradas" element={<Entradas />} /> */}
 
       {/* Turismo / Cultura */}
-      <Route path="/museo" element={<Museo />} />
-      <Route path="/estudiantina" element={<Estudiantina />} />
+      {/* <Route path="/museo" element={<Museo />} /> */}
+      {/* <Route path="/estudiantina" element={<Estudiantina />} /> */}
 
       {/* Carnavales y agrupaciones */}
-      <Route path="/carnavales" element={<Carnavales />} />
-      <Route path="/carnavales/sambatuque" element={<Sambatuque />} />
-      <Route path="/carnavales/carisma" element={<CarismaShow />} />
-      <Route path="/carnavales/ibera" element={<Ibera />} />
-      <Route path="/carnavales/xango" element={<Xango />} />
+      {/* <Route path="/carnavales" element={<Carnavales />} /> */}
+      {/* <Route path="/carnavales/sambatuque" element={<Sambatuque />} /> */}
+      {/* <Route path="/carnavales/carisma" element={<CarismaShow />} /> */}
+      {/* <Route path="/carnavales/ibera" element={<Ibera />} /> */}
+      {/* <Route path="/carnavales/xango" element={<Xango />} /> */}
+
+      {/* Ruta comodín para capturar cualquier URL inexistente (404) */}
+      <Route path="*" element={<NotFound />} />
     </Routes>
   );
 };
