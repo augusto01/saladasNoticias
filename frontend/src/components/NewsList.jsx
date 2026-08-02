@@ -2,65 +2,34 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter } from 'lucide-react';
 import WeatherWidget from './WeatherWidget';
+import newsSummary from '../components/data/newsSummary.json';
 import '../styles/NewsList.css';
 
 const CATEGORIES = ["Todas", "GESTIÓN", "CULTURA", "SALUD", "DEPORTES", "OBRAS"];
 
-const MAIN_NEWS = {
-  id: 1,
-  category: "GESTIÓN",
-  title: "Avanzan las obras de pavimentación y bacheo en el casco urbano",
-  summary: "El municipio continúa ejecutando el plan de infraestructura vial para mejorar la transitabilidad y la seguridad en los principales barrios de la ciudad.",
-  date: "1 de Agosto, 2026",
-  image: "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
-};
-
-const INITIAL_NEWS = [
-  {
-    id: 2,
-    category: "CULTURA",
-    title: "Se anuncia la agenda para el Festival Cultural del Fin de Semana",
-    summary: "Artistas locales e internacionales se darán cita en la plaza central con acceso libre y gratuito.",
-    date: "1 de Agosto, 2026",
-    image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 3,
-    category: "SALUD",
-    title: "Operativo de vacunación itinerante recorrerá los centros comunitarios",
-    summary: "Se aplicarán vacunas del calendario nacional y antigripal de forma gratuita.",
-    date: "31 de Julio, 2026",
-    image: "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 4,
-    category: "DEPORTES",
-    title: "Apertura de inscripciones para los Torneos Municipales de Verano",
-    summary: "Fútbol, básquet y voley de playa contarán con categorías infantiles y de adultos.",
-    date: "30 de Julio, 2026",
-    image: "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=400&q=80",
-  },
-  {
-    id: 5,
-    category: "OBRAS",
-    title: "Nueva iluminación LED en la avenida costanera para potenciar el turismo",
-    summary: "Se colocaron más de 200 luminarias de última tecnología con menor consumo energético.",
-    date: "29 de Julio, 2026",
-    image: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=400&q=80",
-  }
-];
-
-const POPULAR_NEWS = [
-  { id: 101, title: "Cronograma de recolección de residuos durante el feriado" },
-  { id: 102, title: "Nuevos cursos gratuitos con certificación en la Escuela de Oficios" },
-  { id: 103, title: "Descuentos en pago anual anticipado de tasas municipales" },
-];
+// Función para formatear fechas ISO (ej: "2026-08-01") a texto legible
+function formatDate(dateString) {
+  if (!dateString) return '';
+  const [year, month, day] = dateString.split('-');
+  const date = new Date(year, month - 1, day);
+  return new Intl.DateTimeFormat('es-AR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(date);
+}
 
 export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
 
-  const filteredNews = INITIAL_NEWS.filter((item) => {
+  // La primera noticia del JSON será la destacada principal
+  const mainNews = newsSummary[0];
+  // El resto de las noticias van a la grilla secundaria
+  const secondaryNews = newsSummary.slice(1);
+
+  // Filtrar noticias secundarias según búsqueda y categoría
+  const filteredNews = secondaryNews.filter((item) => {
     const matchesCategory =
       selectedCategory === "Todas" || item.category === selectedCategory;
     const matchesSearch =
@@ -72,9 +41,18 @@ export default function NewsList() {
   return (
     <div className="news-container">
       
-      {/* BANNER INSTITUCIONAL */}
+      {/* BANNER INSTITUCIONAL / HERO TOP */}
+      <section className="news-hero">
+        <div className="news-hero-content">
+          <span className="hero-tag">PORTAL INFORMATIVO</span>
+          <h1 className="hero-title">Noticias del Municipio</h1>
+          <p className="hero-subtitle">
+            Mantente al día con las últimas novedades, obras y eventos de la ciudad.
+          </p>
+        </div>
+      </section>
 
-      {/* FILTROS Y BÚSQUEDA */}
+      {/* BARRA DE BÚSQUEDA Y FILTROS */}
       <section className="news-controls">
         <div className="search-box">
           <Search size={18} className="search-icon" />
@@ -102,28 +80,29 @@ export default function NewsList() {
         </div>
       </section>
 
-      {/* GRILLA PRINCIPAL */}
+      {/* CONTENIDO PRINCIPAL EN 2 COLUMNAS */}
       <div className="news-grid">
         
+        {/* COLUMNA IZQUIERDA: NOTICIAS */}
         <section className="news-main-column">
           
-          {/* NOTICIA PRINCIPAL (LINK) */}
-          {(selectedCategory === "Todas" || MAIN_NEWS.category === selectedCategory) &&
-            (!searchTerm || MAIN_NEWS.title.toLowerCase().includes(searchTerm.toLowerCase())) && (
-              <Link to={`/noticias/${MAIN_NEWS.id}`} className="featured-news-card">
+          {/* NOTICIA PRINCIPAL DESTACADA */}
+          {mainNews && (selectedCategory === "Todas" || mainNews.category === selectedCategory) &&
+            (!searchTerm || mainNews.title.toLowerCase().includes(searchTerm.toLowerCase())) && (
+              <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
                 <div className="featured-img-wrapper">
-                  <img src={MAIN_NEWS.image} alt={MAIN_NEWS.title} className="featured-img" />
-                  <span className="news-badge">{MAIN_NEWS.category}</span>
+                  <img src={mainNews.image} alt={mainNews.title} className="featured-img" />
+                  <span className="news-badge">{mainNews.category}</span>
                 </div>
                 <div className="featured-content">
-                  <span className="news-date">{MAIN_NEWS.date}</span>
-                  <h2 className="featured-title">{MAIN_NEWS.title}</h2>
-                  <p className="featured-summary">{MAIN_NEWS.summary}</p>
+                  <span className="news-date">{formatDate(mainNews.date)}</span>
+                  <h2 className="featured-title">{mainNews.title}</h2>
+                  <p className="featured-summary">{mainNews.summary}</p>
                 </div>
               </Link>
             )}
 
-          {/* NOTICIAS SECUNDARIAS (LINKS) */}
+          {/* GRILLA DE NOTICIAS SECUNDARIAS */}
           {filteredNews.length > 0 ? (
             <div className="secondary-news-grid">
               {filteredNews.map((item) => (
@@ -133,7 +112,7 @@ export default function NewsList() {
                     <span className="news-badge-sm">{item.category}</span>
                   </div>
                   <div className="secondary-content">
-                    <span className="news-date">{item.date}</span>
+                    <span className="news-date">{formatDate(item.date)}</span>
                     <h3 className="secondary-title">{item.title}</h3>
                     <p className="secondary-summary">{item.summary}</p>
                   </div>
@@ -147,18 +126,19 @@ export default function NewsList() {
           )}
         </section>
 
-        {/* SIDEBAR */}
+        {/* COLUMNA DERECHA: SIDEBAR */}
         <aside className="news-sidebar">
           
+          {/* WIDGET DEL CLIMA CONECTADO A API */}
           <div className="sidebar-widget">
             <WeatherWidget />
           </div>
 
-          {/* LO MÁS LEÍDO (LINKS) */}
+          {/* LO MÁS LEÍDO */}
           <div className="sidebar-widget popular-widget">
             <h3 className="widget-title">Lo más leído</h3>
             <ul className="popular-list">
-              {POPULAR_NEWS.map((news, index) => (
+              {newsSummary.slice(0, 3).map((news, index) => (
                 <li key={news.id}>
                   <Link to={`/noticias/${news.id}`} className="popular-item">
                     <span className="popular-number">0{index + 1}</span>

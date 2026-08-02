@@ -1,0 +1,129 @@
+[
+  {
+    "id": "obras-pavimentacion",
+    "category": "OBRAS",
+    "title": "Avanzan las obras de pavimentación y bacheo en el casco urbano",
+    "summary": "El municipio continúa ejecutando el plan de infraestructura vial para mejorar la transitabilidad en los principales barrios de la ciudad.",
+    "date": "2026-08-01",
+    "image": "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1584467735815-f778f274e296?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1541888946425-d0fbb186a5b3?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  },
+  {
+    "id": "festival-cultural",
+    "category": "CULTURA",
+    "title": "Se anuncia la agenda para el Festival Cultural",
+    "summary": "La Municipalidad confirmó la programación oficial con espectáculos musicales, paseo gastronómico y ferias artesanales con entrada libre y gratuita.",
+    "date": "2026-08-01",
+    "image": "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": [
+      {
+        "title": "Resumen de la edición anterior",
+        "url": "https://www.youtube.com/embed/dQw4w9WgXcQ"
+      }
+    ]
+  },
+  {
+    "id": "operativo-vacunacion",
+    "category": "SALUD",
+    "title": "Operativo de vacunación itinerante recorrerá los centros comunitarios",
+    "summary": "Se aplicarán vacunas del calendario nacional y antigripal de forma totalmente gratuita en trailers sanitarios.",
+    "date": "2026-07-30",
+    "image": "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  },
+  {
+    "id": "torneos-verano",
+    "category": "DEPORTES",
+    "title": "Apertura de inscripciones para los Torneos Municipales de Verano",
+    "summary": "Fútbol, básquet y voley de playa contarán con categorías infantiles, juveniles y de adultos mayores.",
+    "date": "2026-07-28",
+    "image": "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1517649763962-0c623266010b?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  },
+  {
+    "id": "iluminacion-led",
+    "category": "GESTIÓN",
+    "title": "Nueva iluminación LED en la avenida costanera para potenciar el turismo",
+    "summary": "Se colocaron más de 200 luminarias de última tecnología para optimizar el consumo energético y brindar más seguridad.",
+    "date": "2026-07-26",
+    "image": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?auto=format&fit=crop&w=800&q=80",
+    "gallery": [],
+    "videos": []
+  },
+  {
+    "id": "reciclaje-urbano",
+    "category": "GESTIÓN",
+    "title": "Se instalaron nuevos Puntos Verdes para la separación de residuos",
+    "summary": "La iniciativa busca fomentar el reciclaje de plástico, vidrio y cartón en puntos estratégicos de los barrios.",
+    "date": "2026-07-24",
+    "image": "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  },
+  {
+    "id": "escuela-oficios",
+    "category": "CULTURA",
+    "title": "Inician las inscripciones a los cursos gratuitos de la Escuela de Oficios",
+    "summary": "Capacitaciones en programación, electricidad y carpintería con certificación oficial y rápida salida laboral.",
+    "date": "2026-07-22",
+    "image": "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  },
+  {
+    "id": "puesta-valor-plaza",
+    "category": "OBRAS",
+    "title": "Puesta en valor y reforestación de las plazas de la zona sur",
+    "summary": "Instalación de juegos infantiles adaptados, estaciones saludables y plantación de especies nativas.",
+    "date": "2026-07-20",
+    "image": "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1519331379826-f10be5486c6f?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  },
+  {
+    "id": "control-bromatologia",
+    "category": "SALUD",
+    "title": "Bromatología intensifica los controles e inspecciones en comercios locales",
+    "summary": "Se auditan las cadenas de frío y la higiene en locales gastronómicos para garantizar la seguridad alimentaria.",
+    "date": "2026-07-18",
+    "image": "https://images.unsplash.com/photo-1556910103-1c02745aae4d?auto=format&fit=crop&w=800&q=80",
+    "gallery": [],
+    "videos": []
+  },
+  {
+    "id": "maraton-ciudad",
+    "category": "DEPORTES",
+    "title": "Más de 1.000 corredores participaron de la Maratón Aniversario de la Ciudad",
+    "summary": "La competencia contó con trayectos participativos de 3K y competitivos de 10K a lo largo de la costanera.",
+    "date": "2026-07-15",
+    "image": "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=800&q=80",
+    "gallery": [
+      "https://images.unsplash.com/photo-1452626038306-9aae5e071dd3?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1486218119243-13883505764c?auto=format&fit=crop&w=800&q=80"
+    ],
+    "videos": []
+  }
+]

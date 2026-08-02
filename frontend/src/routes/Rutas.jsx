@@ -26,15 +26,15 @@ import CarismaShow from '../components/pages/comparsas/CarismaShow';
 import Ibera from '../components/pages/comparsas/Ibera';
 import Xango from '../components/pages/comparsas/Xango';
 
-// Detalle de Noticia
-import NoticiaDetalle from '../components/pages/NoticiaDetalle';
+// Detalle de Noticia (Componente Nuevo)
+import NewsDetail from '../components/pages/NewsDetail';
 
 const Rutas = () => {
   return (
     <Routes>
       <Route path="/" element={<Portada />} />
       <Route path="/noticias" element={<Noticias />} />
-      <Route path="/noticias/:id" element={<NoticiaDetalle />} />
+      <Route path="/noticias/:id" element={<NewsDetail />} />
       <Route path="/ejecutivo" element={<Ejecutivo />} />
       <Route path="/hcd" element={<HCD />} />
       <Route path="/boletines" element={<Boletines />} />
