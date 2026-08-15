@@ -16,7 +16,6 @@ import Turnos from '../components/pages/Turnos';
 import Entradas from '../components/pages/Entradas';
 
 // Turismo / Cultura
-import Museo from '../components/pages/Museo';
 import Estudiantina from '../components/pages/Estudiantina';
 
 // Carnavales y agrupaciones
