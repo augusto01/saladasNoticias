@@ -351,6 +351,47 @@
   font-size: 1.1rem;
 }
 
+/* BANNER DE PUBLICIDAD SIDEBAR */
+.ad-widget {
+  padding: 0.75rem;
+  background-color: #ffffff;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  margin-top: 1.5rem;
+}
+
+.ad-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #94a3b8;
+  margin-bottom: 0.5rem;
+}
+
+.ad-banner-link {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 8px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.ad-banner-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.ad-banner-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
 /* Quita subrayados y hereda color en todos los enlaces */
 .featured-news-card,
 .secondary-news-card,

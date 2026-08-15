@@ -17,7 +17,7 @@ function App() {
           <Rutas />
         </main>
 
-        <SponsorsCarousel />
+        {/* <SponsorsCarousel /> */}
         
         <Footer />
       </div>
