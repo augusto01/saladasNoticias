@@ -149,6 +149,23 @@ export default function NewsList() {
             </ul>
           </div>
 
+          {/* BANNER PUBLICIDAD GOBIERNO */}
+          <div className="sidebar-widget ad-widget">
+            <span className="ad-label">Publicidad</span>
+            <a 
+              href="https://www.argentina.gob.ar" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="ad-banner-link"
+            >
+              <img 
+                src="/path-a-tu-gif/gobierno-ad.gif" 
+                alt="Publicidad institucional del gobierno" 
+                className="ad-banner-img"
+              />
+            </a>
+          </div>
+
         </aside>
 
       </div>
