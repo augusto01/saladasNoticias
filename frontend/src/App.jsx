@@ -1,7 +1,7 @@
 import { BrowserRouter } from 'react-router-dom';
 import Navbar from './components/Layout/Navbar';
 import Rutas from './routes/Rutas';
-import SponsorsCarousel from './components/layout/SponsorsCarousel';
+import SponsorsCarousel from './components/Layout/SponsorsCarousel';
 import Footer from './components/Layout/Footer';
 import './App.css'; // Asegúrate de importar los estilos globales
 
