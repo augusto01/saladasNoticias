@@ -1,8 +1,8 @@
 import { BrowserRouter } from 'react-router-dom';
-import Navbar from './components/layout/Navbar';
+import Navbar from './components/Layout/Navbar';
 import Rutas from './routes/Rutas';
 import SponsorsCarousel from './components/layout/SponsorsCarousel';
-import Footer from './components/layout/Footer';
+import Footer from './components/Layout/Footer';
 import './App.css'; // Asegúrate de importar los estilos globales
 
 function App() {
