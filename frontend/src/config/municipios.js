@@ -8,8 +8,8 @@ export const MUNICIPIOS = {
     saludo: "¡Hola Saladeño!",
     slogan: "Noticias de Saladas",
     descripcion: "Mantente al día con las últimas novedades, obras y eventos de nuestra querida ciudad de Saladas.",
-    colorPrimario: "#8a851e",   // Azul institucional
-    colorSecundario: "#020202",
+    colorPrimario: "#ffde00",   // Azul institucional
+    colorSecundario: "#070100",
     colorAccento: "#f59e0b",
     logo: "/img/logos/saladaslogo.png"
   },
@@ -20,8 +20,8 @@ export const MUNICIPIOS = {
     saludo: "¡Hola Ituzaingueño!",
     slogan: "Primicias Ituzaingó",
     descripcion: "Toda la información oficial, primicias, obras y eventos de la ciudad de Ituzaingó.",
-    colorPrimario: "#0217fc",   // Verde institucional
-    colorSecundario: "#10b981",
+    colorPrimario: "#001343",   // Verde institucional
+    colorSecundario: "#008fff",
     colorAccento: "#f9f8f6",
     logo: "/img/logos/ituzaingologo.png"
   },
@@ -32,9 +32,9 @@ export const MUNICIPIOS = {
     saludo: "¡Hola Santarroseño!",
     slogan: "Santa Rosa Noticias",
     descripcion: "Toda la actualidad, información municipal y novedades de la comunidad de Santa Rosa.",
-    colorPrimario: "#e60c0c",   // Rojo cálido
+    colorPrimario: "#ff0000",   // Rojo cálido
     colorSecundario: "#000000",
-    colorAccento: "#0284c7",
+    colorAccento: "#9ca2a5",
     logo: "/img/logos/santarosalogo.png"
   },
   corrientes: {
@@ -44,8 +44,8 @@ export const MUNICIPIOS = {
     saludo: "¡Hola Correntino!",
     slogan: "Enfoque Corrientes",
     descripcion: "El portal de noticias con la visión integral de lo que sucede en la provincia y la capital.",
-    colorPrimario: "#1f991b",   // Rojo institucional
-    colorSecundario: "#61f810",
+    colorPrimario: "#00360a",   // Rojo institucional
+    colorSecundario: "#54d434",
     colorAccento: "#000001",
     logo: "/img/logos/enfoquecorrienteslogo.png"
   }
