@@ -8,7 +8,7 @@ export const MUNICIPIOS = {
     saludo: "¡Hola Saladeño!",
     slogan: "Noticias de Saladas",
     descripcion: "Mantente al día con las últimas novedades, obras y eventos de nuestra querida ciudad de Saladas.",
-    colorPrimario: "#ffde00",   // Azul institucional
+    colorPrimario: "#a29118",   // Azul institucional
     colorSecundario: "#070100",
     colorAccento: "#f59e0b",
     logo: "/img/logos/saladaslogo.png"
