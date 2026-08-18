@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+
 import Navbar from './components/Layout/Navbar';
 import Rutas from './routes/Rutas';
 import SponsorsCarousel from './components/Layout/SponsorsCarousel';
@@ -20,6 +22,16 @@ function App() {
 
   return (
     <BrowserRouter>
+      {/* METADATOS DINÁMICOS POR MUNICIPIO */}
+      <Helmet>
+        <title>{configActual.portal || "Portal Municipal"}</title>
+        <link 
+          rel="icon" 
+          type="image/png" 
+          href={configActual.favicon || configActual.logo} 
+        />
+      </Helmet>
+
       {/* w-100 asegura todo el ancho, min-vh-100 todo el alto */}
       <div className="d-flex flex-column min-vh-100 w-100">
         <Navbar />
