@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import { ArrowLeft, Calendar, Tag, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
-import newsSummary from '../data/newsSummary.json';
+
+// IMPORTACIÓN DINÁMICA DE NOTICIAS
+import { getNoticias } from '../../config/getNews';
+
 import '../../styles/NewsDetail.css';
 
 // Función auxiliar para dar formato a la fecha
@@ -22,14 +25,19 @@ export default function NewsDetail() {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Buscar metadatos de la noticia en el JSON
+  // Obtener las noticias del municipio activo de forma dinámica
+  const newsSummary = getNoticias();
+
+  // Buscar metadatos de la noticia seleccionada
   const newsItem = newsSummary.find((item) => item.id === id);
 
   useEffect(() => {
     // Scroll al inicio cuando se carga la página
     window.scrollTo(0, 0);
 
-    // Cargar dinámicamente el archivo markdown según el ID
+    if (!id) return;
+
+    // Cargar dinámicamente el archivo Markdown según el ID
     import(`../content/news/${id}.md?raw`)
       .then((res) => {
         setContent(res.default);

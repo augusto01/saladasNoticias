@@ -1,7 +1,7 @@
 /* --- CONTENEDOR GENERAL --- */
 .news-container {
   width: 100%;
-  max-width: 1500px; /* Expandido de 1300px a 1500px */
+  max-width: 1500px;
   margin: 0 auto;
   padding: 2.5rem 2rem;
   box-sizing: border-box;
@@ -19,11 +19,13 @@
 }
 
 .hero-tag {
-  color: var(--color-primary, #ffc107);
-  font-size: 0.8rem;
+  color: var(--color-primary, #ffc107) !important; /* !important asegura que sobreescriba el blanco del hero */
+  font-size: 0.85rem;
   font-weight: 700;
   letter-spacing: 1.2px;
   text-transform: uppercase;
+  display: inline-block;
+  margin-bottom: 0.25rem;
 }
 
 .hero-title-main {
@@ -35,7 +37,7 @@
 }
 
 .hero-subtitle {
-  color: #888080 !important;
+  color: #a0aec0 !important;
   font-size: 1.1rem;
   margin: 0;
 }
@@ -78,8 +80,8 @@
 }
 
 .search-input:focus {
-  border-color: var(--color-primary, #ffc107);
-  box-shadow: 0 0 0 3px rgba(255, 193, 7, 0.2);
+  border-color: var(--color-primary, #1e3a8a);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-primary, #1e3a8a) 20%, transparent);
 }
 
 .category-filters {
@@ -107,14 +109,15 @@
 }
 
 .filter-btn:hover {
-  border-color: var(--color-primary, #ffc107);
-  background-color: rgba(255, 193, 7, 0.1);
+  border-color: var(--color-primary, #1e3a8a);
+  color: var(--color-primary, #1e3a8a);
+  background-color: rgba(0, 0, 0, 0.02);
 }
 
 .filter-btn.active {
-  background: var(--color-primary, #ffc107);
-  border-color: var(--color-primary, #ffc107);
-  color: #1e2229;
+  background: var(--color-primary, #1e3a8a);
+  border-color: var(--color-primary, #1e3a8a);
+  color: #ffffff;
 }
 
 /* --- ESTRUCTURA PRINCIPAL EN 2 COLUMNAS --- */
@@ -126,7 +129,7 @@
 
 @media (min-width: 992px) {
   .news-grid {
-    grid-template-columns: 1fr 360px; /* Expande la columna principal y ajusta el sidebar */
+    grid-template-columns: 1fr 360px;
   }
 }
 
@@ -154,7 +157,7 @@
 .featured-img-wrapper {
   position: relative;
   width: 100%;
-  height: 450px; /* Mayor presencia visual para la noticia destacada */
+  height: 450px;
   background-color: #f0f0f0;
 }
 
@@ -169,8 +172,8 @@
   position: absolute;
   top: 1.25rem;
   left: 1.25rem;
-  background-color: var(--color-primary, #ffc107);
-  color: #1e2229;
+  background-color: var(--color-primary, #1e3a8a);
+  color: #ffffff;
   font-weight: 700;
   font-size: 0.8rem;
   padding: 0.4rem 0.95rem;
@@ -210,7 +213,7 @@
 /* --- GRILLA DE NOTICIAS SECUNDARIAS --- */
 .secondary-news-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Tarjetas más anchas para cubrir el espacio */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1.75rem;
 }
 
@@ -232,7 +235,7 @@
 
 .secondary-img-wrapper {
   position: relative;
-  height: 200px; /* Ligeramente más alta */
+  height: 200px;
   background-color: #f0f0f0;
 }
 
@@ -303,7 +306,7 @@
   color: var(--text-primary, #212529);
   margin: 0 0 1.25rem 0;
   padding-bottom: 0.6rem;
-  border-bottom: 3px solid var(--color-primary, #ffc107);
+  border-bottom: 3px solid var(--color-primary, #1e3a8a);
 }
 
 .popular-list {
@@ -323,13 +326,13 @@
 }
 
 .popular-item:hover .popular-text {
-  color: var(--color-primary-hover, #d39e00);
+  color: var(--color-primary-hover, #2563eb);
 }
 
 .popular-number {
   font-size: 1.4rem;
   font-weight: 800;
-  color: var(--color-primary, #ffc107);
+  color: var(--color-primary, #1e3a8a);
   line-height: 1;
 }
 
@@ -339,6 +342,7 @@
   color: var(--text-primary, #212529);
   margin: 0;
   line-height: 1.35;
+  transition: color 0.2s ease;
 }
 
 .no-news-found {
@@ -392,7 +396,7 @@
   border-radius: 8px;
 }
 
-/* Quita subrayados y hereda color en todos los enlaces */
+/* General reset para enlaces dentro de las cards */
 .featured-news-card,
 .secondary-news-card,
 .popular-item,
@@ -401,7 +405,7 @@ a {
   color: inherit;
 }
 
-/* --- AJUSTES RESPONSIVOS --- */
+/* --- RESPONSIVE MOBILE (< 768px) --- */
 @media (max-width: 768px) {
   .news-container {
     padding: 1.5rem 1rem;
@@ -411,7 +415,7 @@ a {
     height: 260px;
   }
 
-  .hero-title {
+  .hero-title-main {
     font-size: 1.75rem;
   }
 }

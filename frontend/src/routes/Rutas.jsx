@@ -1,4 +1,7 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
+
+// CONFIGURACIÓN DINÁMICA
+import { configActual } from '../config/municipios';
 
 // Páginas principales
 import Portada from '../components/pages/Portada';
@@ -42,9 +45,21 @@ const Rutas = () => {
       {/* <Route path="/hcd" element={<HCD />} /> */}
       {/* <Route path="/boletines" element={<Boletines />} /> */}
       {/* <Route path="/carta-organica" element={<CartaOrganica />} /> */}
-      <Route path="/ubicacion" element={<Ubicacion />} />
+
+      {/* Ruta Exclusiva para Saladas */}
+      <Route 
+        path="/ubicacion" 
+        element={
+          configActual.id === 'saladas' ? (
+            <Ubicacion municipioActivo={configActual} />
+          ) : (
+            <Navigate to="/" replace />
+          )
+        } 
+      />
+
       {/* <Route path="/galeria" element={<Galeria />} /> */}
-      {/*<Route path="/contacto" element={<Contacto />} />
+      {/* <Route path="/contacto" element={<Contacto />} /> */}
 
       {/* Servicios */}
       {/* <Route path="/turnos" element={<Turnos />} /> */}

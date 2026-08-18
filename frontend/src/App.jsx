@@ -1,11 +1,23 @@
+import React, { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import Navbar from './components/Layout/Navbar';
 import Rutas from './routes/Rutas';
 import SponsorsCarousel from './components/Layout/SponsorsCarousel';
 import Footer from './components/Layout/Footer';
-import './App.css'; // Asegúrate de importar los estilos globales
+
+// CONFIGURACIÓN DINÁMICA DE MUNICIPIOS
+import { configActual } from './config/municipios';
+
+import './App.css'; // Estilos globales
 
 function App() {
+  useEffect(() => {
+    // Inyecta los colores del municipio activo en las variables de CSS globales
+    document.documentElement.style.setProperty('--color-primary', configActual.colorPrimario);
+    document.documentElement.style.setProperty('--color-primary-hover', configActual.colorSecundario);
+    document.documentElement.style.setProperty('--color-accent', configActual.colorAccento);
+  }, []);
+
   return (
     <BrowserRouter>
       {/* w-100 asegura todo el ancho, min-vh-100 todo el alto */}

@@ -1,11 +1,16 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { Menu, X } from "lucide-react";
+
+// IMPORTACIÓN CONFIGURACIÓN DINÁMICA
+import { configActual } from "../../config/municipios";
+
 import "../../styles/Navbar.css";
 
-const LINKS = [
+// Definimos la lista base de links
+const BASE_LINKS = [
   { label: "Noticias", path: "/" },
-  { label: "Visítanos", path: "/ubicacion" },
+  { label: "Visítanos", path: "/ubicacion", soloSaladas: true },
 ];
 
 export default function Navbar() {
@@ -13,6 +18,11 @@ export default function Navbar() {
   const menuRef = useRef(null);
   const buttonRef = useRef(null);
   const location = useLocation();
+
+  // Filtrar links según el municipio activo (solo muestra 'Visítanos' si es Saladas)
+  const links = BASE_LINKS.filter(
+    (link) => !link.soloSaladas || configActual.id === "saladas"
+  );
 
   const handleToggle = () => setIsOpen((prev) => !prev);
   const handleClose = () => setIsOpen(false);
@@ -53,11 +63,11 @@ export default function Navbar() {
     <header className="navbar">
       <div className="navbar-container">
         
-        {/* LOGO */}
+        {/* LOGO DINÁMICO */}
         <NavLink to="/" className="navbar-logo" onClick={handleClose}>
           <img
-            src="/img/logo_app.png"
-            alt="Logo Saladas Informa"
+            src={configActual.logo}
+            alt={`Logo ${configActual.portal}`}
             className="navbar-logo-img"
           />
         </NavLink>
@@ -81,7 +91,7 @@ export default function Navbar() {
           className={`navbar-menu ${isOpen ? "open" : ""}`}
         >
           <ul className="navbar-links">
-            {LINKS.map((link) => (
+            {links.map((link) => (
               <li key={link.path}>
                 <NavLink
                   to={link.path}

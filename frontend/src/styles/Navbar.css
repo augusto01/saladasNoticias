@@ -1,12 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap');
 
+/* --- VARIABLES DINÁMICAS DE LA NAVBAR --- */
 :root {
   --nav-bg: #ffffff;             /* Fondo Blanco */
   --nav-text: #1a202c;           /* Texto Oscuro */
   --nav-text-muted: #4a5568;     /* Texto Secundario */
-  --nav-accent: #ffc107;         /* Dorado / Amarillo */
-  --nav-accent-hover: #e0a800;
   --nav-border: #e2e8f0;         /* Borde sutil */
+  
+  /* Conectado con las variables dinámicas de App.jsx */
+  --nav-accent: var(--color-primary);
+  --nav-accent-hover: var(--color-primary-hover);
+  --nav-accent-light: var(--color-accent);
 }
 
 /* --- HEADER Y CONTENEDOR --- */
@@ -28,7 +32,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  /* Espaciado de seguridad en el medio */
   gap: 4rem; 
   position: relative;
 }
@@ -39,7 +42,6 @@
   align-items: center;
   gap: 0.75rem;
   text-decoration: none;
-  /* Empuja el menú aún más a la derecha en escritorios grandes */
   margin-right: auto;
   flex-shrink: 0;
   transition: transform 0.2s ease;
@@ -75,7 +77,7 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 2.5rem; /* Margen entre cada opción del menú */
+  gap: 2.5rem;
 }
 
 .navbar-link {
@@ -88,7 +90,7 @@
   transition: color 0.25s ease;
 }
 
-/* Subrayado animado en dorado */
+/* Subrayado animado en el color primario del municipio */
 .navbar-link::after {
   content: '';
   position: absolute;
@@ -101,7 +103,7 @@
   border-radius: 2px;
 }
 
-/* HOVER Y ESTADO ACTIVO EN DORADO */
+/* HOVER Y ESTADO ACTIVO EN COLOR DINÁMICO */
 .navbar-link:hover {
   color: var(--nav-accent-hover);
 }
@@ -112,16 +114,16 @@
 }
 
 .navbar-link.active {
-  color: var(--nav-accent-hover);
+  color: var(--nav-accent);
   font-weight: 700;
 }
 
-/* --- BOTÓN MOBILE TOGGLE --- */
+/* --- BOTÓN MOBILE TOGGLE DINÁMICO --- */
 .navbar-toggle {
   display: none;
-  background: rgba(255, 193, 7, 0.08);
+  background: transparent;
   border: 1.5px solid var(--nav-accent);
-  color: #b78103;
+  color: var(--nav-accent);
   border-radius: 8px;
   width: 44px;
   height: 44px;
@@ -136,7 +138,7 @@
 .navbar-toggle.active {
   background-color: var(--nav-accent);
   color: #ffffff;
-  box-shadow: 0 0 12px rgba(255, 193, 7, 0.3);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
 }
 
 /* --- RESPONSIVE MOBILE (< 992px) --- */
@@ -195,7 +197,7 @@
 
   .navbar-link:hover,
   .navbar-link.active {
-    color: #b78103;
+    color: var(--nav-accent);
     padding-left: 8px;
   }
 }

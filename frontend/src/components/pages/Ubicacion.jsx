@@ -1,7 +1,12 @@
 import React from 'react';
 import '../../styles/Ubicacion.css';
 
-const Ubicacion = () => {
+const Ubicacion = ({ municipioActivo }) => {
+  // Validación de seguridad interna: si el municipio no es Saladas, no renderiza nada
+  if (municipioActivo && municipioActivo.id !== 'saladas') {
+    return null;
+  }
+
   // Fotos para el collage/mosaico final
   const photos = [
     { src: '/img/corso5.png', title: 'Carnavales Saladeños', span: 'big' },
@@ -33,7 +38,7 @@ const Ubicacion = () => {
       badge: 'Fuerza y Esplendor',
       logo: '/img/logo_coebera.jpg',
       url: 'https://www.instagram.com/comparsacoebera/',
-      desc: ' Coé Berá deslumbra año a año con propuestas vanguardistas, imponentes carrozas alegóricas y solistas que derrochan elegancia y simpatía.'
+      desc: 'Coé Berá deslumbra año a año con propuestas vanguardistas, imponentes carrozas alegóricas y solistas que derrochan elegancia y simpatía.'
     },
     {
       name: 'Comparsa Xangô',
