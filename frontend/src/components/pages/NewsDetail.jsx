@@ -9,10 +9,10 @@ import { configActual } from '../../config/municipios';
 
 import '../../styles/NewsDetail.css';
 
-// Glob para importar todos los .md recursivamente
 const markdownFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default' });
 
-// Función para limpiar manualmente el frontmatter (--- YAML ---) del texto raw si remark no lo remueve
+const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
+
 function stripFrontmatter(text) {
   if (!text) return '';
   return text.replace(/^---[\s\S]*?---\s*/, '');
@@ -24,7 +24,7 @@ function formatDate(dateString) {
   if (parts.length !== 3) return dateString;
 
   const [year, month, day] = parts;
-  const date = new Date(Number(year), Number(month) - 1, Number(day));
+  const date = new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
 
   return new Intl.DateTimeFormat('es-AR', {
     day: 'numeric',
@@ -56,7 +56,6 @@ export default function NewsDetail() {
       setLoading(true);
       markdownFiles[path]()
         .then((mdContent) => {
-          // Limpia la cabecera YAML antes de pasarlo al parser
           setContent(stripFrontmatter(mdContent));
           setLoading(false);
         })
@@ -84,7 +83,6 @@ export default function NewsDetail() {
     );
   }
 
-  // Determina la imagen dinámica correctamente
   const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}/portada.jpg.webp`;
 
   return (
@@ -106,15 +104,17 @@ export default function NewsDetail() {
         <p className="detail-summary">{newsItem.summary || newsItem.subtitulo || newsItem.resumen}</p>
       </header>
 
-      {mainImgSrc && (
-        <div className="detail-main-img-wrapper">
-          <img 
-            src={mainImgSrc} 
-            alt={newsItem.title || newsItem.titulo} 
-            className="detail-main-img" 
-          />
-        </div>
-      )}
+      <div className="detail-main-img-wrapper">
+        <img 
+          src={mainImgSrc} 
+          alt={newsItem.title || newsItem.titulo} 
+          className="detail-main-img" 
+          onError={(e) => {
+            e.target.onerror = null;
+            e.target.src = DEFAULT_PLACEHOLDER;
+          }}
+        />
+      </div>
 
       <div className="detail-content">
         {loading ? (
@@ -125,7 +125,15 @@ export default function NewsDetail() {
             components={{
               img: ({ node, ...props }) => (
                 <span className="markdown-img-wrapper">
-                  <img {...props} className="markdown-img" alt={props.alt || 'Imagen de la noticia'} />
+                  <img 
+                    {...props} 
+                    className="markdown-img" 
+                    alt={props.alt || 'Imagen de la noticia'} 
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = DEFAULT_PLACEHOLDER;
+                    }}
+                  />
                   {props.alt && <span className="markdown-img-caption">{props.alt}</span>}
                 </span>
               )
@@ -154,6 +162,10 @@ export default function NewsDetail() {
                   src={imgUrl} 
                   alt={`Imagen ${index + 1} de ${newsItem.title || newsItem.titulo}`} 
                   loading="lazy"
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = DEFAULT_PLACEHOLDER;
+                  }}
                 />
               </a>
             ))}
