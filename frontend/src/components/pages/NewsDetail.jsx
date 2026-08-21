@@ -1,18 +1,31 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkFrontmatter from 'remark-frontmatter';
 import { ArrowLeft, Calendar, Tag, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
 
-// IMPORTACIÓN DINÁMICA DE NOTICIAS
 import { getNoticias } from '../../config/getNews';
+import { configActual } from '../../config/municipios';
 
 import '../../styles/NewsDetail.css';
 
-// Función auxiliar para dar formato a la fecha
+// Glob para importar todos los .md recursivamente
+const markdownFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default' });
+
+// Función para limpiar manualmente el frontmatter (--- YAML ---) del texto raw si remark no lo remueve
+function stripFrontmatter(text) {
+  if (!text) return '';
+  return text.replace(/^---[\s\S]*?---\s*/, '');
+}
+
 function formatDate(dateString) {
-  if (!dateString) return '';
-  const [year, month, day] = dateString.split('-');
-  const date = new Date(year, month - 1, day);
+  if (!dateString || typeof dateString !== 'string') return '';
+  const parts = dateString.split('-');
+  if (parts.length !== 3) return dateString;
+
+  const [year, month, day] = parts;
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+
   return new Intl.DateTimeFormat('es-AR', {
     day: 'numeric',
     month: 'long',
@@ -25,29 +38,38 @@ export default function NewsDetail() {
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(true);
 
-  // Obtener las noticias del municipio activo de forma dinámica
-  const newsSummary = getNoticias();
-
-  // Buscar metadatos de la noticia seleccionada
+  const newsSummary = getNoticias() || [];
   const newsItem = newsSummary.find((item) => item.id === id);
 
   useEffect(() => {
-    // Scroll al inicio cuando se carga la página
     window.scrollTo(0, 0);
 
-    if (!id) return;
+    if (!id) {
+      setLoading(false);
+      return;
+    }
 
-    // Cargar dinámicamente el archivo Markdown según el ID
-    import(`../content/news/${id}.md?raw`)
-      .then((res) => {
-        setContent(res.default);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error('Error cargando la noticia:', err);
-        setContent('No se pudo cargar el cuerpo de la noticia.');
-        setLoading(false);
-      });
+    const folderName = `news_${configActual.id}`;
+    const path = `../content/${folderName}/${id}.md`;
+
+    if (markdownFiles[path]) {
+      setLoading(true);
+      markdownFiles[path]()
+        .then((mdContent) => {
+          // Limpia la cabecera YAML antes de pasarlo al parser
+          setContent(stripFrontmatter(mdContent));
+          setLoading(false);
+        })
+        .catch((err) => {
+          console.error('Error cargando el archivo Markdown:', err);
+          setContent('Error al procesar el cuerpo de la noticia.');
+          setLoading(false);
+        });
+    } else {
+      console.warn(`No se encontró el archivo markdown en la ruta: ${path}`);
+      setContent('No se encontró el archivo de texto para esta noticia.');
+      setLoading(false);
+    }
   }, [id]);
 
   if (!newsItem) {
@@ -62,42 +84,45 @@ export default function NewsDetail() {
     );
   }
 
+  // Determina la imagen dinámica correctamente
+  const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}/portada.jpg.webp`;
+
   return (
     <article className="news-detail-container">
-      {/* BOTÓN VOLVER */}
       <Link to="/" className="back-btn">
         <ArrowLeft size={18} /> Volver a Noticias
       </Link>
 
-      {/* ENCABEZADO DE LA NOTICIA */}
       <header className="detail-header">
         <div className="detail-meta">
           <span className="detail-badge">
-            <Tag size={13} /> {newsItem.category}
+            <Tag size={13} /> {newsItem.category || newsItem.categoria}
           </span>
           <span className="detail-date">
-            <Calendar size={13} /> {formatDate(newsItem.date)}
+            <Calendar size={13} /> {formatDate(newsItem.date || newsItem.fecha)}
           </span>
         </div>
-        <h1 className="detail-title">{newsItem.title}</h1>
-        <p className="detail-summary">{newsItem.summary}</p>
+        <h1 className="detail-title">{newsItem.title || newsItem.titulo}</h1>
+        <p className="detail-summary">{newsItem.summary || newsItem.subtitulo || newsItem.resumen}</p>
       </header>
 
-      {/* IMAGEN PRINCIPAL */}
-      {newsItem.image && (
+      {mainImgSrc && (
         <div className="detail-main-img-wrapper">
-          <img src={newsItem.image} alt={newsItem.title} className="detail-main-img" />
+          <img 
+            src={mainImgSrc} 
+            alt={newsItem.title || newsItem.titulo} 
+            className="detail-main-img" 
+          />
         </div>
       )}
 
-      {/* CUERPO DEL TEXTO EN MARKDOWN */}
       <div className="detail-content">
         {loading ? (
           <div className="loading-spinner">Cargando contenido...</div>
         ) : (
           <ReactMarkdown
+            remarkPlugins={[remarkFrontmatter]}
             components={{
-              // Estilizado automático para imágenes dentro del Markdown
               img: ({ node, ...props }) => (
                 <span className="markdown-img-wrapper">
                   <img {...props} className="markdown-img" alt={props.alt || 'Imagen de la noticia'} />
@@ -111,7 +136,6 @@ export default function NewsDetail() {
         )}
       </div>
 
-      {/* GALERÍA SECUNDARIA / FOTOS ADICIONALES */}
       {newsItem.gallery && newsItem.gallery.length > 0 && (
         <section className="news-gallery-section">
           <h3 className="gallery-title">
@@ -128,7 +152,7 @@ export default function NewsDetail() {
               >
                 <img 
                   src={imgUrl} 
-                  alt={`Imagen ${index + 1} de ${newsItem.title}`} 
+                  alt={`Imagen ${index + 1} de ${newsItem.title || newsItem.titulo}`} 
                   loading="lazy"
                 />
               </a>
@@ -137,7 +161,6 @@ export default function NewsDetail() {
         </section>
       )}
 
-      {/* SECCIÓN DE VIDEOS */}
       {newsItem.videos && newsItem.videos.length > 0 && (
         <section className="news-videos-section">
           <h3 className="videos-title">

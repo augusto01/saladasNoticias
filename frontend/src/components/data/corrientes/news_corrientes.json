@@ -1,1 +1,21 @@
-[]
+[
+  {
+    "id": "21-08-2026-1",
+    "title": "\"El viaje de Las Hermanas Vera\", una producción de la Universidad Nacional del Nordeste",
+    "summary": "Con un documental de las Hermanas Vera, la UNNE celebra la memoria viva del chamamé y el guaraní el próximo miércoles 26 de agosto desde las 20.30 en el Teatro Oficial Juan de Vera.",
+    "category": "CULTURA",
+    "date": "2026-08-20",
+    "image": "/news_corrientes/21-08-2026-1/portada.jpg.webp",
+    "views": 17568
+  },
+  {
+    "id": "21-08-2026-2",
+    "title": "El Gobierno de Corrientes lleva al interior un ciclo de charlas para productores ante el exceso hídrico",
+    "summary": "El Gobierno provincial, junto al INTA y SENASA, desarrolla encuentros en distintos puntos de la provincia para acercar herramientas de prevención al sector ganadero frente a El Niño.",
+    "category": "GESTIÓN",
+    "date": "2026-08-20",
+    "image": "/news_corrientes/21-08-2026-2/portada.jpg.webp",
+    "views": 17564
+  }
+
+]

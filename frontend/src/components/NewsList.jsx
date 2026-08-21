@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom';
 import { Search, Filter, Newspaper } from 'lucide-react';
 import WeatherWidget from './WeatherWidget';
 
-// IMPORTACIONES DINÁMICAS
 import { configActual } from '../config/municipios';
 import { getNoticias } from '../config/getNews';
 
@@ -12,9 +11,13 @@ import '../styles/NewsList.css';
 const CATEGORIES = ["Todas", "GESTIÓN", "CULTURA", "SALUD", "DEPORTES", "OBRAS"];
 
 function formatDate(dateString) {
-  if (!dateString) return '';
-  const [year, month, day] = dateString.split('-');
-  const date = new Date(year, month - 1, day);
+  if (!dateString || typeof dateString !== 'string') return '';
+  const parts = dateString.split('-');
+  if (parts.length !== 3) return dateString;
+
+  const [year, month, day] = parts;
+  const date = new Date(Number(year), Number(month) - 1, Number(day));
+
   return new Intl.DateTimeFormat('es-AR', {
     day: 'numeric',
     month: 'long',
@@ -26,27 +29,28 @@ export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
 
-  // Obtiene las noticias del municipio activo desde getNews.js
-  const newsSummary = getNoticias();
+  const newsSummary = getNoticias() || [];
 
-  const hasNews = Array.isArray(newsSummary) && newsSummary.length > 0;
-
-  const mainNews = hasNews ? newsSummary[0] : null;
-  const secondaryNews = hasNews ? newsSummary.slice(1) : [];
-
-  const filteredNews = secondaryNews.filter((item) => {
+  const allFilteredNews = newsSummary.filter((item) => {
     const matchesCategory =
-      selectedCategory === "Todas" || item.category === selectedCategory;
+      selectedCategory === "Todas" ||
+      (item.category || item.categoria)?.toUpperCase() === selectedCategory.toUpperCase();
+
     const matchesSearch =
-      item.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      item.summary?.toLowerCase().includes(searchTerm.toLowerCase());
+      (item.title || item.titulo)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      (item.summary || item.subtitulo || item.resumen)?.toLowerCase().includes(searchTerm.toLowerCase());
+
     return matchesCategory && matchesSearch;
   });
+
+  const hasNews = allFilteredNews.length > 0;
+  const mainNews = hasNews ? allFilteredNews[0] : null;
+  const secondaryNews = hasNews ? allFilteredNews.slice(1) : [];
 
   return (
     <div className="news-container">
       
-      {/* BANNER INSTITUCIONAL / HERO TOP DINÁMICO */}
+      {/* BANNER HERO */}
       <section className="news-hero">
         <div className="news-hero-content">
           <span className="hero-tag">{configActual.saludo}</span>
@@ -57,7 +61,7 @@ export default function NewsList() {
         </div>
       </section>
 
-      {/* BARRA DE BÚSQUEDA Y FILTROS */}
+      {/* FILTROS Y CONTROLES */}
       <section className="news-controls">
         <div className="search-box">
           <Search size={18} className="search-icon" />
@@ -85,74 +89,71 @@ export default function NewsList() {
         </div>
       </section>
 
-      {/* CONTENIDO PRINCIPAL EN 2 COLUMNAS */}
+      {/* CONTENIDO PRINCIPAL */}
       <div className="news-grid">
-        
-        {/* COLUMNA IZQUIERDA: NOTICIAS O MENSAJE VACÍO */}
         <section className="news-main-column">
           {!hasNews ? (
             <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
               <Newspaper size={48} className="mx-auto text-muted mb-3" />
-              <h3>Aún no hay noticias publicadas en {configActual.nombre}</h3>
+              <h3>Aún no hay noticias en {configActual.nombre}</h3>
               <p className="text-muted mb-0">
-                Estamos trabajando para traerte las novedades más recientes. ¡Vuelve pronto!
+                No se encontraron publicaciones con los filtros o búsquedas seleccionadas.
               </p>
             </div>
           ) : (
             <>
-              {/* NOTICIA PRINCIPAL DESTACADA */}
-              {mainNews &&
-                (selectedCategory === "Todas" || mainNews.category === selectedCategory) &&
-                (!searchTerm || mainNews.title.toLowerCase().includes(searchTerm.toLowerCase())) && (
-                  <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
-                    <div className="featured-img-wrapper">
-                      <img src={mainNews.image} alt={mainNews.title} className="featured-img" />
-                      <span className="news-badge">{mainNews.category}</span>
-                    </div>
-                    <div className="featured-content">
-                      <span className="news-date">{formatDate(mainNews.date)}</span>
-                      <h2 className="featured-title">{mainNews.title}</h2>
-                      <p className="featured-summary">{mainNews.summary}</p>
-                    </div>
-                  </Link>
-                )}
+              {/* NOTICIA DESTACADA */}
+              {mainNews && (
+                <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
+                  <div className="featured-img-wrapper">
+                    <img 
+                      src={mainNews.image || mainNews.imagen || `/news_${configActual.id}/${mainNews.id}/portada.jpg.webp`} 
+                      alt={mainNews.title || mainNews.titulo} 
+                      className="featured-img" 
+                    />
+                    <span className="news-badge">{mainNews.category || mainNews.categoria}</span>
+                  </div>
+                  <div className="featured-content">
+                    <span className="news-date">{formatDate(mainNews.date || mainNews.fecha)}</span>
+                    <h2 className="featured-title">{mainNews.title || mainNews.titulo}</h2>
+                    <p className="featured-summary">{mainNews.summary || mainNews.subtitulo || mainNews.resumen}</p>
+                  </div>
+                </Link>
+              )}
 
-              {/* GRILLA DE NOTICIAS SECUNDARIAS */}
-              {filteredNews.length > 0 ? (
+              {/* GRILLA SECUNDARIA */}
+              {secondaryNews.length > 0 && (
                 <div className="secondary-news-grid">
-                  {filteredNews.map((item) => (
+                  {secondaryNews.map((item) => (
                     <Link to={`/noticias/${item.id}`} key={item.id} className="secondary-news-card">
                       <div className="secondary-img-wrapper">
-                        <img src={item.image} alt={item.title} className="secondary-img" />
-                        <span className="news-badge-sm">{item.category}</span>
+                        <img 
+                          src={item.image || item.imagen || `/news_${configActual.id}/${item.id}/portada.jpg.webp`} 
+                          alt={item.title || item.titulo} 
+                          className="secondary-img" 
+                        />
+                        <span className="news-badge-sm">{item.category || item.categoria}</span>
                       </div>
                       <div className="secondary-content">
-                        <span className="news-date">{formatDate(item.date)}</span>
-                        <h3 className="secondary-title">{item.title}</h3>
-                        <p className="secondary-summary">{item.summary}</p>
+                        <span className="news-date">{formatDate(item.date || item.fecha)}</span>
+                        <h3 className="secondary-title">{item.title || item.titulo}</h3>
+                        <p className="secondary-summary">{item.summary || item.subtitulo || item.resumen}</p>
                       </div>
                     </Link>
                   ))}
-                </div>
-              ) : (
-                <div className="no-news-found">
-                  <p>No se encontraron noticias con los filtros seleccionados.</p>
                 </div>
               )}
             </>
           )}
         </section>
 
-        {/* COLUMNA DERECHA: SIDEBAR */}
+        {/* SIDEBAR */}
         <aside className="news-sidebar">
-          
-          {/* WIDGET DEL CLIMA */}
           <div className="sidebar-widget">
             <WeatherWidget />
           </div>
 
-          {/* LO MÁS LEÍDO */}
-          {hasNews && (
+          {newsSummary.length > 0 && (
             <div className="sidebar-widget popular-widget">
               <h3 className="widget-title">Lo más leído</h3>
               <ul className="popular-list">
@@ -160,7 +161,7 @@ export default function NewsList() {
                   <li key={news.id}>
                     <Link to={`/noticias/${news.id}`} className="popular-item">
                       <span className="popular-number">0{index + 1}</span>
-                      <p className="popular-text">{news.title}</p>
+                      <p className="popular-text">{news.title || news.titulo}</p>
                     </Link>
                   </li>
                 ))}
@@ -168,7 +169,6 @@ export default function NewsList() {
             </div>
           )}
 
-          {/* BANNER PUBLICIDAD GOBIERNO */}
           <div className="sidebar-widget ad-widget">
             <span className="ad-label">Publicidad</span>
             <a 
@@ -184,7 +184,6 @@ export default function NewsList() {
               />
             </a>
           </div>
-
         </aside>
 
       </div>

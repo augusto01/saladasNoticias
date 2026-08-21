@@ -37,7 +37,8 @@ import NotFound from '../components/pages/NotFound';
 const Rutas = () => {
   return (
     <Routes>
-      {/* Las rutas que estan comentadas son las que no estan activas en este momento pero pueden servir para despues */}
+      {/* Las rutas que estan comentadas son las que no estan activas 
+      en este momento pero pueden servir para despues */}
       <Route path="/" element={<Portada />} />
       <Route path="/noticias" element={<Noticias />} />
       <Route path="/noticias/:id" element={<NewsDetail />} />
