@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkFrontmatter from 'remark-frontmatter';
-import { ArrowLeft, Calendar, Tag, Image as ImageIcon, Video as VideoIcon } from 'lucide-react';
+import { ArrowLeft, Calendar, Tag, Image as ImageIcon, Video as VideoIcon, Newspaper } from 'lucide-react';
 
 import { getNoticias } from '../../config/getNews';
 import { configActual } from '../../config/municipios';
@@ -40,6 +40,9 @@ export default function NewsDetail() {
 
   const newsSummary = getNoticias() || [];
   const newsItem = newsSummary.find((item) => item.id === id);
+
+  // Obtiene otras noticias disponibles excluyendo la actual
+  const otherNews = newsSummary.filter((item) => item.id !== id).slice(0, 3);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -202,6 +205,38 @@ export default function NewsDetail() {
           </div>
         </section>
       )}
+
+      {/* SECCIÓN MÁS NOTICIAS */}
+      {otherNews.length > 0 && (
+        <section className="more-news-section">
+          <h3 className="more-news-title">
+            <Newspaper size={22} /> Más noticias de {configActual.nombre}
+          </h3>
+          <div className="more-news-grid">
+            {otherNews.map((item) => (
+              <Link to={`/noticias/${item.id}`} key={item.id} className="more-news-card">
+                <div className="more-news-img-wrapper">
+                  <img 
+                    src={item.image || item.imagen || `/news_${configActual.id}/${item.id}/portada.jpg.webp`} 
+                    alt={item.title || item.titulo} 
+                    className="more-news-img"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.src = DEFAULT_PLACEHOLDER;
+                    }}
+                  />
+                  <span className="news-badge-sm">{item.category || item.categoria}</span>
+                </div>
+                <div className="more-news-content">
+                  <span className="news-date">{formatDate(item.date || item.fecha)}</span>
+                  <h4 className="more-news-card-title">{item.title || item.titulo}</h4>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
+
     </article>
   );
 }
