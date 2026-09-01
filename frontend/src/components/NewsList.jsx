@@ -10,7 +10,6 @@ import '../styles/NewsList.css';
 
 const CATEGORIES = ["Todas", "GESTIÓN", "CULTURA", "SALUD", "DEPORTES", "OBRAS"];
 
-// Imagen por defecto tipo placeholder en formato SVG
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
 function formatDate(dateString) {
@@ -110,7 +109,7 @@ export default function NewsList() {
                 <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
                   <div className="featured-img-wrapper">
                     <img 
-                      src={mainNews.image || mainNews.imagen || `/news_${configActual.id}/${mainNews.id}/portada.jpg.webp`} 
+                      src={mainNews.image || mainNews.imagen || `/news_${configActual.id}/${mainNews.id}.jpg.webp`} 
                       alt={mainNews.title || mainNews.titulo} 
                       className="featured-img" 
                       onError={(e) => {
@@ -135,7 +134,7 @@ export default function NewsList() {
                     <Link to={`/noticias/${item.id}`} key={item.id} className="secondary-news-card">
                       <div className="secondary-img-wrapper">
                         <img 
-                          src={item.image || item.imagen || `/news_${configActual.id}/${item.id}/portada.jpg.webp`} 
+                          src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg.webp`} 
                           alt={item.title || item.titulo} 
                           className="secondary-img" 
                           onError={(e) => {

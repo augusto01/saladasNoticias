@@ -41,7 +41,6 @@ export default function NewsDetail() {
   const newsSummary = getNoticias() || [];
   const newsItem = newsSummary.find((item) => item.id === id);
 
-  // Obtiene otras noticias disponibles excluyendo la actual
   const otherNews = newsSummary.filter((item) => item.id !== id).slice(0, 3);
 
   useEffect(() => {
@@ -86,7 +85,7 @@ export default function NewsDetail() {
     );
   }
 
-  const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}/portada.jpg.webp`;
+  const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}.jpg.webp`;
 
   return (
     <article className="news-detail-container">
@@ -217,7 +216,7 @@ export default function NewsDetail() {
               <Link to={`/noticias/${item.id}`} key={item.id} className="more-news-card">
                 <div className="more-news-img-wrapper">
                   <img 
-                    src={item.image || item.imagen || `/news_${configActual.id}/${item.id}/portada.jpg.webp`} 
+                    src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg.webp`} 
                     alt={item.title || item.titulo} 
                     className="more-news-img"
                     onError={(e) => {
