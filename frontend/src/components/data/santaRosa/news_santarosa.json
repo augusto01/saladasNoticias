@@ -20,5 +20,68 @@
     "views": 16210,
     "gallery": [],
     "videos": []
-  }
+  },{
+  "id": "31-08-2026-1",
+  "title": "Juan Pablo Valdés analiza aumento de sueldos y alivio para los morosos: los temas que abordará con el Gobierno Nacional",
+  "summary": "En Equipo de Noticias, el gobernador Juan Pablo Valdés destacó el repunte de la coparticipación tras meses de caída, anticipó una nueva etapa del programa 'Corrientes Sostiene' a través del Banco de Corrientes y garantizó futuros aumentos salariales bajo previsibilidad financiera.",
+  "category": "PROVINCIALES",
+  "date": "2026-08-31",
+  "image": "/news_corrientes/31-08-2026-1.jpg",
+  "views": 69,
+  "gallery": [],
+  "videos": []
+},{
+  "id": "26-08-2026-1",
+  "title": "Santa Rosa celebra su aniversario y conmemora a su Patrona",
+  "summary": "Santa Rosa conmemora su 115° aniversario fundacional y las fiestas patronales el 29 y 30 de agosto con acto cívico-militar, misa, almuerzo comunitario y festival artístico con entrada gratuita en el Polideportivo Municipal.",
+  "category": "ACTUALIDAD",
+  "date": "2026-08-26",
+  "image": "/news_santarosa/26-08-2026-1.jpg",
+  "views": 16167,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "01-09-2026-2",
+  "title": "Estrelló su automóvil contra una columna de foto-multa en la Ruta Nacional 118",
+  "summary": "Durante la madrugada en Santa Rosa, un joven de 26 años impactó su Chevrolet Corsa contra un tótem de fotomultas y una columna de alumbrado en la Ruta 118. Manifestó haber consumido alcohol y quedó demorado por conducción peligrosa.",
+  "category": "POLICIALES",
+  "date": "2026-09-01",
+  "image": "/news_santarosa/01-09-2026-2.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},{
+  "id": "29-08-2026-1",
+  "title": "En Santa Rosa el gobernador inauguró un hospital y un cuartel de bomberos",
+  "summary": "Durante el 115° aniversario de Santa Rosa, Juan Pablo Valdés inauguró el Hospital 'Dra. María del Carmen Casellas', habilitó el nuevo Cuartel de Bomberos Forestales de la BRIF en el Parque Industrial y entregó una ambulancia 0 km.",
+  "category": "PROVINCIALES",
+  "date": "2026-08-29",
+  "image": "/news_santarosa/29-08-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "28-08-2026-1",
+  "title": "Alarma: intendente correntino amenazado por narcos",
+  "summary": "El intendente de Santa Rosa, José Dardo Ignacio, denunció haber recibido amenazas de muerte tras una serie de allanamientos policiales que desarticularon cuatro puntos de venta de estupefacientes en la localidad.",
+  "category": "POLICIALES",
+  "date": "2026-08-28",
+  "image": "/news_santarosa/28-08-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "28-08-2026-2",
+  "title": "Las zonas de la Argentina con mayor riesgo por El Niño: qué provincias podrían sufrir lluvias extremas e inundaciones",
+  "summary": "Ante la consolidación de un fenómeno de El Niño excepcionalmente intenso, el Litoral argentino —con Misiones y Corrientes a la cabeza— se ubica en el nivel máximo de alerta por lluvias recurrentes y crecidas de los ríos Paraná y Uruguay.",
+  "category": "ACTUALIDAD",
+  "date": "2026-08-28",
+  "image": "/news_santarosa/28-08-2026-2.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+}
 ]

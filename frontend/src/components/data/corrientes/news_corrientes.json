@@ -32,5 +32,59 @@
     "views": 14230,
     "gallery": [],
     "videos": []
-  }
+  },{
+  "id": "26-08-2026-1",
+  "title": "\"Al Son del Taragüí\": chamamé y solidaridad en el Instituto de Música",
+  "summary": "Reconocidas figuras chamameceras como Florencia de Pompert, Tajy y Fabio Acevedo ofrecerán un concierto benéfico en el ISMU este 28 de agosto para recaudar fondos destinados al comedor escolar del nivel secundario.",
+  "category": "ACTUALIDAD",
+  "date": "2026-08-26",
+  "image": "/news_corrientes/26-08-2026-1.jpg",
+  "views": 17372,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "26-08-2026-2",
+  "title": "Estudiantes desarrollan sistema de monitoreo térmico para la UNNE/CONICET",
+  "summary": "Estudiantes de la E.E.T. Nº 24 de Resistencia crearon 'BIONEA ORGANIKS', un prototipo modular con microcontroladores ESP32 y sensores térmicos para monitorear animales ectotérmicos junto a investigadores de UNNE, CONICET y UNSJ.",
+  "category": "ACTUALIDAD",
+  "date": "2026-08-26",
+  "image": "/news_corrientes/26-08-2026-2.jpg",
+  "views": 16247,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "20-08-2026-1",
+  "title": "Corrientes será sede del 4° Congreso Ecoturístico de la Región Litoral",
+  "summary": "El 3 y 4 de septiembre se realizará en el Turismo Hotel Casino de Corrientes el 4° Congreso Ecoturístico del Litoral bajo el lema 'TurismoReGenera', con rondas de negocios, talleres y foco en el turismo regenerativo.",
+  "category": "ACTUALIDAD",
+  "date": "2026-08-20",
+  "image": "/news_corrientes/20-08-2026-1.jpg",
+  "views": 14366,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "01-09-2026-1",
+  "title": "El correntino José Manuel \"Flaco\" López renovó su contrato con Palmeiras hasta 2030",
+  "summary": "El delantero correntino José Manuel López extendió su vínculo con el Palmeiras hasta diciembre de 2030. Con 78 goles en 225 partidos, es el argentino con más títulos en la historia del club brasileño.",
+  "category": "DEPORTES",
+  "date": "2026-09-01",
+  "image": "/news_corrientes/01-09-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "31-08-2026-1",
+  "title": "Juan Pablo Valdés analiza aumento de sueldos y alivio para los morosos: los temas que abordará con el Gobierno Nacional",
+  "summary": "En Equipo de Noticias, el gobernador Juan Pablo Valdés destacó el repunte de la coparticipación tras meses de caída, anticipó una nueva etapa del programa 'Corrientes Sostiene' a través del Banco de Corrientes y garantizó futuros aumentos salariales bajo previsibilidad financiera.",
+  "category": "PROVINCIALES",
+  "date": "2026-08-31",
+  "image": "/news_corrientes/31-08-2026-1.jpg",
+  "views": 69,
+  "gallery": [],
+  "videos": []
+}
 ]
