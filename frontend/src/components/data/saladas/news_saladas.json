@@ -1,5 +1,4 @@
 [
-  
   {
   "id": "28-08-2026-1",
   "title": "Violencia de género: una cabo de Policía permanece internada tras sufrir una brutal agresión",
@@ -10,5 +9,39 @@
   "views": 0,
   "gallery": [],
   "videos": []
-}
+ },
+ {
+    "id": "21-08-2026-1",
+    "title": "El edificio propio del ISFD de Saladas llegó a Diputados: piden informes sobre el avance del proyecto",
+    "summary": "La Cámara de Diputados de Corrientes giró a comisión un proyecto que solicita información precisa sobre la construcción de la sede propia del ISFD 'María Luisa Román de Frechou', una institución con 800 estudiantes que aún no cuenta con casa propia.",
+    "category": "EDUCACIÓN",
+    "date": "2026-08-21",
+    "image": "/news_saladas/21-08-2026-1.jpeg",
+    "views": 1120,
+    "gallery": [],
+    "videos": []
+  },
+  {
+    "id": "18-08-2026-1",
+    "title": "El papa León XIV visitará la Argentina en noviembre",
+    "summary": "El Vaticano confirmó el viaje apostólico de León XIV por Sudamérica. El Sumo Pontífice estará en el país del 8 al 11 de noviembre y recorrerá Buenos Aires, Córdoba y Luján.",
+    "category": "RELIGIÓN",
+    "date": "2026-08-18",
+    "image": "/news_saladas/18-08-2026-1.jpeg",
+    "views": 420,
+    "gallery": [],
+    "videos": []
+  },
+  {
+    "id": "29-07-2026-1",
+    "title": "Recuperaron una motocicleta robada durante un control sobre la Ruta 118",
+    "summary": "La Policía de Saladas interceptó un vehículo utilitario que trasladaba una motocicleta con pedido de secuestro activo. Un hombre fue aprehendido y otro logró escapar hacia una zona de montes.",
+    "category": "LOCALES",
+    "date": "2026-07-29",
+    "image": "/news_saladas/29-07-2026-1.jpeg",
+    "views": 310,
+    "gallery": [],
+    "videos": []
+  }
+
 ]

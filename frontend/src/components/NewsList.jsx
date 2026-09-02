@@ -8,17 +8,33 @@ import { getNoticias } from '../config/getNews';
 
 import '../styles/NewsList.css';
 
-const CATEGORIES = ["Todas", "GESTIÓN", "CULTURA", "SALUD", "DEPORTES", "OBRAS"];
+const CATEGORIES = ["Todas", "GESTIÓN", "CULTURA", "SALUD", "DEPORTES", "OBRAS", "EDUCACIÓN", "LOCALES", "PROVINCIALES"];
 
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
-function formatDate(dateString) {
-  if (!dateString || typeof dateString !== 'string') return '';
+// Parsea fechas tanto 'DD-MM-YYYY' como 'YYYY-MM-DD' a objetos Date válidos
+function parseSafeDate(dateString) {
+  if (!dateString || typeof dateString !== 'string') return new Date(0);
   const parts = dateString.split('-');
-  if (parts.length !== 3) return dateString;
+  if (parts.length !== 3) return new Date(0);
 
-  const [year, month, day] = parts;
-  const date = new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  // Si viene como DD-MM-YYYY
+  if (parts[0].length === 2 && parts[2].length === 4) {
+    const [day, month, year] = parts;
+    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  }
+  // Si viene como YYYY-MM-DD
+  if (parts[0].length === 4) {
+    const [year, month, day] = parts;
+    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  }
+
+  return new Date(0);
+}
+
+function formatDate(dateString) {
+  const date = parseSafeDate(dateString);
+  if (date.getTime() === 0) return dateString;
 
   return new Intl.DateTimeFormat('es-AR', {
     day: 'numeric',
@@ -31,35 +47,39 @@ export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
 
+  // Obtiene el array estático de noticias del municipio activo
   const newsSummary = getNoticias() || [];
 
-  // 1. Filtrar noticias por categoría y búsqueda
+  // 1. Filtrar noticias por categoría y término de búsqueda
   const filteredNews = newsSummary.filter((item) => {
+    const cat = item.category || item.categoria || "";
     const matchesCategory =
       selectedCategory === "Todas" ||
-      (item.category || item.categoria)?.toUpperCase() === selectedCategory.toUpperCase();
+      cat.toUpperCase() === selectedCategory.toUpperCase();
 
+    const title = item.title || item.titulo || "";
+    const summary = item.summary || item.subtitulo || item.resumen || "";
     const matchesSearch =
-      (item.title || item.titulo)?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      (item.summary || item.subtitulo || item.resumen)?.toLowerCase().includes(searchTerm.toLowerCase());
+      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      summary.toLowerCase().includes(searchTerm.toLowerCase());
 
     return matchesCategory && matchesSearch;
   });
 
-  // 2. Ordenar las noticias filtradas por fecha (de más reciente a más antigua)
+  // 2. Ordenar de manera segura por fecha descendente
   const sortedNews = [...filteredNews].sort((a, b) => {
-    const dateA = new Date(a.date || a.fecha);
-    const dateB = new Date(b.date || b.fecha);
-    return dateB - dateA;
+    const timeA = parseSafeDate(a.date || a.fecha).getTime();
+    const timeB = parseSafeDate(b.date || b.fecha).getTime();
+    return timeB - timeA;
   });
 
   const hasNews = sortedNews.length > 0;
   const mainNews = hasNews ? sortedNews[0] : null;
   const secondaryNews = hasNews ? sortedNews.slice(1) : [];
 
-  // Ordenar también el listado general para la sección "Lo más leído" / Más recientes
+  // Ordenar también las noticias globales para el widget lateral
   const sortedAllNews = [...newsSummary].sort((a, b) => {
-    return new Date(b.date || b.fecha) - new Date(a.date || a.fecha);
+    return parseSafeDate(b.date || b.fecha).getTime() - parseSafeDate(a.date || a.fecha).getTime();
   });
 
   return (
@@ -122,7 +142,7 @@ export default function NewsList() {
                 <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
                   <div className="featured-img-wrapper">
                     <img 
-                      src={mainNews.image || mainNews.imagen || `/news_${configActual.id}/${mainNews.id}.jpg.webp`} 
+                      src={mainNews.image || mainNews.imagen || `/news_${configActual.id}/${mainNews.id}.jpg`} 
                       alt={mainNews.title || mainNews.titulo} 
                       className="featured-img" 
                       onError={(e) => {
@@ -147,7 +167,7 @@ export default function NewsList() {
                     <Link to={`/noticias/${item.id}`} key={item.id} className="secondary-news-card">
                       <div className="secondary-img-wrapper">
                         <img 
-                          src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg.webp`} 
+                          src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg`} 
                           alt={item.title || item.titulo} 
                           className="secondary-img" 
                           onError={(e) => {
