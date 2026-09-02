@@ -42,6 +42,61 @@
     "views": 310,
     "gallery": [],
     "videos": []
-  }
+  },
+  {
+  "id": "02-09-2026-1",
+  "title": "El salario mínimo, vital y móvil llegará a $437.000 en abril de 2027",
+  "summary": "Tras la falta de acuerdo entre sindicatos y empresarios en el Consejo del Salario, el Gobierno nacional oficializó una suba escalonada del salario mínimo que fija el piso en $383.800 para septiembre y alcanzará los $437.000 en abril de 2027.",
+  "category": "NACIONALES",
+  "date": "2026-09-02",
+  "image": "/news_saladas/02-09-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "29-08-2026-1",
+  "title": "Saladas: rescataron a un oso melero que estaba en la Terminal",
+  "summary": "Bomberos Voluntarios y personal municipal rescataron sano y salvo a un ejemplar de oso melero que se encontraba refugiado en un árbol del predio de la Terminal de Saladas, para su posterior restitución al hábitat natural.",
+  "category": "LOCALES",
+  "date": "2026-08-29",
+  "image": "/news_saladas/29-08-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "14-08-2026-1",
+  "title": "Estudiantes del colegio Normal de Saladas recorrieron la ciudad de Corrientes",
+  "summary": "Alumnos de la división Ciencias Sociales de la Escuela Normal de Saladas, ganadores de la Expo Mundialista, viajaron a Corrientes Capital para realizar un circuito educativo por La Unidad, Casa Iberá y el Centro Cultural Sanmartiniano.",
+  "category": "TURISMO Y CULTURA",
+  "date": "2026-08-14",
+  "image": "/news_saladas/14-08-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "23-07-2026-1",
+  "title": "Saladas realizó limpieza y mantenimiento de los principales desagües",
+  "summary": "Como medida preventiva ante el fenómeno de El Niño, el Municipio de Saladas ejecuta tareas de limpieza, desmalezamiento y retiro de sedimentos en los canales de desagüe pluvial sobre las Rutas Nacionales 12 y 118.",
+  "category": "LOCALES",
+  "date": "2026-07-23",
+  "image": "/news_saladas/23-07-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "02-08-2026-1",
+  "title": "Saladas se prepara para homenajear a los Granaderos Correntinos y Saladeños",
+  "summary": "Saladas conmemora el Día Provincial del Granadero Correntino y el Día del Granadero Saladeño en honor al Sargento Cabral con vigilia, desfile cívico-militar y un festival popular con entrada libre y gratuita en Plaza Cabral.",
+  "category": "LOCALES",
+  "date": "2026-08-02",
+  "image": "/news_saladas/02-08-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+}
 
 ]
