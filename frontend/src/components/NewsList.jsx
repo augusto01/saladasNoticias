@@ -33,7 +33,8 @@ export default function NewsList() {
 
   const newsSummary = getNoticias() || [];
 
-  const allFilteredNews = newsSummary.filter((item) => {
+  // 1. Filtrar noticias por categoría y búsqueda
+  const filteredNews = newsSummary.filter((item) => {
     const matchesCategory =
       selectedCategory === "Todas" ||
       (item.category || item.categoria)?.toUpperCase() === selectedCategory.toUpperCase();
@@ -45,9 +46,21 @@ export default function NewsList() {
     return matchesCategory && matchesSearch;
   });
 
-  const hasNews = allFilteredNews.length > 0;
-  const mainNews = hasNews ? allFilteredNews[0] : null;
-  const secondaryNews = hasNews ? allFilteredNews.slice(1) : [];
+  // 2. Ordenar las noticias filtradas por fecha (de más reciente a más antigua)
+  const sortedNews = [...filteredNews].sort((a, b) => {
+    const dateA = new Date(a.date || a.fecha);
+    const dateB = new Date(b.date || b.fecha);
+    return dateB - dateA;
+  });
+
+  const hasNews = sortedNews.length > 0;
+  const mainNews = hasNews ? sortedNews[0] : null;
+  const secondaryNews = hasNews ? sortedNews.slice(1) : [];
+
+  // Ordenar también el listado general para la sección "Lo más leído" / Más recientes
+  const sortedAllNews = [...newsSummary].sort((a, b) => {
+    return new Date(b.date || b.fecha) - new Date(a.date || a.fecha);
+  });
 
   return (
     <div className="news-container">
@@ -104,7 +117,7 @@ export default function NewsList() {
             </div>
           ) : (
             <>
-              {/* NOTICIA DESTACADA */}
+              {/* NOTICIA DESTACADA (MÁS RECIENTE) */}
               {mainNews && (
                 <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
                   <div className="featured-img-wrapper">
@@ -163,11 +176,11 @@ export default function NewsList() {
             <WeatherWidget />
           </div>
 
-          {newsSummary.length > 0 && (
+          {sortedAllNews.length > 0 && (
             <div className="sidebar-widget popular-widget">
               <h3 className="widget-title">Lo más leído</h3>
               <ul className="popular-list">
-                {newsSummary.slice(0, 3).map((news, index) => (
+                {sortedAllNews.slice(0, 3).map((news, index) => (
                   <li key={news.id}>
                     <Link to={`/noticias/${news.id}`} className="popular-item">
                       <span className="popular-number">0{index + 1}</span>
