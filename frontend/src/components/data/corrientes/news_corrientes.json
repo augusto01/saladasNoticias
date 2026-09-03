@@ -86,5 +86,49 @@
   "views": 69,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "03-09-2026-1",
+  "title": "Se realizó en el Puerto de Corrientes la descarga de maquinaria para la primera planta de CLT del país",
+  "summary": "En el Día de la Industria, arribaron al Puerto de Corrientes 50 contenedores desde Suecia con la maquinaria para la planta Cambium Build en Gobernador Virasoro, la primera de madera contralaminada (CLT) en el país.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-03",
+  "image": "/news_corrientes/03-09-2026-1.jpg",
+  "views": 14,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "03-09-2026-2",
+  "title": "A través de FODIN, el Gobierno de Corrientes asiste a más de 35 proyectos industriales",
+  "summary": "A través del Fondo de Desarrollo Industrial (FODIN), la Provincia brindó asistencia financiera a más de 35 empresas en Capital y 14 municipios del interior para la modernización de maquinaria, relocalización en parques industriales y generación de empleo.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-03",
+  "image": "/news_corrientes/03-09-2026-2.jpg",
+  "views": 29,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "02-09-2026-1",
+  "title": "Más de 500 estudiantes correntinos competirán en los Torneos Interescolares",
+  "summary": "El 4 y 5 de septiembre, el CEF N° 17 de Corrientes Capital albergará la instancia provincial de los Torneos Interescolares con más de 500 deportistas en busca del pase a los Juegos Deportivos Nacionales Evita.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-02",
+  "image": "/news_corrientes/02-09-2026-1.jpg",
+  "views": 63,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "02-09-2026-2",
+  "title": "JP Valdés: presencia en Iguazú, producción, puerto de Ituzaingó, peajes y aumentos salariales",
+  "summary": "El gobernador Juan Pablo Valdés repasó la agenda provincial: su participación en la convención de IAEF en Iguazú, la habilitación del puerto de Ituzaingó en 60 días, la confirmación de aumentos salariales antes de fin de año y las obras preventivas ante El Niño.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-02",
+  "image": "/news_corrientes/02-09-2026-2.jpg",
+  "views": 67,
+  "gallery": [],
+  "videos": []
 }
 ]

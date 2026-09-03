@@ -75,5 +75,49 @@
   "views": 166,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "02-09-2026-1",
+  "title": "Servicio Militar Voluntario: jóvenes sin secundario completo pueden ingresar y capacitarse en oficios",
+  "summary": "El Ejército Argentino convoca a jóvenes de entre 18 y 24 años sin secundario completo. El régimen permite permanecer hasta los 28 años, finalizar los estudios obligatorios y obtener certificados de oficios con validez nacional.",
+  "category": "INTERÉS GENERAL",
+  "date": "2026-09-02",
+  "image": "/news_ituzaingo/02-09-2026-1.jpg",
+  "views": 72,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "02-09-2026-2",
+  "title": "JP Valdés: presencia en Iguazú, producción, puerto de Ituzaingó, peajes y aumentos salariales",
+  "summary": "El gobernador Juan Pablo Valdés repasó la agenda provincial: su participación en la convención de IAEF en Iguazú, la habilitación del puerto de Ituzaingó en 60 días, la confirmación de aumentos salariales antes de fin de año y las obras preventivas ante El Niño.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-02",
+  "image": "/news_corrientes/02-09-2026-2.jpg",
+  "views": 67,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "02-09-2026-3",
+  "title": "JP Valdés: presencia en Iguazú, producción, puerto de Ituzaingó, peajes y aumentos salariales",
+  "summary": "El gobernador Juan Pablo Valdés repasó la agenda provincial: su participación en la convención de IAEF en Iguazú, la habilitación del puerto de Ituzaingó en 60 días, la confirmación de aumentos salariales antes de fin de año y las obras preventivas ante El Niño.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-02",
+  "image": "/news_ituzaingo/02-09-2026-3.jpg",
+  "views": 67,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "03-09-2026-2",
+  "title": "A través de FODIN, el Gobierno de Corrientes asiste a más de 35 proyectos industriales",
+  "summary": "A través del Fondo de Desarrollo Industrial (FODIN), la Provincia brindó asistencia financiera a más de 35 empresas en Capital y 14 municipios del interior para la modernización de maquinaria, relocalización en parques industriales y generación de empleo.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-03",
+  "image": "/news_corrientes/03-09-2026-2.jpg",
+  "views": 29,
+  "gallery": [],
+  "videos": []
 }
 ]
