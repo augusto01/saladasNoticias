@@ -152,5 +152,49 @@
   "views": 0,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "04-09-2026-2",
+  "title": "Juan Pablo Valdés y Emilio Nicolás mantuvieron una reunión clave para nuevas obras en Ituzaingó",
+  "summary": "El gobernador Juan Pablo Valdés y el intendente Emilio Nicolás mantuvieron un encuentro de trabajo para coordinar la planificación de nuevas obras de desagües pluviales y pavimentación urbana en Ituzaingó.",
+  "category": "LOCALES",
+  "date": "2026-09-04",
+  "image": "/news_ituzaingo/04-09-2026-1.jpg",
+  "views": 72,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "04-09-2026-3",
+  "title": "Juan Pablo Valdés viaja a Puerto Iguazú para exponer en el foro empresarial del IAEF",
+  "summary": "El gobernador de Corrientes participa en Misiones de la 47ª Convención Anual del IAEF en un panel sobre competitividad junto a pares provinciales, descartando un encuentro a solas con Javier Milei y priorizando la agenda del Norte Grande.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-04",
+  "image": "/news_corrientes/04-09-2026-3.jpg",
+  "views": 69,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "04-09-2026-4",
+  "title": "Valdés encabezó la apertura del 4° Congreso Ecoturístico del Litoral",
+  "summary": "Con más de 1.300 inscriptos bajo el lema 'Turismo Regenera', el gobernador Juan Pablo Valdés abrió en la capital correntina el 4° Congreso Ecoturístico del Litoral, destacando al Iberá como motor económico y sustentable de la región.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-04",
+  "image": "/news_corrientes/04-09-2026-4.jpg",
+  "views": 69,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "05-09-2026-1",
+  "title": "Liga Nacional: Regatas presenta su plantel para la temporada 2026/27",
+  "summary": "El Club de Regatas Corrientes presentará este martes 8 su plantel profesional para encarar la Liga Nacional y la Liga Sudamericana. La conferencia será en el Hotel de Turismo encabezada por la dirigencia del club.",
+  "category": "DEPORTES",
+  "date": "2026-09-05",
+  "image": "/news_corrientes/05-09-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
 }
 ]
