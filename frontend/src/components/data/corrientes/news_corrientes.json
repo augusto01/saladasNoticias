@@ -196,5 +196,27 @@
   "views": 0,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "07-09-2026-1",
+  "title": "Nuevo logro en un hospital público de Corrientes salva la vida a un recién nacido",
+  "summary": "Un recién nacido derivado desde Paso de los Libres fue tratado con éxito mediante hipotermia terapéutica en la capital provincial, una técnica neuroprotectora de alta complejidad para reducir secuelas por falta de oxígeno al nacer.",
+  "category": "SALUD",
+  "date": "2026-09-07",
+  "image": "/news_corrientes/07-09-2026-1.jpg",
+  "views": 70,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "07-09-2026-2",
+  "title": "Valdés presentó en Iguazú el modelo correntino para atraer inversiones y generar desarrollo",
+  "summary": "En la 47° Convención Anual del IAEF, el gobernador Juan Pablo Valdés compartió panel con mandatarios de Mendoza, Catamarca y Misiones, donde remarcó la baja presión fiscal de Corrientes, los 19 parques industriales y la radicación de la planta de CLT en Virasoro.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-07",
+  "image": "/news_corrientes/07-09-2026-2.jpg",
+  "views": 68,
+  "gallery": [],
+  "videos": []
 }
 ]
