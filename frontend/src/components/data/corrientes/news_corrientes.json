@@ -262,5 +262,93 @@
   "views": 0,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "16-09-2026-1",
+  "title": "INVICO avanza en la recuperación y finalización de viviendas en el barrio Doctor Montaña",
+  "summary": "Tras los recientes intentos de usurpación, el Instituto de Vivienda de Corrientes confirmó que reactivó con fondos provinciales la terminación de las casas paralizadas por Nación en el barrio Dr. Montaña.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-16",
+  "image": "/news_corrientes/16-09-2026-1.jpg",
+  "views": 2,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "16-09-2026-2",
+  "title": "Santilli recibió a Juan Pablo Valdés y mandatarios del norte para negociar el Presupuesto 2027",
+  "summary": "El gobernador de Corrientes participó de una cumbre en Casa Rosada junto a sus pares de Catamarca, Salta y Tucumán con el jefe de Gabinete, Diego Santilli. Plantearon reclamos por obras viales, tarifas energéticas y fondos federales.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-16",
+  "image": "/news_corrientes/16-09-2026-2.jpg",
+  "views": 3,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "16-09-2026-3",
+  "title": "El gobernador Juan Pablo Valdés se reunió con el embajador de Estados Unidos",
+  "summary": "En Buenos Aires, Juan Pablo Valdés mantuvo un encuentro con el embajador Peter Lamelas para afianzar el intercambio comercial con Estados Unidos, impulsar la exportación de cítricos dulces y promover inversiones forestales e industriales.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-16",
+  "image": "/news_corrientes/16-09-2026-3.jpg",
+  "views": 59,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "16-09-2026-4",
+  "title": "Federico Franco, expresidente de Paraguay, elogió el nivel del Instituto de Cardiología de Corrientes",
+  "summary": "El expresidente de Paraguay y médico cirujano, Federico Franco, viajó a la capital correntina para someterse a chequeos cardíacos y calificó a la institución de 'primer mundo', destacando la celeridad y calidez humana del equipo.",
+  "category": "SALUD",
+  "date": "2026-09-16",
+  "image": "/news_corrientes/16-09-2026-4.jpg",
+  "views": 57,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "15-09-2026-1",
+  "title": "Miles de jóvenes se preparan para vivir la 47.ª Peregrinación Juvenil del NEA a Itatí",
+  "summary": "Bajo el lema 'Caminamos con María para sanar, soñar y servir', contingentes de todo el Nordeste caminarán hacia la Basílica de Itatí el 19 y 20 de septiembre. La misa central será el domingo a las 9:00.",
+  "category": "PROVINCIALES",
+  "date": "2026-09-15",
+  "image": "/news_corrientes/15-09-2026-1.jpg",
+  "views": 55,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "15-09-2026-2",
+  "title": "Inició el pago del Plus de Refuerzo de septiembre para trabajadores estatales",
+  "summary": "El Gobierno provincial comenzó a abonar el adicional de $100 mil para agentes activos y jubilados de la administración pública. El cronograma por terminación de DNI se extiende hasta el lunes 21 de septiembre.",
+  "category": "ECONOMÍA",
+  "date": "2026-09-15",
+  "image": "/news_corrientes/15-09-2026-2.jpg",
+  "views": 65,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "15-09-2026-3",
+  "title": "Corrientes alcanzó los 30 donantes de órganos en lo que va del año y se consolida tercera en el país",
+  "summary": "Tras un operativo multiorgánico en el Hospital Escuela, el CUCAICOR registró 30 donantes en 2026. Los procedimientos permitieron que 72 pacientes reciban trasplantes de órganos y 57 recuperen la visión mediante córneas.",
+  "category": "SALUD",
+  "date": "2026-09-15",
+  "image": "/news_corrientes/15-09-2026-3.jpg",
+  "views": 67,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "15-09-2026-4",
+  "title": "Más de 150 puntos de venta de drogas fueron desarticulados en Corrientes",
+  "summary": "El ministro Adán Gaya y el jefe de la Policía, Miguel Ángel Leguizamón, presentaron el balance de la lucha contra el narcomenudeo: 150 kioscos desarmados, 198 detenidos y más de 300 efectivos asignados a investigaciones antidrogas.",
+  "category": "SEGURIDAD",
+  "date": "2026-09-15",
+  "image": "/news_corrientes/15-09-2026-4.jpg",
+  "views": 63,
+  "gallery": [],
+  "videos": []
 }
 ]

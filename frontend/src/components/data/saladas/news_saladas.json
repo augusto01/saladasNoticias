@@ -163,6 +163,53 @@
   "views": 0,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "11-09-2026-1",
+  "title": "Se realizó el acto central por el Día del Maestro en Saladas",
+  "summary": "En la Casa del Bicentenario del barrio Estación, la comunidad educativa de Saladas celebró el Día del Maestro con distinciones a docentes destacados, discursos alusivos y la actuación de la Orquesta Municipal.",
+  "category": "EDUCACIÓN",
+  "date": "2026-09-11",
+  "image": "/news_saladas/11-09-2026-1.jpg",
+  "views": 0,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "14-09-2026-1",
+  "title": "El ICAP ya funciona en Saladas como espacio de abordaje y prevención",
+  "summary": "El Instituto Correntino de Abordaje y Prevención (ICAP) coordina acciones con la Secretaría de Acción Social de Saladas para brindar asistencia interdisciplinaria en psicología y trabajo social.",
+  "category": "SALUD",
+  "date": "2026-09-14",
+  "image": "/news_saladas/14-09-2026-1.jpg",
+  "views": 1,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "16-09-2026-1",
+  "title": "Habló la cabo agredida en Saladas: denunció violencia de género y acoso de su superior",
+  "summary": "Mariela Ayala, cabo de la Policía en Saladas, relató la brutal golpiza sufrida a manos de su expareja y ratificó la denuncia por abuso de autoridad contra su superior. Reclamó por la lentitud judicial y la carátula de la causa.",
+  "category": "POLICIALES",
+  "date": "2026-09-16",
+  "image": "/news_saladas/16-09-2026-1.jpg",
+  "views": 1,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "12-09-2026-1",
+  "title": "Saladas: desarticulan puntos de narcomenudeo tras dos allanamientos con tres aprehendidos",
+  "summary": "En operativos nocturnos simultáneos, la Policía secuestró marihuana, cocaína, más de $360.000 en efectivo, motocicletas, celulares y armas blancas en Saladas. Tres personas quedaron a disposición judicial.",
+  "category": "POLICIALES",
+  "date": "2026-09-12",
+  "image": "/news_saladas/12-09-2026-1.jpg",
+  "views": 126,
+  "gallery": [
+    "/news_saladas/12-09-2026-1-1.jpg",
+    "/news_saladas/12-09-2026-1-2.jpg"
+  ],
+  "videos": []
 }
 
 ]
