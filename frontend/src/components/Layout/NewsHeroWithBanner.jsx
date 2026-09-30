@@ -44,22 +44,13 @@ export const NewsHeroWithBanner = () => {
             </div>
 
             <div className="hero-meta-group">
-              <span className="hero-live-indicator">
-                <span className="pulse-dot"></span> EN VIVO
-              </span>
+           
               <time className="hero-date">{fechaActual}</time>
             </div>
           </div>
 
           <div className="hero-text-block">
-            <div className="hero-saludo-wrapper">
-              <span 
-                className="hero-tag"
-                style={{ color: primaryColor, borderColor: primaryColor }}
-              >
-                {configActual?.saludo || 'COMUNICADO OFICIAL'}
-              </span>
-            </div>
+            
             
             <p className="hero-subtitle">
               {configActual?.descripcion ||
