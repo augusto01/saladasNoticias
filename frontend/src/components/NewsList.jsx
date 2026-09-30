@@ -223,7 +223,6 @@ export default function NewsList() {
           )}
 
           <div className="sidebar-widget ad-widget">
-            <span className="ad-label">Publicidad</span>
             <a 
               href="https://www.argentina.gob.ar" 
               target="_blank" 
