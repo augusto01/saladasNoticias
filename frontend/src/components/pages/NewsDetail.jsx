@@ -18,13 +18,26 @@ function stripFrontmatter(text) {
   return text.replace(/^---[\s\S]*?---\s*/, '');
 }
 
-function formatDate(dateString) {
-  if (!dateString || typeof dateString !== 'string') return '';
+function parseSafeDate(dateString) {
+  if (!dateString || typeof dateString !== 'string') return new Date(0);
   const parts = dateString.split('-');
-  if (parts.length !== 3) return dateString;
+  if (parts.length !== 3) return new Date(0);
 
-  const [year, month, day] = parts;
-  const date = new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  if (parts[0].length === 2 && parts[2].length === 4) {
+    const [day, month, year] = parts;
+    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  }
+  if (parts[0].length === 4) {
+    const [year, month, day] = parts;
+    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  }
+
+  return new Date(0);
+}
+
+function formatDate(dateString) {
+  const date = parseSafeDate(dateString);
+  if (date.getTime() === 0) return dateString;
 
   return new Intl.DateTimeFormat('es-AR', {
     day: 'numeric',
@@ -46,7 +59,7 @@ export default function NewsDetail() {
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    if (!id) {
+    if (!id || id === 'undefined') {
       setLoading(false);
       return;
     }
@@ -85,7 +98,7 @@ export default function NewsDetail() {
     );
   }
 
-  const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}.jpg.webp`;
+  const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}.jpg`;
 
   return (
     <article className="news-detail-container">
@@ -106,6 +119,21 @@ export default function NewsDetail() {
         <p className="detail-summary">{newsItem.summary || newsItem.subtitulo || newsItem.resumen}</p>
       </header>
 
+      {/* BANNER INSTITUCIONAL HORIZONTAL (INICIO) */}
+      <div className="detail-ad-banner-container">
+        <span className="ad-label">PUBLICIDAD INSTITUCIONAL</span>
+        <div className="detail-ad-box">
+          <img 
+            src="/728x90publi_banner web.gif" 
+            alt="Publicidad Institucional" 
+            className="detail-ad-crisp-img"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        </div>
+      </div>
+
       <div className="detail-main-img-wrapper">
         <img 
           src={mainImgSrc} 
@@ -118,6 +146,7 @@ export default function NewsDetail() {
         />
       </div>
 
+      {/* CUERPO DE LA NOTICIA */}
       <div className="detail-content">
         {loading ? (
           <div className="loading-spinner">Cargando contenido...</div>
@@ -146,6 +175,7 @@ export default function NewsDetail() {
         )}
       </div>
 
+      {/* GALERÍA DE IMÁGENES */}
       {newsItem.gallery && newsItem.gallery.length > 0 && (
         <section className="news-gallery-section">
           <h3 className="gallery-title">
@@ -175,6 +205,7 @@ export default function NewsDetail() {
         </section>
       )}
 
+      {/* MATERIAL AUDIOVISUAL */}
       {newsItem.videos && newsItem.videos.length > 0 && (
         <section className="news-videos-section">
           <h3 className="videos-title">
@@ -205,6 +236,21 @@ export default function NewsDetail() {
         </section>
       )}
 
+      {/* BANNER INSTITUCIONAL HORIZONTAL (FINAL) */}
+      <div className="detail-ad-banner-container">
+        <span className="ad-label">PUBLICIDAD INSTITUCIONAL</span>
+        <div className="detail-ad-box">
+          <img 
+            src="/728x90publi_banner web.gif" 
+            alt="Publicidad Institucional" 
+            className="detail-ad-crisp-img"
+            onError={(e) => {
+              e.target.style.display = 'none';
+            }}
+          />
+        </div>
+      </div>
+
       {/* SECCIÓN MÁS NOTICIAS */}
       {otherNews.length > 0 && (
         <section className="more-news-section">
@@ -212,11 +258,15 @@ export default function NewsDetail() {
             <Newspaper size={22} /> Más noticias de {configActual.nombre}
           </h3>
           <div className="more-news-grid">
-            {otherNews.map((item) => (
-              <Link to={`/noticias/${item.id}`} key={item.id} className="more-news-card">
+            {otherNews.map((item, index) => (
+              <Link 
+                to={`/noticias/${item.id}`} 
+                key={item.id ? `more-${item.id}` : `more-${index}`} 
+                className="more-news-card"
+              >
                 <div className="more-news-img-wrapper">
                   <img 
-                    src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg.webp`} 
+                    src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg`} 
                     alt={item.title || item.titulo} 
                     className="more-news-img"
                     onError={(e) => {

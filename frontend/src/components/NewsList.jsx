@@ -2,13 +2,12 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Newspaper } from 'lucide-react';
 import WeatherWidget from './WeatherWidget';
+import NewsHeroWithBanner from '../components/Layout/NewsHeroWithBanner';
 
 import { configActual } from '../config/municipios';
 import { getNoticias } from '../config/getNews';
 
 import '../styles/NewsList.css';
-
-const CATEGORIES = ["Todas", "GESTIÓN", "CULTURA", "SALUD", "DEPORTES", "OBRAS", "EDUCACIÓN", "LOCALES", "PROVINCIALES"];
 
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
@@ -47,10 +46,23 @@ export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
 
-  // Obtiene el array estático de noticias del municipio activo
+  // 1. Obtiene el array estático de noticias del municipio activo
   const newsSummary = getNoticias() || [];
 
-  // 1. Filtrar noticias por categoría y término de búsqueda
+  // 2. Extraer dinámicamente solo las categorías presentes en las noticias existentes
+  const dynamicCategories = [
+    "Todas",
+    ...Array.from(
+      new Set(
+        newsSummary
+          .map((item) => item.category || item.categoria)
+          .filter(Boolean)
+          .map((cat) => cat.trim().toUpperCase())
+      )
+    ),
+  ];
+
+  // 3. Filtrar noticias por categoría y término de búsqueda
   const filteredNews = newsSummary.filter((item) => {
     const cat = item.category || item.categoria || "";
     const matchesCategory =
@@ -66,7 +78,7 @@ export default function NewsList() {
     return matchesCategory && matchesSearch;
   });
 
-  // 2. Ordenar de manera segura por fecha descendente
+  // 4. Ordenar de manera segura por fecha descendente
   const sortedNews = [...filteredNews].sort((a, b) => {
     const timeA = parseSafeDate(a.date || a.fecha).getTime();
     const timeB = parseSafeDate(b.date || b.fecha).getTime();
@@ -85,19 +97,11 @@ export default function NewsList() {
   return (
     <div className="news-container">
       
-      {/* BANNER HERO */}
-      <section className="news-hero">
-        <div className="news-hero-content">
-          <span className="hero-tag">{configActual.saludo}</span>
-          <h1 className="hero-title-main">{configActual.slogan}</h1>
-          <p className="hero-subtitle">
-            {configActual.descripcion}
-          </p>
-        </div>
-      </section>
+      {/* COMPONENTE HERO CON BANNER DE PUBLICIDAD */}
+      <NewsHeroWithBanner configActual={configActual} />
 
-      {/* FILTROS Y CONTROLES */}
-      <section className="news-controls">
+      {/* FILTROS Y CONTROLES DINÁMICOS */}
+      <section className="news-controls" id="noticias">
         <div className="search-box">
           <Search size={18} className="search-icon" />
           <input
@@ -111,11 +115,13 @@ export default function NewsList() {
 
         <div className="category-filters">
           <Filter size={16} className="filter-icon" />
-          {CATEGORIES.map((cat) => (
+          {dynamicCategories.map((cat) => (
             <button
               key={cat}
               type="button"
-              className={`filter-btn ${selectedCategory === cat ? "active" : ""}`}
+              className={`filter-btn ${
+                selectedCategory.toUpperCase() === cat.toUpperCase() ? "active" : ""
+              }`}
               onClick={() => setSelectedCategory(cat)}
             >
               {cat}
@@ -163,8 +169,12 @@ export default function NewsList() {
               {/* GRILLA SECUNDARIA */}
               {secondaryNews.length > 0 && (
                 <div className="secondary-news-grid">
-                  {secondaryNews.map((item) => (
-                    <Link to={`/noticias/${item.id}`} key={item.id} className="secondary-news-card">
+                  {secondaryNews.map((item, index) => (
+                    <Link 
+                      to={`/noticias/${item.id}`} 
+                      key={item.id ? `sec-${item.id}` : `sec-${index}`} 
+                      className="secondary-news-card"
+                    >
                       <div className="secondary-img-wrapper">
                         <img 
                           src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg`} 
@@ -201,7 +211,7 @@ export default function NewsList() {
               <h3 className="widget-title">Lo más leído</h3>
               <ul className="popular-list">
                 {sortedAllNews.slice(0, 3).map((news, index) => (
-                  <li key={news.id}>
+                  <li key={news.id ? `pop-${news.id}` : `pop-${index}`}>
                     <Link to={`/noticias/${news.id}`} className="popular-item">
                       <span className="popular-number">0{index + 1}</span>
                       <p className="popular-text">{news.title || news.titulo}</p>
@@ -223,7 +233,7 @@ export default function NewsList() {
               <img 
                 src="/300x300bannerweb.gif" 
                 alt="Publicidad institucional" 
-                className="ad-banner-img"
+                className="ad-banner-300-img"
               />
             </a>
           </div>
