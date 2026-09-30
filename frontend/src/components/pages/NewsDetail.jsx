@@ -121,7 +121,6 @@ export default function NewsDetail() {
 
       {/* BANNER INSTITUCIONAL HORIZONTAL (INICIO) */}
       <div className="detail-ad-banner-container">
-        <span className="ad-label">PUBLICIDAD INSTITUCIONAL</span>
         <div className="detail-ad-box">
           <img 
             src="/728x90publi_banner web.gif" 
@@ -238,7 +237,6 @@ export default function NewsDetail() {
 
       {/* BANNER INSTITUCIONAL HORIZONTAL (FINAL) */}
       <div className="detail-ad-banner-container">
-        <span className="ad-label">PUBLICIDAD INSTITUCIONAL</span>
         <div className="detail-ad-box">
           <img 
             src="/728x90publi_banner web.gif" 
