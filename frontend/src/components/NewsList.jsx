@@ -1,31 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Search, Filter, Newspaper } from 'lucide-react';
 import WeatherWidget from './WeatherWidget';
 import NewsHeroWithBanner from '../components/Layout/NewsHeroWithBanner';
 
 import { configActual } from '../config/municipios';
-import { getNoticias } from '../config/getNews';
+import API from '../../services/api';
 
 import '../styles/NewsList.css';
 
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
-// Parsea fechas tanto 'DD-MM-YYYY' como 'YYYY-MM-DD' a objetos Date válidos
+// Parsea fechas 'DD-MM-YYYY', 'YYYY-MM-DD' u objetos Date/ISO de MongoDB
 function parseSafeDate(dateString) {
-  if (!dateString || typeof dateString !== 'string') return new Date(0);
-  const parts = dateString.split('-');
-  if (parts.length !== 3) return new Date(0);
+  if (!dateString) return new Date(0);
 
-  // Si viene como DD-MM-YYYY
-  if (parts[0].length === 2 && parts[2].length === 4) {
-    const [day, month, year] = parts;
-    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
-  }
-  // Si viene como YYYY-MM-DD
-  if (parts[0].length === 4) {
-    const [year, month, day] = parts;
-    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+  const parsed = new Date(dateString);
+  if (!isNaN(parsed.getTime())) return parsed;
+
+  if (typeof dateString === 'string') {
+    const parts = dateString.split('-');
+    if (parts.length === 3) {
+      // Si viene como DD-MM-YYYY
+      if (parts[0].length === 2 && parts[2].length === 4) {
+        const [day, month, year] = parts;
+        return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+      }
+      // Si viene como YYYY-MM-DD
+      if (parts[0].length === 4) {
+        const [year, month, day] = parts;
+        return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
+      }
+    }
   }
 
   return new Date(0);
@@ -45,11 +51,28 @@ function formatDate(dateString) {
 export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
+  const [newsSummary, setNewsSummary] = useState([]);
 
-  // 1. Obtiene el array estático de noticias del municipio activo
-  const newsSummary = getNoticias() || [];
+  // 1. Obtiene las noticias dinámicas desde la API según el municipio activo
+  useEffect(() => {
+    const fetchNoticias = async () => {
+      try {
+        const municipioSlug = configActual.id || configActual.slug || 'saladas';
+        const res = await API.get(`/noticias?municipio=${municipioSlug}`);
+        const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
+        
+        // Filtramos solo las publicaciones activas
+        const publicadas = data.filter((item) => item.publicado !== false);
+        setNewsSummary(publicadas);
+      } catch (err) {
+        console.error("Error al cargar noticias desde MongoDB:", err);
+      }
+    };
 
-  // 2. Extraer dinámicamente solo las categorías presentes en las noticias existentes
+    fetchNoticias();
+  }, []);
+
+  // 2. Extraer dinámicamente solo las categorías presentes en la BD
   const dynamicCategories = [
     "Todas",
     ...Array.from(
@@ -80,8 +103,8 @@ export default function NewsList() {
 
   // 4. Ordenar de manera segura por fecha descendente
   const sortedNews = [...filteredNews].sort((a, b) => {
-    const timeA = parseSafeDate(a.date || a.fecha).getTime();
-    const timeB = parseSafeDate(b.date || b.fecha).getTime();
+    const timeA = parseSafeDate(a.fechaPublicacion || a.date || a.createdAt || a.fecha).getTime();
+    const timeB = parseSafeDate(b.fechaPublicacion || b.date || b.createdAt || b.fecha).getTime();
     return timeB - timeA;
   });
 
@@ -91,7 +114,9 @@ export default function NewsList() {
 
   // Ordenar también las noticias globales para el widget lateral
   const sortedAllNews = [...newsSummary].sort((a, b) => {
-    return parseSafeDate(b.date || b.fecha).getTime() - parseSafeDate(a.date || a.fecha).getTime();
+    const timeA = parseSafeDate(a.fechaPublicacion || a.date || a.createdAt || a.fecha).getTime();
+    const timeB = parseSafeDate(b.fechaPublicacion || b.date || b.createdAt || b.fecha).getTime();
+    return timeB - timeA;
   });
 
   return (
@@ -145,23 +170,28 @@ export default function NewsList() {
             <>
               {/* NOTICIA DESTACADA (MÁS RECIENTE) */}
               {mainNews && (
-                <Link to={`/noticias/${mainNews.id}`} className="featured-news-card">
+                <Link 
+                  to={`/noticias/${mainNews._id || mainNews.id}`} 
+                  className="featured-news-card"
+                >
                   <div className="featured-img-wrapper">
                     <img 
-                      src={mainNews.image || mainNews.imagen || `/news_${configActual.id}/${mainNews.id}.jpg`} 
-                      alt={mainNews.title || mainNews.titulo} 
+                      src={mainNews.imagenPrincipal || mainNews.image || mainNews.imagen || DEFAULT_PLACEHOLDER} 
+                      alt={mainNews.titulo || mainNews.title} 
                       className="featured-img" 
                       onError={(e) => {
                         e.target.onerror = null; 
                         e.target.src = DEFAULT_PLACEHOLDER;
                       }}
                     />
-                    <span className="news-badge">{mainNews.category || mainNews.categoria}</span>
+                    <span className="news-badge">{mainNews.categoria || mainNews.category}</span>
                   </div>
                   <div className="featured-content">
-                    <span className="news-date">{formatDate(mainNews.date || mainNews.fecha)}</span>
-                    <h2 className="featured-title">{mainNews.title || mainNews.titulo}</h2>
-                    <p className="featured-summary">{mainNews.summary || mainNews.subtitulo || mainNews.resumen}</p>
+                    <span className="news-date">
+                      {formatDate(mainNews.fechaPublicacion || mainNews.date || mainNews.createdAt || mainNews.fecha)}
+                    </span>
+                    <h2 className="featured-title">{mainNews.titulo || mainNews.title}</h2>
+                    <p className="featured-summary">{mainNews.subtitulo || mainNews.summary || mainNews.resumen}</p>
                   </div>
                 </Link>
               )}
@@ -169,31 +199,36 @@ export default function NewsList() {
               {/* GRILLA SECUNDARIA */}
               {secondaryNews.length > 0 && (
                 <div className="secondary-news-grid">
-                  {secondaryNews.map((item, index) => (
-                    <Link 
-                      to={`/noticias/${item.id}`} 
-                      key={item.id ? `sec-${item.id}` : `sec-${index}`} 
-                      className="secondary-news-card"
-                    >
-                      <div className="secondary-img-wrapper">
-                        <img 
-                          src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg`} 
-                          alt={item.title || item.titulo} 
-                          className="secondary-img" 
-                          onError={(e) => {
-                            e.target.onerror = null; 
-                            e.target.src = DEFAULT_PLACEHOLDER;
-                          }}
-                        />
-                        <span className="news-badge-sm">{item.category || item.categoria}</span>
-                      </div>
-                      <div className="secondary-content">
-                        <span className="news-date">{formatDate(item.date || item.fecha)}</span>
-                        <h3 className="secondary-title">{item.title || item.titulo}</h3>
-                        <p className="secondary-summary">{item.summary || item.subtitulo || item.resumen}</p>
-                      </div>
-                    </Link>
-                  ))}
+                  {secondaryNews.map((item, index) => {
+                    const itemId = item._id || item.id;
+                    return (
+                      <Link 
+                        to={`/noticias/${itemId}`} 
+                        key={itemId ? `sec-${itemId}` : `sec-${index}`} 
+                        className="secondary-news-card"
+                      >
+                        <div className="secondary-img-wrapper">
+                          <img 
+                            src={item.imagenPrincipal || item.image || item.imagen || DEFAULT_PLACEHOLDER} 
+                            alt={item.titulo || item.title} 
+                            className="secondary-img" 
+                            onError={(e) => {
+                              e.target.onerror = null; 
+                              e.target.src = DEFAULT_PLACEHOLDER;
+                            }}
+                          />
+                          <span className="news-badge-sm">{item.categoria || item.category}</span>
+                        </div>
+                        <div className="secondary-content">
+                          <span className="news-date">
+                            {formatDate(item.fechaPublicacion || item.date || item.createdAt || item.fecha)}
+                          </span>
+                          <h3 className="secondary-title">{item.titulo || item.title}</h3>
+                          <p className="secondary-summary">{item.subtitulo || item.summary || item.resumen}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
                 </div>
               )}
             </>
@@ -210,14 +245,17 @@ export default function NewsList() {
             <div className="sidebar-widget popular-widget">
               <h3 className="widget-title">Lo más leído</h3>
               <ul className="popular-list">
-                {sortedAllNews.slice(0, 3).map((news, index) => (
-                  <li key={news.id ? `pop-${news.id}` : `pop-${index}`}>
-                    <Link to={`/noticias/${news.id}`} className="popular-item">
-                      <span className="popular-number">0{index + 1}</span>
-                      <p className="popular-text">{news.title || news.titulo}</p>
-                    </Link>
-                  </li>
-                ))}
+                {sortedAllNews.slice(0, 3).map((news, index) => {
+                  const newsId = news._id || news.id;
+                  return (
+                    <li key={newsId ? `pop-${newsId}` : `pop-${index}`}>
+                      <Link to={`/noticias/${newsId}`} className="popular-item">
+                        <span className="popular-number">0{index + 1}</span>
+                        <p className="popular-text">{news.titulo || news.title}</p>
+                      </Link>
+                    </li>
+                  );
+                })}
               </ul>
             </div>
           )}
