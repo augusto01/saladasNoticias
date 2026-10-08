@@ -116,5 +116,51 @@
   "views": 0,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "07-10-2026-1",
+  "title": "Un camión con acoplado volcó sobre la Ruta Nacional 118 a la altura del kilómetro 108",
+  "summary": "El siniestro vial ocurrió en la noche del martes sobre la RN 118, en jurisdicción de San Miguel. Efectivos de la Comisaría de Distrito Primera de Santa Rosa, bomberos y personal médico intervinieron en el rescate y traslado del chofer.",
+  "category": "POLICIALES",
+  "date": "2026-10-07",
+  "image": "/news_santarosa/07-10-2026-1.jpg",
+  "views": 115,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "06-10-2026-1",
+  "title": "Fenómeno de El Niño: la Armada Argentina desplegará buques y medios anfibios en Corrientes y el Litoral",
+  "summary": "El Comando del Área Naval Fluvial alista el buque multipropósito ARA 'Ciudad de Zárate', la patrullera ARA 'Punta Mogotes' y vehículos anfibios con base en el puerto de Corrientes para asistir a poblaciones vulnerables ante posibles crecidas e inundaciones.",
+  "category": "PROVINCIALES",
+  "date": "2026-10-06",
+  "image": "/news_corrientes/06-10-2026-1.jpg",
+  "views": 135,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "05-10-2026-1",
+  "title": "Allanaron dos viviendas por abigeato y desarticularon un 'delivery' de carne ilegal",
+  "summary": "La Policía ejecutó dos órdenes de allanamiento en Santa Rosa en una causa por robo de ganado. Secuestraron 19 bolsas con cortes vacunos comercializados a domicilio, un rifle modificado a calibre .22, proyectiles y detuvieron a un hombre mayor de edad.",
+  "category": "POLICIALES",
+  "date": "2026-10-05",
+  "source": "Radio Sudamericana",
+  "image": "/news_santarosa/05-10-2026-1.jpg",
+  "views": 98,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "24-09-2026-1",
+  "title": "Opinión | La casta tiene discurso, las pymes tienen la persiana",
+  "summary": "A partir de las declaraciones del empresario maderero de Santa Rosa Juan Ramón Sotelo ('A las pymes las paga la gente, no la casta'), una reflexión sobre la distancia entre los discursos de ajuste oficial y la realidad diaria de las pequeñas y medianas empresas.",
+  "category": "LOCALES",
+  "date": "2026-09-24",
+  "source": "Radio Sudamericana",
+  "image": "/news_santarosa/24-09-2026-1.jpg",
+  "views": 145,
+  "gallery": [],
+  "videos": []
 }
 ]

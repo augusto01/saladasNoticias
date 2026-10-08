@@ -559,5 +559,49 @@
   "views": 125,
   "gallery": [],
   "videos": []
+},
+{
+  "id": "06-10-2026-1",
+  "title": "Fenómeno de El Niño: la Armada Argentina desplegará buques y medios anfibios en Corrientes y el Litoral",
+  "summary": "El Comando del Área Naval Fluvial alista el buque multipropósito ARA 'Ciudad de Zárate', la patrullera ARA 'Punta Mogotes' y vehículos anfibios con base en el puerto de Corrientes para asistir a poblaciones vulnerables ante posibles crecidas e inundaciones.",
+  "category": "PROVINCIALES",
+  "date": "2026-10-06",
+  "image": "/news_corrientes/06-10-2026-1.jpg",
+  "views": 135,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "08-10-2026-1",
+  "title": "INVICO: más de 57.000 registrados en la nueva plataforma online y fuerte demanda de viviendas unipersonales",
+  "summary": "A través del sistema digital, unas 14.000 personas ya completaron la documentación requerida. El interventor Lizardo González destacó que más de 10.000 solicitudes corresponden a la flamante línea unipersonal y confirmó el proyecto de 600 nuevas viviendas en Capital e interior.",
+  "category": "PROVINCIALES",
+  "date": "2026-10-08",
+  "image": "/news_corrientes/08-10-2026-1.jpg",
+  "views": 130,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "07-10-2026-1",
+  "title": "Homicidio a machetazos en el barrio Pirayuí: tres detenidos y un menor implicado tras cuatro allanamientos",
+  "summary": "La Policía de Corrientes ejecutó cuatro allanamientos en el asentamiento del barrio Pirayuí por el crimen ocurrido el martes. Detuvieron a tres personas mayores de edad, secuestraron un DVR y filmaciones de seguridad, mientras que un menor continúa supeditado a la causa.",
+  "category": "POLICIALES",
+  "date": "2026-10-07",
+  "image": "/news_corrientes/07-10-2026-1.jpg",
+  "views": 155,
+  "gallery": [],
+  "videos": []
+},
+{
+  "id": "07-10-2026-2",
+  "title": "Puente General Belgrano: el peaje continuará liberado hasta el 10 de octubre por traspaso de concesión",
+  "summary": "El cruce interprovincial seguirá sin cobro de tarifa hasta el sábado 10 de octubre debido al traspaso a la nueva empresa concesionaria. Avanza el retiro de cabinas para la instalación de sistemas digitales como TelePASE.",
+  "category": "PROVINCIALES",
+  "date": "2026-10-07",
+  "image": "/news_corrientes/07-10-2026-2.jpg",
+  "views": 142,
+  "gallery": [],
+  "videos": []
 }
 ]
