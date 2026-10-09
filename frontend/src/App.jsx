@@ -38,7 +38,6 @@ function App() {
 
         {/* w-100 asegura todo el ancho, min-vh-100 todo el alto */}
         <div className="d-flex flex-column min-vh-100 w-100">
-          <Navbar />
           
           {/* Contenido principal flex-grow-1 empuja el footer hacia abajo */}
           <main className="flex-grow-1 w-100">

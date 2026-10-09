@@ -1,0 +1,261 @@
+/* WRAPPER PRINCIPAL ITUZAINGÓ (ESTILO CTESHOY) */
+.ituzaingo-header-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* 1. BARRA PRINCIPAL AZUL REAL */
+.ituzaingo-main-bar {
+  background-color: #2b4c7e; /* Azul CtesHoy */
+  color: #ffffff;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
+  border-bottom: 4px solid #e65c00; /* Franja Naranja */
+}
+
+.ituzaingo-left-box {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+}
+
+.ituzaingo-menu-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.ituzaingo-search-box {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  padding: 4px 8px;
+  width: 140px;
+}
+
+.ituzaingo-search-icon {
+  color: #ffffff;
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.ituzaingo-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.8rem;
+  width: 100%;
+}
+
+.ituzaingo-search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.ituzaingo-social-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.ituzaingo-social-grid a {
+  color: #ffffff;
+  transition: opacity 0.2s ease;
+}
+
+.ituzaingo-social-grid a:hover {
+  opacity: 0.8;
+}
+
+/* Centro: Logo CtesHoy Style */
+.ituzaingo-center-logo {
+  text-align: center;
+  flex: 1;
+}
+
+.ituzaingo-logo-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.ituzaingo-logo-img {
+  max-height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.ituzaingo-ctes-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.brand-text {
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: #ffffff;
+  letter-spacing: -1px;
+  font-family: Arial, sans-serif;
+  line-height: 1;
+}
+
+.brand-badge {
+  background-color: #ffffff;
+  color: #2b4c7e;
+  font-weight: 900;
+  font-size: 1.8rem;
+  padding: 2px 10px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+.brand-badge small {
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+/* Derecha: Clima + Fecha y Hora */
+.ituzaingo-right-info {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  flex: 1;
+}
+
+.ituzaingo-weather-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sun-icon {
+  color: #fbbf24; /* Amarillo Sol */
+}
+
+.weather-temp {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.ituzaingo-date-time {
+  font-size: 0.75rem;
+  text-align: right;
+  line-height: 1.2;
+  color: #f1f5f9;
+  font-weight: 600;
+}
+
+/* 2. SUB-BARRA DE COTIZACIONES DE DÓLAR */
+.ituzaingo-rates-bar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 6px 16px;
+  font-size: 0.82rem;
+}
+
+.ituzaingo-rates-scroll {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.rate-pill {
+  color: #475569;
+}
+
+.rate-pill strong {
+  color: #0d9488; /* Verde Dólar CtesHoy */
+  font-weight: 700;
+}
+
+/* 3. NAVBAR CATEGORÍAS */
+.ituzaingo-nav-bar {
+  background-color: #e65c00; /* Naranja Institucional Ituzaingó */
+  padding: 0 16px;
+}
+
+.ituzaingo-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ituzaingo-nav-item {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.ituzaingo-nav-item:hover, .ituzaingo-nav-item.active {
+  background-color: #c2410c;
+}
+
+/* 4. BANNER FULL WIDTH */
+.ituzaingo-full-width-banner {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.ituzaingo-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+}
+
+/* RESPONSIVIDAD */
+@media (max-width: 768px) {
+  .ituzaingo-main-bar {
+    padding: 8px 12px;
+  }
+
+  .brand-text {
+    font-size: 1.8rem;
+  }
+
+  .brand-badge {
+    font-size: 1.3rem;
+    padding: 2px 6px;
+  }
+
+  .ituzaingo-search-box {
+    width: 100px;
+  }
+
+  .ituzaingo-rates-scroll {
+    justify-content: flex-start;
+    gap: 12px;
+  }
+}

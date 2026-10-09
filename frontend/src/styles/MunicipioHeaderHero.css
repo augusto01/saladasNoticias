@@ -1,0 +1,191 @@
+/* WRAPPER DEL HEADER */
+.epoca-header-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 1. TOP BAR SUPERIOR */
+.epoca-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+/* Izquierda: Buscador + Clima */
+.epoca-top-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.epoca-search-btn-box {
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9;
+  border-radius: 8px;
+  padding: 6px 12px;
+  width: 180px;
+}
+
+.epoca-search-icon {
+  color: #475569;
+  margin-right: 6px;
+}
+
+.epoca-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.85rem;
+  width: 100%;
+  color: #1e293b;
+}
+
+.epoca-weather-box {
+  border-left: 2px solid #cbd5e1;
+  padding-left: 12px;
+  line-height: 1.2;
+}
+
+.epoca-weather-main {
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.epoca-weather-main strong {
+  font-weight: 700;
+}
+
+.epoca-weather-main span {
+  font-weight: 800;
+  margin-left: 4px;
+}
+
+.epoca-weather-sub {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Centro: Logo + Fecha */
+.epoca-top-center {
+  text-align: center;
+  flex: 1;
+}
+
+.epoca-logo-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.epoca-logo-img {
+  max-height: 55px;
+  width: auto;
+  object-fit: contain;
+}
+
+.epoca-brand-fallback {
+  line-height: 1;
+}
+
+.epoca-brand-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #dc2626; /* Color rojo tipo 'época' */
+  letter-spacing: -1px;
+  margin: 0;
+  font-family: Georgia, serif;
+}
+
+.epoca-brand-sub {
+  font-size: 0.75rem;
+  color: #1e293b;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.epoca-date-text {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #0369a1;
+  margin-top: 4px;
+}
+
+/* Derecha: Redes */
+.epoca-top-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex: 1;
+}
+
+.epoca-top-right a {
+  color: #334155;
+  transition: color 0.2s ease;
+}
+
+.epoca-top-right a:hover {
+  color: #0284c7;
+}
+
+/* 2. NAVBAR INFERIOR OSCURO */
+.epoca-nav-bar {
+  background-color: #334155; /* Color gris oscuro pizarra */
+  padding: 0 16px;
+}
+
+.epoca-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.epoca-nav-item {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 12px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.epoca-nav-item:hover, .epoca-nav-item.active {
+  background-color: #1e293b;
+  color: #38bdf8;
+}
+
+/* 3. BANNER FULL WIDTH */
+.full-width-banner-container {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.full-width-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+}

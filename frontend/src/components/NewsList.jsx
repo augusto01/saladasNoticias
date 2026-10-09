@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Newspaper } from 'lucide-react';
+import { Newspaper } from 'lucide-react';
 import WeatherWidget from './WeatherWidget';
-import NewsHeroWithBanner from '../components/Layout/NewsHeroWithBanner';
+
+// Componentes de Header por Municipio
+import HeaderSaladas from '../components/Layout/Saladas/HeaderSaladas';
+import HeaderSantaRosa from '../components/Layout/SR/HeaderSantaRosa';
+import HeaderItuzaingo from '../components/Layout/Ituzaingo/HeaderItuzaingo';
 
 import { configActual } from '../config/municipios';
 import API from '../../services/api';
@@ -11,29 +15,10 @@ import '../styles/NewsList.css';
 
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
-// Parsea fechas 'DD-MM-YYYY', 'YYYY-MM-DD' u objetos Date/ISO de MongoDB
 function parseSafeDate(dateString) {
   if (!dateString) return new Date(0);
-
   const parsed = new Date(dateString);
   if (!isNaN(parsed.getTime())) return parsed;
-
-  if (typeof dateString === 'string') {
-    const parts = dateString.split('-');
-    if (parts.length === 3) {
-      // Si viene como DD-MM-YYYY
-      if (parts[0].length === 2 && parts[2].length === 4) {
-        const [day, month, year] = parts;
-        return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
-      }
-      // Si viene como YYYY-MM-DD
-      if (parts[0].length === 4) {
-        const [year, month, day] = parts;
-        return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
-      }
-    }
-  }
-
   return new Date(0);
 }
 
@@ -52,27 +37,36 @@ export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
   const [newsSummary, setNewsSummary] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  // 1. Obtiene las noticias dinámicas desde la API según el municipio activo
+  // Detectar municipio activo desde el archivo .env o la configuración actual
+  const municipioEnv = (
+    (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_MUNICIPIO_ID) ||
+    (typeof process !== 'undefined' && process.env && process.env.REACT_APP_MUNICIPIO_ID) ||
+    configActual.id ||
+    'saladas'
+  ).toLowerCase();
+
+  // 1. Cargar noticias dinámicas desde la API de MongoDB
   useEffect(() => {
-    const fetchNoticias = async () => {
+    const fetchNews = async () => {
+      setLoading(true);
       try {
-        const municipioSlug = configActual.id || configActual.slug || 'saladas';
-        const res = await API.get(`/noticias?municipio=${municipioSlug}`);
+        const res = await API.get(`/noticias?municipio=${municipioEnv}`);
         const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
-        
-        // Filtramos solo las publicaciones activas
-        const publicadas = data.filter((item) => item.publicado !== false);
+        const publicadas = data.filter(item => item.publicado !== false);
         setNewsSummary(publicadas);
-      } catch (err) {
-        console.error("Error al cargar noticias desde MongoDB:", err);
+      } catch (error) {
+        console.error('Error al cargar noticias:', error);
+      } finally {
+        setLoading(false);
       }
     };
 
-    fetchNoticias();
-  }, []);
+    fetchNews();
+  }, [municipioEnv]);
 
-  // 2. Extraer dinámicamente solo las categorías presentes en la BD
+  // 2. Extraer categorías dinámicas directamente de la Base de Datos
   const dynamicCategories = [
     "Todas",
     ...Array.from(
@@ -85,7 +79,7 @@ export default function NewsList() {
     ),
   ];
 
-  // 3. Filtrar noticias por categoría y término de búsqueda
+  // 3. Filtrar noticias por categoría seleccionada y término del buscador
   const filteredNews = newsSummary.filter((item) => {
     const cat = item.category || item.categoria || "";
     const matchesCategory =
@@ -101,10 +95,10 @@ export default function NewsList() {
     return matchesCategory && matchesSearch;
   });
 
-  // 4. Ordenar de manera segura por fecha descendente
+  // 4. Ordenar noticias por fecha más reciente
   const sortedNews = [...filteredNews].sort((a, b) => {
-    const timeA = parseSafeDate(a.fechaPublicacion || a.date || a.createdAt || a.fecha).getTime();
-    const timeB = parseSafeDate(b.fechaPublicacion || b.date || b.createdAt || b.fecha).getTime();
+    const timeA = parseSafeDate(a.fechaPublicacion || a.createdAt).getTime();
+    const timeB = parseSafeDate(b.fechaPublicacion || b.createdAt).getTime();
     return timeB - timeA;
   });
 
@@ -112,171 +106,145 @@ export default function NewsList() {
   const mainNews = hasNews ? sortedNews[0] : null;
   const secondaryNews = hasNews ? sortedNews.slice(1) : [];
 
-  // Ordenar también las noticias globales para el widget lateral
-  const sortedAllNews = [...newsSummary].sort((a, b) => {
-    const timeA = parseSafeDate(a.fechaPublicacion || a.date || a.createdAt || a.fecha).getTime();
-    const timeB = parseSafeDate(b.fechaPublicacion || b.date || b.createdAt || b.fecha).getTime();
-    return timeB - timeA;
-  });
+  // 5. Renderizado del Header según la variable de entorno
+  const renderHeader = () => {
+    switch (municipioEnv) {
+      case 'ituzaingo':
+      return (
+        <HeaderItuzaingo
+          configActual={configActual}
+          searchTerm={searchTerm}
+          setSearchTerm={setSearchTerm}
+          selectedCategory={selectedCategory}
+          setSelectedCategory={setSelectedCategory}
+          dynamicCategories={dynamicCategories}
+        />
+      );
+      case 'santarosa':
+        return (
+          <HeaderSantaRosa
+            configActual={configActual}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            dynamicCategories={dynamicCategories}
+          />
+        );
+      case 'saladas':
+      default:
+        return (
+          <HeaderSaladas
+            configActual={configActual}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            dynamicCategories={dynamicCategories}
+          />
+        );
+    }
+  };
 
   return (
-    <div className="news-container">
+    <div className="news-page-wrapper">
       
-      {/* COMPONENTE HERO CON BANNER DE PUBLICIDAD */}
-      <NewsHeroWithBanner configActual={configActual} />
+      {/* HEADER DINÁMICO DE SEGÚN .ENV */}
+      {renderHeader()}
 
-      {/* FILTROS Y CONTROLES DINÁMICOS */}
-      <section className="news-controls" id="noticias">
-        <div className="search-box">
-          <Search size={18} className="search-icon" />
-          <input
-            type="text"
-            placeholder="Buscar noticias u obras..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
+      {/* GRILLA PRINCIPAL DE NOTICIAS Y SIDEBAR */}
+      <div className="container news-container">
+        <div className="news-grid">
+          
+          {/* COLUMNA PRINCIPAL DE NOTICIAS */}
+          <section className="news-main-column">
+            {loading ? (
+              <div className="card p-5 text-center my-4 border-0 shadow-sm">
+                <div className="spinner-border text-primary mx-auto mb-3" role="status"></div>
+                <p className="text-muted mb-0">Cargando noticias de {configActual.nombre}...</p>
+              </div>
+            ) : !hasNews ? (
+              <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
+                <Newspaper size={48} className="mx-auto text-muted mb-3" />
+                <h3>Aún no hay noticias en {configActual.nombre}</h3>
+                <p className="text-muted mb-0">No se encontraron publicaciones que coincidan con la búsqueda o categoría.</p>
+              </div>
+            ) : (
+              <>
+                {/* NOTICIA DESTACADA (PRINCIPAL) */}
+                {mainNews && (
+                  <Link to={`/noticias/${mainNews._id || mainNews.id}`} className="featured-news-card">
+                    <div className="featured-img-wrapper">
+                      <img 
+                        src={mainNews.imagenPrincipal || mainNews.image || mainNews.imagen || DEFAULT_PLACEHOLDER} 
+                        alt={mainNews.titulo || mainNews.title} 
+                        className="featured-img" 
+                        onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
+                      />
+                      <span className="news-badge">{mainNews.categoria || mainNews.category}</span>
+                    </div>
+                    <div className="featured-content">
+                      <span className="news-date">
+                        {formatDate(mainNews.fechaPublicacion || mainNews.createdAt || mainNews.date)}
+                      </span>
+                      <h2 className="featured-title">{mainNews.titulo || mainNews.title}</h2>
+                      <p className="featured-summary">{mainNews.subtitulo || mainNews.summary || mainNews.resumen}</p>
+                    </div>
+                  </Link>
+                )}
 
-        <div className="category-filters">
-          <Filter size={16} className="filter-icon" />
-          {dynamicCategories.map((cat) => (
-            <button
-              key={cat}
-              type="button"
-              className={`filter-btn ${
-                selectedCategory.toUpperCase() === cat.toUpperCase() ? "active" : ""
-              }`}
-              onClick={() => setSelectedCategory(cat)}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
-      </section>
-
-      {/* CONTENIDO PRINCIPAL */}
-      <div className="news-grid">
-        <section className="news-main-column">
-          {!hasNews ? (
-            <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
-              <Newspaper size={48} className="mx-auto text-muted mb-3" />
-              <h3>Aún no hay noticias en {configActual.nombre}</h3>
-              <p className="text-muted mb-0">
-                No se encontraron publicaciones con los filtros o búsquedas seleccionadas.
-              </p>
-            </div>
-          ) : (
-            <>
-              {/* NOTICIA DESTACADA (MÁS RECIENTE) */}
-              {mainNews && (
-                <Link 
-                  to={`/noticias/${mainNews._id || mainNews.id}`} 
-                  className="featured-news-card"
-                >
-                  <div className="featured-img-wrapper">
-                    <img 
-                      src={mainNews.imagenPrincipal || mainNews.image || mainNews.imagen || DEFAULT_PLACEHOLDER} 
-                      alt={mainNews.titulo || mainNews.title} 
-                      className="featured-img" 
-                      onError={(e) => {
-                        e.target.onerror = null; 
-                        e.target.src = DEFAULT_PLACEHOLDER;
-                      }}
-                    />
-                    <span className="news-badge">{mainNews.categoria || mainNews.category}</span>
+                {/* GRILLA SECUNDARIA */}
+                {secondaryNews.length > 0 && (
+                  <div className="secondary-news-grid">
+                    {secondaryNews.map((item) => {
+                      const itemId = item._id || item.id;
+                      return (
+                        <Link to={`/noticias/${itemId}`} key={itemId} className="secondary-news-card">
+                          <div className="secondary-img-wrapper">
+                            <img 
+                              src={item.imagenPrincipal || item.image || item.imagen || DEFAULT_PLACEHOLDER} 
+                              alt={item.titulo || item.title} 
+                              className="secondary-img"
+                              onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
+                            />
+                            <span className="news-badge-sm">{item.categoria || item.category}</span>
+                          </div>
+                          <div className="secondary-content">
+                            <span className="news-date">
+                              {formatDate(item.fechaPublicacion || item.createdAt || item.date)}
+                            </span>
+                            <h3 className="secondary-title">{item.titulo || item.title}</h3>
+                          </div>
+                        </Link>
+                      );
+                    })}
                   </div>
-                  <div className="featured-content">
-                    <span className="news-date">
-                      {formatDate(mainNews.fechaPublicacion || mainNews.date || mainNews.createdAt || mainNews.fecha)}
-                    </span>
-                    <h2 className="featured-title">{mainNews.titulo || mainNews.title}</h2>
-                    <p className="featured-summary">{mainNews.subtitulo || mainNews.summary || mainNews.resumen}</p>
-                  </div>
-                </Link>
-              )}
+                )}
+              </>
+            )}
+          </section>
 
-              {/* GRILLA SECUNDARIA */}
-              {secondaryNews.length > 0 && (
-                <div className="secondary-news-grid">
-                  {secondaryNews.map((item, index) => {
-                    const itemId = item._id || item.id;
-                    return (
-                      <Link 
-                        to={`/noticias/${itemId}`} 
-                        key={itemId ? `sec-${itemId}` : `sec-${index}`} 
-                        className="secondary-news-card"
-                      >
-                        <div className="secondary-img-wrapper">
-                          <img 
-                            src={item.imagenPrincipal || item.image || item.imagen || DEFAULT_PLACEHOLDER} 
-                            alt={item.titulo || item.title} 
-                            className="secondary-img" 
-                            onError={(e) => {
-                              e.target.onerror = null; 
-                              e.target.src = DEFAULT_PLACEHOLDER;
-                            }}
-                          />
-                          <span className="news-badge-sm">{item.categoria || item.category}</span>
-                        </div>
-                        <div className="secondary-content">
-                          <span className="news-date">
-                            {formatDate(item.fechaPublicacion || item.date || item.createdAt || item.fecha)}
-                          </span>
-                          <h3 className="secondary-title">{item.titulo || item.title}</h3>
-                          <p className="secondary-summary">{item.subtitulo || item.summary || item.resumen}</p>
-                        </div>
-                      </Link>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-        </section>
-
-        {/* SIDEBAR */}
-        <aside className="news-sidebar">
-          <div className="sidebar-widget">
-            <WeatherWidget />
-          </div>
-
-          {sortedAllNews.length > 0 && (
-            <div className="sidebar-widget popular-widget">
-              <h3 className="widget-title">Lo más leído</h3>
-              <ul className="popular-list">
-                {sortedAllNews.slice(0, 3).map((news, index) => {
-                  const newsId = news._id || news.id;
-                  return (
-                    <li key={newsId ? `pop-${newsId}` : `pop-${index}`}>
-                      <Link to={`/noticias/${newsId}`} className="popular-item">
-                        <span className="popular-number">0{index + 1}</span>
-                        <p className="popular-text">{news.titulo || news.title}</p>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
+          {/* SIDEBAR DERECHO (CLIMA + PUBLICIDAD 300x300) */}
+          <aside className="news-sidebar">
+            <div className="sidebar-widget">
+              <WeatherWidget />
             </div>
-          )}
 
-          <div className="sidebar-widget ad-widget">
-            <a 
-              href="https://www.argentina.gob.ar" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="ad-banner-link"
-            >
-              <img 
-                src="/300x300bannerweb.gif" 
-                alt="Publicidad institucional" 
-                className="ad-banner-300-img"
-              />
-            </a>
-          </div>
-        </aside>
+            <div className="sidebar-widget ad-widget text-center">
+              <a href="https://www.argentina.gob.ar" target="_blank" rel="noopener noreferrer">
+                <img 
+                  src="/300x300bannerweb.gif" 
+                  alt="Publicidad Lateral" 
+                  className="img-fluid rounded shadow-sm"
+                  onError={(e) => { e.target.style.display = 'none'; }}
+                />
+              </a>
+            </div>
+          </aside>
 
+        </div>
       </div>
+
     </div>
   );
 }

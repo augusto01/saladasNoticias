@@ -1,0 +1,355 @@
+/* WRAPPER PRINCIPAL SANTA ROSA */
+.santarosa-header-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  border-top: 4px solid #dc2626; /* Franja Roja */
+}
+
+/* 1. BARRA PRINCIPAL BLANCA */
+.santarosa-main-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  gap: 12px;
+}
+
+/* Izquierda */
+.santarosa-left-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.santarosa-search-box {
+  display: flex;
+  align-items: center;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 6px 12px;
+  width: 200px;
+  transition: width 0.2s ease;
+}
+
+.santarosa-search-icon {
+  color: #dc2626;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.santarosa-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #0f172a;
+  font-size: 0.85rem;
+  width: 100%;
+}
+
+.santarosa-top-nav {
+  display: flex;
+  gap: 12px;
+}
+
+.santarosa-top-nav-btn {
+  background: transparent;
+  border: none;
+  color: #334155;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 8px;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.santarosa-top-nav-btn:hover, .santarosa-top-nav-btn.active {
+  color: #dc2626;
+  border-bottom: 2px solid #dc2626;
+}
+
+/* Centro: Logo SR sobre Blanco */
+.santarosa-center-logo {
+  text-align: center;
+  flex: 1;
+}
+
+.santarosa-logo-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.santarosa-logo-img {
+  max-height: 52px;
+  width: auto;
+  object-fit: contain;
+}
+
+.santarosa-tn-brand {
+  font-size: 2.2rem;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.sr-s-black {
+  color: #000000;
+}
+
+.sr-r-red {
+  color: #dc2626;
+}
+
+.sr-text-sub {
+  display: block;
+  font-size: 0.75rem;
+  color: #0f172a;
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+/* Derecha */
+.santarosa-right-section {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  flex: 1;
+}
+
+.santarosa-icon-btn {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  color: #334155;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.santarosa-icon-btn:hover {
+  color: #dc2626;
+  background-color: #fef2f2;
+}
+
+.santarosa-live-badge {
+  background-color: #dc2626;
+  color: #ffffff;
+  font-size: 0.75rem;
+  font-weight: 900;
+  padding: 6px 14px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.live-pulse {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* 2. SUB-BARRA DE DATOS Y CATEGORÍAS */
+.santarosa-ticker-bar {
+  background-color: #f8fafc;
+  padding: 8px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  font-size: 0.8rem;
+}
+
+.santarosa-ticker-container {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+.santarosa-rates-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #334155;
+  flex-shrink: 0;
+}
+
+.rate-divider {
+  color: #cbd5e1;
+}
+
+.santarosa-topics-list {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.topics-label {
+  color: #64748b;
+  font-weight: 700;
+}
+
+.topics-scroll {
+  display: flex;
+  gap: 6px;
+}
+
+.topic-chip {
+  background: transparent;
+  border: none;
+  color: #334155;
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 4px 10px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.topic-chip:hover, .topic-chip.active {
+  background-color: #dc2626;
+  color: #ffffff;
+}
+
+/* 3. BANNER FULL WIDTH RESPONSIVO */
+.santarosa-full-width-banner {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f1f5f9;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.santarosa-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+}
+
+/* ===================================================
+   MEDIA QUERIES - RESPONSIVIDAD PARA TABLETS Y PHONES
+   =================================================== */
+
+/* Tablets / Laptops medianas (Menos de 992px) */
+@media (max-width: 991.98px) {
+  .santarosa-search-box {
+    width: 160px;
+  }
+  
+  .santarosa-logo-img {
+    max-height: 44px;
+  }
+  
+  .santarosa-tn-brand {
+    font-size: 1.8rem;
+  }
+}
+
+/* Pantallas de Celulares y Tablets pequeñas (Menos de 768px) */
+@media (max-width: 767.98px) {
+  .santarosa-main-bar {
+    padding: 10px 12px;
+  }
+
+  .santarosa-left-section {
+    flex: 0 0 auto;
+  }
+
+  .santarosa-search-box {
+    width: 130px;
+    padding: 4px 8px;
+  }
+
+  .santarosa-search-input {
+    font-size: 0.75rem;
+  }
+
+  .santarosa-logo-img {
+    max-height: 38px;
+  }
+
+  .santarosa-tn-brand {
+    font-size: 1.5rem;
+  }
+
+  .sr-text-sub {
+    font-size: 0.65rem;
+    letter-spacing: 1px;
+  }
+
+  .santarosa-live-badge {
+    padding: 4px 10px;
+    font-size: 0.68rem;
+  }
+}
+
+/* Dispositivos muy pequeños (Menos de 480px) */
+@media (max-width: 479.98px) {
+  .santarosa-main-bar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .santarosa-center-logo {
+    order: 1;
+    flex: 1 0 100%;
+    margin-bottom: 4px;
+  }
+
+  .santarosa-left-section {
+    order: 2;
+    flex: 1;
+  }
+
+  .santarosa-right-section {
+    order: 3;
+    flex: 0 0 auto;
+  }
+
+  .santarosa-search-box {
+    width: 100%;
+  }
+
+  .santarosa-ticker-bar {
+    padding: 6px 10px;
+  }
+
+  .santarosa-rates-info {
+    font-size: 0.75rem;
+  }
+
+  .santarosa-full-width-banner {
+    padding: 6px 0;
+    margin-bottom: 1rem;
+  }
+
+  .santarosa-banner-img {
+    max-height: 60px;
+  }
+}
