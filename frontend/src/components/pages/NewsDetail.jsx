@@ -127,7 +127,7 @@ export default function NewsDetail() {
       <div className="detail-ad-banner-container">
         <div className="detail-ad-box">
           <img 
-            src="/728x90publi_banner web.gif" 
+            src="/728x90publi_bannerweb.gif" 
             alt="Publicidad Institucional" 
             className="detail-ad-crisp-img"
             onError={(e) => {
@@ -245,7 +245,7 @@ export default function NewsDetail() {
       <div className="detail-ad-banner-container">
         <div className="detail-ad-box">
           <img 
-            src="/728x90publi_banner web.gif" 
+            src="/728x90publi_bannerweb.gif" 
             alt="Publicidad Institucional" 
             className="detail-ad-crisp-img"
             onError={(e) => {
