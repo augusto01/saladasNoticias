@@ -65,6 +65,6 @@ export const MUNICIPIOS = {
 };
 
 // Lee la clave del municipio desde el archivo .env (Por defecto usa saladas)
-const claveMunicipio = import.meta.env.VITE_MUNICIPIO || "saladas";
+const claveMunicipio = (import.meta.env.VITE_MUNICIPIO || "saladas").toLowerCase().trim();
 
 export const configActual = MUNICIPIOS[claveMunicipio] || MUNICIPIOS.saladas;

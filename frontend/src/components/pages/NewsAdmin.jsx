@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { configActual } from '../../config/municipios';
@@ -11,11 +12,13 @@ import {
   XCircle,
   LogOut,
   RefreshCw,
-  Search
+  Search,
+  Calendar
 } from 'lucide-react';
 
 export default function NewsAdmin() {
-  const { user, logout } = useAuth();
+  const { user, logout: logoutContext } = useAuth();
+  const navigate = useNavigate();
 
   // Estado para la lista de noticias y carga
   const [noticias, setNoticias] = useState([]);
@@ -30,6 +33,7 @@ export default function NewsAdmin() {
   const [titulo, setTitulo] = useState('');
   const [subtitulo, setSubtitulo] = useState('');
   const [categoria, setCategoria] = useState('GESTIÓN');
+  const [fechaPublicacion, setFechaPublicacion] = useState('');
   const [contenidoMarkdown, setContenidoMarkdown] = useState('');
   const [imagenPrincipal, setImagenPrincipal] = useState('');
   const [galeria, setGaleria] = useState([]);
@@ -44,6 +48,13 @@ export default function NewsAdmin() {
   // Municipio activo
   const municipioSlug = configActual.id || configActual.slug || 'santarosa';
 
+  // Helper para dar formato ISO a un input datetime-local (YYYY-MM-DDTHH:mm)
+  const getFechaActualFormatted = (dateObj = new Date()) => {
+    const date = new Date(dateObj);
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+  };
+
   // Cargar noticias desde la API
   const fetchNoticias = async () => {
     setLoading(true);
@@ -53,7 +64,6 @@ export default function NewsAdmin() {
       setNoticias(data);
     } catch (error) {
       console.error('Error al cargar noticias:', error);
-      alert('Error al cargar la lista de noticias.');
     } finally {
       setLoading(false);
     }
@@ -63,12 +73,31 @@ export default function NewsAdmin() {
     fetchNoticias();
   }, [municipioSlug]);
 
+  // Cierre de sesión seguro y completo
+  const handleLogout = async () => {
+    try {
+      await API.post('/auth/logout');
+    } catch (error) {
+      console.warn('Error al notificar logout al backend:', error);
+    } finally {
+      if (logoutContext) logoutContext();
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('usuario');
+      localStorage.clear();
+
+      navigate('/login');
+      window.location.href = '/login';
+    }
+  };
+
   // Abrir Modal para Crear
   const handleOpenCreateModal = () => {
     setEditingId(null);
     setTitulo('');
     setSubtitulo('');
     setCategoria('GESTIÓN');
+    setFechaPublicacion(getFechaActualFormatted());
     setContenidoMarkdown('');
     setImagenPrincipal('');
     setGaleria([]);
@@ -77,13 +106,17 @@ export default function NewsAdmin() {
     setShowModal(true);
   };
 
-  // Abrir Modal para Editar (Lógica de Markdown integrada)
+  // Abrir Modal para Editar
   const handleOpenEditModal = (noticia) => {
     setEditingId(noticia._id);
     setTitulo(noticia.titulo || '');
     setSubtitulo(noticia.subtitulo || '');
     setCategoria(noticia.categoria || 'GESTIÓN');
-    // Mapeo completo del contenido en Markdown
+
+    // Cargar fecha existente o la fecha actual
+    const fechaOrigen = noticia.fechaPublicacion || noticia.createdAt;
+    setFechaPublicacion(fechaOrigen ? getFechaActualFormatted(fechaOrigen) : getFechaActualFormatted());
+
     setContenidoMarkdown(noticia.contenidoMarkdown || noticia.contenido || '');
     setImagenPrincipal(noticia.imagenPrincipal || '');
     setGaleria(noticia.galeria || noticia.gallery || []);
@@ -92,7 +125,7 @@ export default function NewsAdmin() {
     setShowModal(true);
   };
 
-  // Subir Imagen Principal a Supabase
+  // Subir Imagen Principal
   const handleMainImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -122,7 +155,7 @@ export default function NewsAdmin() {
     if (files.length === 0) return;
 
     if (galeria.length + files.length > 3) {
-      alert(`Solo podés cargar un máximo de 3 imágenes en la galería. Actuarás con ${galeria.length}.`);
+      alert(`Solo podés cargar un máximo de 3 imágenes en la galería. Actualmente tenés ${galeria.length}.`);
       return;
     }
 
@@ -154,7 +187,7 @@ export default function NewsAdmin() {
     setGaleria((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
-  // Guardar Noticia (Crear o Actualizar)
+  // Guardar Noticia (Crear o Editar)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -163,7 +196,6 @@ export default function NewsAdmin() {
       return;
     }
 
-    // Validación estricta de portada obligatoria
     if (!imagenPrincipal || !imagenPrincipal.trim()) {
       alert('La imagen de portada es obligatoria para publicar una noticia.');
       return;
@@ -176,6 +208,7 @@ export default function NewsAdmin() {
       titulo: titulo.trim(),
       subtitulo: subtitulo.trim(),
       categoria: categoria.toUpperCase().trim(),
+      fechaPublicacion: fechaPublicacion ? new Date(fechaPublicacion).toISOString() : new Date().toISOString(),
       contenidoMarkdown: contenidoMarkdown.trim(),
       imagenPrincipal: imagenPrincipal.trim(),
       galeria,
@@ -200,7 +233,7 @@ export default function NewsAdmin() {
     }
   };
 
-  // Baja Lógica de la Noticia (Despublicar / Marcar publicado = false)
+  // Eliminar Noticia
   const handleDelete = async (id, tituloNoticia) => {
     if (window.confirm(`¿Estás seguro de que deseas dar de baja la noticia "${tituloNoticia}"?`)) {
       try {
@@ -213,7 +246,6 @@ export default function NewsAdmin() {
     }
   };
 
-  // Filtrado de noticias por búsqueda
   const noticiasFiltradas = noticias.filter((item) =>
     item.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -238,70 +270,31 @@ export default function NewsAdmin() {
   return (
     <div className="container-fluid py-3 px-2 px-md-4 bg-light min-vh-100">
       
-      {/* ESTILOS DE RESPONSIVIDAD PARA EL MODAL */}
+      {/* ESTILOS MODAL */}
       <style>{`
         .custom-modal-overlay {
           position: fixed;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
+          top: 0; left: 0; right: 0; bottom: 0;
           background-color: rgba(0, 0, 0, 0.6);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          z-index: 1050;
-          padding: 10px;
+          display: flex; align-items: center; justify-content: center;
+          z-index: 1050; padding: 10px;
         }
         .custom-modal-dialog {
-          width: 100%;
-          max-width: 800px;
-          max-height: 90vh;
-          background: #fff;
-          border-radius: 12px;
-          display: flex;
-          flex-direction: column;
-          overflow: hidden;
+          width: 100%; max-width: 800px; max-height: 90vh;
+          background: #fff; border-radius: 12px;
+          display: flex; flex-direction: column; overflow: hidden;
           box-shadow: 0 10px 25px rgba(0,0,0,0.2);
         }
         .custom-modal-header {
-          padding: 1rem;
-          border-bottom: 1px solid #dee2e6;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
+          padding: 1rem; border-bottom: 1px solid #dee2e6;
+          display: flex; align-items: center; justify-content: space-between;
           background-color: #ffffff;
         }
-        .custom-modal-body {
-          padding: 1rem;
-          overflow-y: auto;
-          flex: 1 1 auto;
-        }
+        .custom-modal-body { padding: 1rem; overflow-y: auto; flex: 1 1 auto; }
         .custom-modal-footer {
-          padding: 0.75rem 1rem;
-          border-top: 1px solid #dee2e6;
-          display: flex;
-          gap: 0.5rem;
-          justify-content: flex-end;
+          padding: 0.75rem 1rem; border-top: 1px solid #dee2e6;
+          display: flex; gap: 0.5rem; justify-content: flex-end;
           background-color: #f8f9fa;
-        }
-        @media (max-width: 576px) {
-          .admin-header-actions {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-          }
-          .admin-header-actions button {
-            width: 100%;
-            justify-content: center;
-          }
-          .custom-modal-footer {
-            flex-direction: column-reverse;
-          }
-          .custom-modal-footer button {
-            width: 100%;
-          }
         }
       `}</style>
 
@@ -313,7 +306,7 @@ export default function NewsAdmin() {
               Panel de Noticias - {configActual.nombre}
             </h2>
             <p className="text-muted mb-0 small">
-              Usuario: <strong>{user?.email || 'Administrador'}</strong> | Rol: <strong>{user?.rol || 'EDITOR'}</strong>
+              Usuario: <strong>{user?.email || user?.username || 'Administrador'}</strong> | Rol: <strong>{user?.rol || 'EDITOR'}</strong>
             </p>
           </div>
 
@@ -336,8 +329,9 @@ export default function NewsAdmin() {
             </button>
 
             <button 
+              type="button"
               className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-              onClick={logout}
+              onClick={handleLogout}
             >
               <LogOut size={16} />
               <span>Salir</span>
@@ -346,7 +340,7 @@ export default function NewsAdmin() {
         </div>
       </div>
 
-      {/* FILTRO Y BUSCADOR */}
+      {/* BUSCADOR */}
       <div className="bg-white p-3 rounded shadow-sm mb-3">
         <div className="row g-2 align-items-center">
           <div className="col-12 col-md-6">
@@ -465,7 +459,7 @@ export default function NewsAdmin() {
         )}
       </div>
 
-      {/* MODAL CREAR / EDITAR RESPONSIVO */}
+      {/* MODAL CREAR / EDITAR COMPLETO */}
       {showModal && (
         <div className="custom-modal-overlay">
           <div className="custom-modal-dialog">
@@ -514,23 +508,40 @@ export default function NewsAdmin() {
                       <option value="EDUCACIÓN">EDUCACIÓN</option>
                       <option value="POLICIALES">POLICIALES</option>
                       <option value="LOCALES">LOCALES</option>
+                      <option value="SEGUÍ TU CORRIENTES">SEGUÍ TU CORRIENTES</option>
                     </select>
                   </div>
                 </div>
 
-                {/* Subtítulo */}
-                <div className="mb-3">
-                  <label className="form-label fw-bold small mb-1">Subtítulo / Bajada</label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    value={subtitulo}
-                    onChange={(e) => setSubtitulo(e.target.value)}
-                    placeholder="Breve resumen de la noticia..."
-                  />
+                {/* Subtítulo y Fecha de Publicación Modificable */}
+                <div className="row g-2 mb-3">
+                  <div className="col-12 col-md-8">
+                    <label className="form-label fw-bold small mb-1">Subtítulo / Bajada</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      value={subtitulo}
+                      onChange={(e) => setSubtitulo(e.target.value)}
+                      placeholder="Breve resumen de la noticia..."
+                    />
+                  </div>
+
+                  {/* CAMPO DE FECHA MODIFICABLE */}
+                  <div className="col-12 col-md-4">
+                    <label className="form-label fw-bold small mb-1 d-flex align-items-center gap-1">
+                      <Calendar size={14} /> Fecha de Publicación
+                    </label>
+                    <input
+                      type="datetime-local"
+                      className="form-control form-control-sm"
+                      value={fechaPublicacion}
+                      onChange={(e) => setFechaPublicacion(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
 
-                {/* Imagen Principal (REQUERIDA) */}
+                {/* Imagen Principal y Previsualización */}
                 <div className="mb-3">
                   <label className="form-label fw-bold small mb-1">Imagen de Portada (Obligatoria) *</label>
                   
@@ -559,7 +570,7 @@ export default function NewsAdmin() {
                     <div className="mt-2 position-relative d-inline-block border rounded p-1">
                       <img
                         src={imagenPrincipal}
-                        alt="Vista previa"
+                        alt="Vista previa portada"
                         style={{ height: '80px', objectFit: 'cover' }}
                         className="rounded"
                       />
@@ -575,7 +586,7 @@ export default function NewsAdmin() {
                   )}
                 </div>
 
-                {/* Galería (Máximo 3) */}
+                {/* Galería de imágenes (Hasta 3) */}
                 <div className="mb-3 p-2 bg-light rounded border">
                   <label className="form-label fw-bold small mb-1">
                     Galería de imágenes adicionales (Máximo 3)
@@ -673,7 +684,7 @@ export default function NewsAdmin() {
 
               </div>
 
-              {/* BOTONES CON SPINNER ANTI DOBLE SUBMIT EN EL PIE DEL MODAL */}
+              {/* PIE DEL MODAL */}
               <div className="custom-modal-footer">
                 <button
                   type="button"

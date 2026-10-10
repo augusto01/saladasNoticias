@@ -1,40 +1,40 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../SeguiTuCorrientes/SeguiTuCorrientes.css';
 
 export default function HeaderSeguiTuCorrientes(props) {
-  // Soporta props pasadas de forma directa o desestructuradas dentro de headerProps
-  const noticias = props.noticias || props.news || [];
-  const onSelectCategory = props.onSelectCategory || props.onSelectCat || props.setCategory;
-  const selectedCategory = props.selectedCategory || props.category || '';
+  const dynamicCategories = props.dynamicCategories || props.categories || props.categorias || [];
+  const selectedCategory = props.selectedCategory || props.category || props.categoria || '';
+  const setSelectedCategory = props.setSelectedCategory || props.onSelectCategory || props.setCategory;
+  const tags = props.tags || props.etiquetas || [];
+  
+  // Función para enviar el término de búsqueda al estado principal de NewsList
+  const onSearch = props.onSearch || props.setSearchTerm || props.handleSearch;
 
-  const [terminoBusqueda, setTerminoBusqueda] = useState('');
+  const [terminoLocal, setTerminoLocal] = useState(props.searchTerm || '');
   const [mostrarBuscador, setMostrarBuscador] = useState(false);
 
-  // 1. Extraer categorías únicas desde MongoDB de forma robusta
-  const categoriasDinamicas = useMemo(() => {
-    if (!Array.isArray(noticias) || noticias.length === 0) return [];
+  // Manejador en tiempo real mientras el usuario escribe
+  const manejarCambioInput = (e) => {
+    const valor = e.target.value;
+    setTerminoLocal(valor);
+    if (onSearch) {
+      onSearch(valor);
+    }
+  };
 
-    const lista = noticias
-      .map((n) => n.categoria || n.cat || n.categoría)
-      .filter((cat) => cat && typeof cat === 'string' && cat.trim() !== '');
-
-    return Array.from(new Set(lista));
-  }, [noticias]);
-
-  // 2. Extraer tags/hashtags únicos desde MongoDB
-  const etiquetasDinamicas = useMemo(() => {
-    if (!Array.isArray(noticias) || noticias.length === 0) return [];
-
-    const todosLosTags = noticias.flatMap((n) => n.tags || n.etiquetas || []);
-    const unicos = Array.from(new Set(todosLosTags)).filter(Boolean);
-    return unicos.slice(0, 6);
-  }, [noticias]);
-
-  const manejarBusqueda = (e) => {
+  const manejarEnvioFormulario = (e) => {
     e.preventDefault();
-    if (onSelectCategory && terminoBusqueda.trim()) {
-      onSelectCategory(terminoBusqueda.trim());
+    if (onSearch) {
+      onSearch(terminoLocal);
+    }
+  };
+
+  const limpiarBusqueda = () => {
+    setTerminoLocal('');
+    setMostrarBuscador(false);
+    if (onSearch) {
+      onSearch('');
     }
   };
 
@@ -46,12 +46,13 @@ export default function HeaderSeguiTuCorrientes(props) {
           <div className="segui-tendencias">
             <span className="segui-badge-fuego">🔥 TENDENCIAS</span>
             <div className="segui-hashtags">
-              {etiquetasDinamicas.length > 0 ? (
-                etiquetasDinamicas.map((tag, idx) => (
+              {tags && tags.length > 0 ? (
+                tags.map((tag) => (
                   <button 
-                    key={idx} 
+                    key={tag} 
+                    type="button"
                     className="tag-btn"
-                    onClick={() => onSelectCategory && onSelectCategory(tag)}
+                    onClick={() => setSelectedCategory && setSelectedCategory(tag)}
                   >
                     #{String(tag).toUpperCase().replace(/\s+/g, '')}
                   </button>
@@ -70,7 +71,7 @@ export default function HeaderSeguiTuCorrientes(props) {
       {/* 2. HEADER PRINCIPAL */}
       <div className="segui-main-bar">
         <div className="segui-main-container">
-          <Link to="/" className="segui-brand" onClick={() => onSelectCategory && onSelectCategory('')}>
+          <Link to="/" className="segui-brand" onClick={() => setSelectedCategory && setSelectedCategory('Todas')}>
             <img 
               src="/img/logos/01_Logotipo.png" 
               alt="Seguí Tu Corrientes" 
@@ -80,15 +81,16 @@ export default function HeaderSeguiTuCorrientes(props) {
 
           <div className="segui-acciones">
             {mostrarBuscador ? (
-              <form className="segui-caja-busqueda" onSubmit={manejarBusqueda}>
+              <form className="segui-caja-busqueda" onSubmit={manejarEnvioFormulario}>
                 <input 
                   type="text" 
                   placeholder="Buscar noticia..." 
-                  value={terminoBusqueda}
-                  onChange={(e) => setTerminoBusqueda(e.target.value)}
+                  value={terminoLocal}
+                  onChange={manejarCambioInput}
                   autoFocus
                 />
-                <button type="button" className="close-search" onClick={() => setMostrarBuscador(false)}>✕</button>
+                <button type="submit" className="btn-ejecutar-busqueda">🔍</button>
+                <button type="button" className="close-search" onClick={limpiarBusqueda}>✕</button>
               </form>
             ) : (
               <button className="action-btn" onClick={() => setMostrarBuscador(true)} title="Buscar">
@@ -104,25 +106,18 @@ export default function HeaderSeguiTuCorrientes(props) {
         </div>
       </div>
 
-      {/* 3. NAVEGACIÓN Y FILTROS DINÁMICOS */}
+      {/* 3. BARRA DE NAVEGACIÓN Y FILTRADO DINÁMICO */}
       <nav className="segui-nav-bar">
-        <div className="segui-nav-container">
-          <button 
-            className={`nav-chip ${!selectedCategory ? 'activo' : ''}`}
-            onClick={() => onSelectCategory && onSelectCategory('')}
-          >
-            🏠 Todas las Noticias
-          </button>
-
-          {/* Renderizado dinámico de las categorías traídas de la base de datos */}
-          <div className="segui-categorias-scroll">
-            {categoriasDinamicas.map((cat, idx) => (
+        <div className="container-fluid d-flex align-items-center justify-content-between overflow-x-auto">
+          <div className="segui-nav-list">
+            {(dynamicCategories || []).map((cat) => (
               <button
-                key={idx}
-                className={`nav-chip ${selectedCategory === cat ? 'activo' : ''}`}
-                onClick={() => onSelectCategory && onSelectCategory(cat)}
+                key={cat}
+                type="button"
+                className={`nav-chip ${(selectedCategory || '').toUpperCase() === cat.toUpperCase() ? 'activo' : ''}`}
+                onClick={() => setSelectedCategory && setSelectedCategory(cat)}
               >
-                {cat}
+                {cat === 'Todas' ? 'PORTADA' : cat}
               </button>
             ))}
           </div>

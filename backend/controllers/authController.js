@@ -35,9 +35,8 @@ exports.register = async (req, res) => {
   }
 };
 
-// src/services/authService.js
 
-// controllers/authController.js
+// logout
 exports.logout = async (req, res) => {
   try {
     // Si manejás cookies de sesión
@@ -56,9 +55,7 @@ exports.logout = async (req, res) => {
     return res.status(500).json({
       error: 'Ocurrió un error al cerrar la sesión'
     });
-  }
-};
-
+  }};
 
 // POST /api/auth/login
 exports.login = async (req, res) => {
