@@ -15,7 +15,7 @@ connectDB();
 // Configuración de CORS Dinámica (Garantiza que saladasnoticias.com y cualquier origen reciban headers válidos sin error 500)
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-  : ['https://saladasnoticias.com', 'https://primiciasituzaingo.com','https://santarosanoticias.com','https://enfoquecorrientes.com','http://localhost:5173', 'http://localhost:3000'];
+  : ['https://saladasnoticias.com', 'https://primiciasituzaingo.com','https://santarosanoticias.com','https://enfoquecorrientes.com','http://localhost:5173', 'http://localhost:3000','seguitucorrientes.netlify.app'];
 
 app.use(cors({
   origin: (origin, callback) => {
