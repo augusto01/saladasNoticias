@@ -12,7 +12,8 @@ import {
   XCircle,
   LogOut,
   RefreshCw,
-  Search
+  Search,
+  Calendar
 } from 'lucide-react';
 
 export default function NewsAdmin() {
@@ -32,6 +33,7 @@ export default function NewsAdmin() {
   const [titulo, setTitulo] = useState('');
   const [subtitulo, setSubtitulo] = useState('');
   const [categoria, setCategoria] = useState('GESTIÓN');
+  const [fechaPublicacion, setFechaPublicacion] = useState('');
   const [contenidoMarkdown, setContenidoMarkdown] = useState('');
   const [imagenPrincipal, setImagenPrincipal] = useState('');
   const [galeria, setGaleria] = useState([]);
@@ -45,6 +47,13 @@ export default function NewsAdmin() {
 
   // Municipio activo
   const municipioSlug = configActual.id || configActual.slug || 'santarosa';
+
+  // Helper para dar formato ISO a un input datetime-local (YYYY-MM-DDTHH:mm)
+  const getFechaActualFormatted = (dateObj = new Date()) => {
+    const date = new Date(dateObj);
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date.getTime() - tzOffset).toISOString().slice(0, 16);
+  };
 
   // Cargar noticias desde la API
   const fetchNoticias = async () => {
@@ -64,6 +73,7 @@ export default function NewsAdmin() {
     fetchNoticias();
   }, [municipioSlug]);
 
+  // Cierre de sesión seguro y completo
   const handleLogout = async () => {
     try {
       await API.post('/auth/logout');
@@ -75,8 +85,7 @@ export default function NewsAdmin() {
       localStorage.removeItem('user');
       localStorage.removeItem('usuario');
       localStorage.clear();
-      
-      // Redirigir a login
+
       navigate('/login');
       window.location.href = '/login';
     }
@@ -88,6 +97,7 @@ export default function NewsAdmin() {
     setTitulo('');
     setSubtitulo('');
     setCategoria('GESTIÓN');
+    setFechaPublicacion(getFechaActualFormatted());
     setContenidoMarkdown('');
     setImagenPrincipal('');
     setGaleria([]);
@@ -102,6 +112,11 @@ export default function NewsAdmin() {
     setTitulo(noticia.titulo || '');
     setSubtitulo(noticia.subtitulo || '');
     setCategoria(noticia.categoria || 'GESTIÓN');
+
+    // Cargar fecha existente o la fecha actual
+    const fechaOrigen = noticia.fechaPublicacion || noticia.createdAt;
+    setFechaPublicacion(fechaOrigen ? getFechaActualFormatted(fechaOrigen) : getFechaActualFormatted());
+
     setContenidoMarkdown(noticia.contenidoMarkdown || noticia.contenido || '');
     setImagenPrincipal(noticia.imagenPrincipal || '');
     setGaleria(noticia.galeria || noticia.gallery || []);
@@ -110,7 +125,7 @@ export default function NewsAdmin() {
     setShowModal(true);
   };
 
-  // Subir Imagen Principal a Supabase
+  // Subir Imagen Principal
   const handleMainImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -140,7 +155,7 @@ export default function NewsAdmin() {
     if (files.length === 0) return;
 
     if (galeria.length + files.length > 3) {
-      alert(`Solo podés cargar un máximo de 3 imágenes en la galería. Actuarás con ${galeria.length}.`);
+      alert(`Solo podés cargar un máximo de 3 imágenes en la galería. Actualmente tenés ${galeria.length}.`);
       return;
     }
 
@@ -172,7 +187,7 @@ export default function NewsAdmin() {
     setGaleria((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
-  // Guardar Noticia
+  // Guardar Noticia (Crear o Editar)
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -193,6 +208,7 @@ export default function NewsAdmin() {
       titulo: titulo.trim(),
       subtitulo: subtitulo.trim(),
       categoria: categoria.toUpperCase().trim(),
+      fechaPublicacion: fechaPublicacion ? new Date(fechaPublicacion).toISOString() : new Date().toISOString(),
       contenidoMarkdown: contenidoMarkdown.trim(),
       imagenPrincipal: imagenPrincipal.trim(),
       galeria,
@@ -217,7 +233,7 @@ export default function NewsAdmin() {
     }
   };
 
-  // Baja Lógica de la Noticia
+  // Eliminar Noticia
   const handleDelete = async (id, tituloNoticia) => {
     if (window.confirm(`¿Estás seguro de que deseas dar de baja la noticia "${tituloNoticia}"?`)) {
       try {
@@ -230,7 +246,6 @@ export default function NewsAdmin() {
     }
   };
 
-  // Filtrado de noticias por búsqueda
   const noticiasFiltradas = noticias.filter((item) =>
     item.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -239,7 +254,7 @@ export default function NewsAdmin() {
   return (
     <div className="container-fluid py-3 px-2 px-md-4 bg-light min-vh-100">
       
-      {/* ESTILOS DE RESPONSIVIDAD PARA EL MODAL */}
+      {/* ESTILOS MODAL */}
       <style>{`
         .custom-modal-overlay {
           position: fixed;
@@ -267,78 +282,49 @@ export default function NewsAdmin() {
         }
       `}</style>
 
-     {/* CABECERA PRINCIPAL */}
-<div className="bg-white p-3 p-md-4 rounded shadow-sm mb-3">
-  <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
-    <div>
-      <h2 className="fw-bold mb-1 text-primary fs-4 fs-md-2">
-        Panel de Notisscias - {configActual.nombre}
-      </h2>
-      <p className="text-muted mb-0 small">
-        Usuario: <strong>{user?.email || 'Administrador'}</strong> | Rol: <strong>{user?.rol || 'EDITOR'}</strong>
-      </p>
-    </div>
+      {/* CABECERA PRINCIPAL */}
+      <div className="bg-white p-3 p-md-4 rounded shadow-sm mb-3">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center gap-3">
+          <div>
+            <h2 className="fw-bold mb-1 text-primary fs-4 fs-md-2">
+              Panel de Noticias - {configActual.nombre}
+            </h2>
+            <p className="text-muted mb-0 small">
+              Usuario: <strong>{user?.email || user?.username || 'Administrador'}</strong> | Rol: <strong>{user?.rol || 'EDITOR'}</strong>
+            </p>
+          </div>
 
-    <div className="admin-header-actions d-flex align-items-center gap-2">
-      <button 
-        type="button"
-        className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
-        onClick={() => {
-          alert("⚡ Clic en Actualizar");
-          fetchNoticias();
-        }} 
-        disabled={loading}
-      >
-        <RefreshCw size={16} className={loading ? 'spin' : ''} />
-        <span>Actualizar</span>
-      </button>
-      
-      <button 
-        type="button"
-        className="btn btn-primary btn-sm d-flex align-items-center gap-1 fw-bold"
-        onClick={() => {
-          alert("⚡ Clic en Nueva Noticia");
-          handleOpenCreateModal();
-        }}
-      >
-        <Plus size={18} />
-        <span>Nueva Noticia</span>
-      </button>
+          <div className="admin-header-actions d-flex align-items-center gap-2">
+            <button 
+              className="btn btn-outline-secondary btn-sm d-flex align-items-center gap-1"
+              onClick={fetchNoticias} 
+              disabled={loading}
+            >
+              <RefreshCw size={16} className={loading ? 'spin' : ''} />
+              <span>Actualizar</span>
+            </button>
+            
+            <button 
+              className="btn btn-primary btn-sm d-flex align-items-center gap-1 fw-bold"
+              onClick={handleOpenCreateModal}
+            >
+              <Plus size={18} />
+              <span>Nueva Noticia</span>
+            </button>
 
-      {/* BOTÓN CON ALERT INMEDIATO Y BORRADO MANUAL DE SESIÓN */}
-      <button 
-        type="button"
-        className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-        style={{ cursor: 'pointer', zIndex: 9999, position: 'relative' }}
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          
-          alert("💥 CLICK DETECTADO EN BOTÓN SALIR 💥");
+            <button 
+              type="button"
+              className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
+              onClick={handleLogout}
+            >
+              <LogOut size={16} />
+              <span>Salir</span>
+            </button>
+          </div>
+        </div>
+      </div>
 
-          // 1. Forzar borrado total de tokens en el navegador
-          localStorage.clear();
-          sessionStorage.clear();
-
-          // 2. Probar si el contexto logout existe
-          if (typeof logout === 'function') {
-            try { logout(); } catch (err) { console.error(err); }
-          }
-
-          alert("🧹 Sesión eliminada de LocalStorage. Redirigiendo a /login...");
-
-          // 3. Redirección dura nativa
-          window.location.href = '/login';
-        }}
-      >
-        <LogOut size={16} />
-        <span>Salir</span>
-      </button>
-    </div>
-  </div>
-</div>
-
-      {/* FILTRO Y BUSCADOR */}
+      {/* BUSCADOR */}
       <div className="bg-white p-3 rounded shadow-sm mb-3">
         <div className="row g-2 align-items-center">
           <div className="col-12 col-md-6">
@@ -457,10 +443,11 @@ export default function NewsAdmin() {
         )}
       </div>
 
-      {/* MODAL CREAR / EDITAR */}
+      {/* MODAL CREAR / EDITAR COMPLETO */}
       {showModal && (
         <div className="custom-modal-overlay">
           <div className="custom-modal-dialog">
+            
             <div className="custom-modal-header">
               <h5 className="fw-bold mb-0 text-truncate pe-2">
                 {editingId ? 'Editar Noticia' : 'Nueva Noticia'}
@@ -476,6 +463,8 @@ export default function NewsAdmin() {
 
             <form onSubmit={handleSubmit} className="d-flex flex-column overflow-hidden flex-grow-1">
               <div className="custom-modal-body">
+                
+                {/* Título y Categoría */}
                 <div className="row g-2 mb-3">
                   <div className="col-12 col-md-8">
                     <label className="form-label fw-bold small mb-1">Título *</label>
@@ -485,6 +474,7 @@ export default function NewsAdmin() {
                       value={titulo}
                       onChange={(e) => setTitulo(e.target.value)}
                       required
+                      placeholder="Ej: Inauguración de obras en el centro"
                     />
                   </div>
                   <div className="col-12 col-md-4">
@@ -502,30 +492,54 @@ export default function NewsAdmin() {
                       <option value="EDUCACIÓN">EDUCACIÓN</option>
                       <option value="POLICIALES">POLICIALES</option>
                       <option value="LOCALES">LOCALES</option>
+                      <option value="SEGUÍ TU CORRIENTES">SEGUÍ TU CORRIENTES</option>
                     </select>
                   </div>
                 </div>
 
-                <div className="mb-3">
-                  <label className="form-label fw-bold small mb-1">Subtítulo / Bajada</label>
-                  <input
-                    type="text"
-                    className="form-control form-control-sm"
-                    value={subtitulo}
-                    onChange={(e) => setSubtitulo(e.target.value)}
-                  />
+                {/* Subtítulo y Fecha de Publicación Modificable */}
+                <div className="row g-2 mb-3">
+                  <div className="col-12 col-md-8">
+                    <label className="form-label fw-bold small mb-1">Subtítulo / Bajada</label>
+                    <input
+                      type="text"
+                      className="form-control form-control-sm"
+                      value={subtitulo}
+                      onChange={(e) => setSubtitulo(e.target.value)}
+                      placeholder="Breve resumen de la noticia..."
+                    />
+                  </div>
+
+                  {/* CAMPO DE FECHA MODIFICABLE */}
+                  <div className="col-12 col-md-4">
+                    <label className="form-label fw-bold small mb-1 d-flex align-items-center gap-1">
+                      <Calendar size={14} /> Fecha de Publicación
+                    </label>
+                    <input
+                      type="datetime-local"
+                      className="form-control form-control-sm"
+                      value={fechaPublicacion}
+                      onChange={(e) => setFechaPublicacion(e.target.value)}
+                      required
+                    />
+                  </div>
                 </div>
 
+                {/* Imagen Principal y Previsualización */}
                 <div className="mb-3">
                   <label className="form-label fw-bold small mb-1">Imagen de Portada (Obligatoria) *</label>
-                  <input
-                    type="url"
-                    className="form-control form-control-sm mb-2"
-                    placeholder="https://... URL de la portada"
-                    value={imagenPrincipal}
-                    onChange={(e) => setImagenPrincipal(e.target.value)}
-                    required
-                  />
+                  
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="url"
+                      className="form-control"
+                      placeholder="https://... URL de la portada"
+                      value={imagenPrincipal}
+                      onChange={(e) => setImagenPrincipal(e.target.value)}
+                      required
+                    />
+                  </div>
+
                   <input
                     type="file"
                     className="form-control form-control-sm"
@@ -533,27 +547,154 @@ export default function NewsAdmin() {
                     onChange={handleMainImageUpload}
                     disabled={uploadingMainImg}
                   />
+                  {uploadingMainImg && (
+                    <small className="text-primary mt-1 d-block">Subiendo imagen de portada...</small>
+                  )}
+                  {imagenPrincipal && (
+                    <div className="mt-2 position-relative d-inline-block border rounded p-1">
+                      <img
+                        src={imagenPrincipal}
+                        alt="Vista previa portada"
+                        style={{ height: '80px', objectFit: 'cover' }}
+                        className="rounded"
+                      />
+                      <button
+                        type="button"
+                        className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 p-0 rounded-circle"
+                        style={{ width: '20px', height: '20px', fontSize: '10px' }}
+                        onClick={() => setImagenPrincipal('')}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
                 </div>
 
+                {/* Galería de imágenes (Hasta 3) */}
+                <div className="mb-3 p-2 bg-light rounded border">
+                  <label className="form-label fw-bold small mb-1">
+                    Galería de imágenes adicionales (Máximo 3)
+                  </label>
+                  
+                  <input
+                    type="file"
+                    className="form-control form-control-sm"
+                    accept="image/*"
+                    multiple
+                    disabled={galeria.length >= 3 || uploadingGaleria}
+                    onChange={handleGaleriaUpload}
+                  />
+
+                  <small className="form-text text-muted d-block mt-1" style={{ fontSize: '11px' }}>
+                    {galeria.length}/3 imágenes cargadas.
+                  </small>
+
+                  {uploadingGaleria && (
+                    <div className="d-flex align-items-center gap-2 mt-1 text-primary small">
+                      <div className="spinner-border spinner-border-sm" role="status"></div>
+                      <span>Subiendo imágenes...</span>
+                    </div>
+                  )}
+
+                  {galeria.length > 0 && (
+                    <div className="d-flex flex-wrap gap-2 mt-2">
+                      {galeria.map((url, idx) => (
+                        <div 
+                          key={idx} 
+                          className="position-relative border rounded overflow-hidden shadow-sm bg-white" 
+                          style={{ width: '70px', height: '70px' }}
+                        >
+                          <img 
+                            src={url} 
+                            alt={`Galería ${idx + 1}`} 
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }} 
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-danger btn-sm position-absolute top-0 end-0 m-1 p-0 rounded-circle d-flex align-items-center justify-content-center"
+                            style={{ width: '18px', height: '18px', fontSize: '10px' }}
+                            onClick={() => handleRemoveGaleriaImg(idx)}
+                            title="Eliminar foto"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Cuerpo Markdown */}
                 <div className="mb-3">
-                  <label className="form-label fw-bold small mb-1">Contenido (Markdown) *</label>
+                  <label className="form-label fw-bold small mb-1">Contenido de la Noticia (Markdown) *</label>
                   <textarea
                     className="form-control form-control-sm font-monospace"
                     rows="8"
                     value={contenidoMarkdown}
                     onChange={(e) => setContenidoMarkdown(e.target.value)}
                     required
+                    placeholder="Escribí aquí el cuerpo de la noticia..."
                   ></textarea>
                 </div>
+
+                {/* Opciones adicionales */}
+                <div className="d-flex flex-wrap gap-3 border-top pt-2">
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="destacadaSwitch"
+                      checked={destacada}
+                      onChange={(e) => setDestacada(e.target.checked)}
+                    />
+                    <label className="form-check-label fw-bold small" htmlFor="destacadaSwitch">
+                      Noticia Destacada
+                    </label>
+                  </div>
+
+                  <div className="form-check form-switch mb-0">
+                    <input
+                      className="form-check-input"
+                      type="checkbox"
+                      id="publicadoSwitch"
+                      checked={publicado}
+                      onChange={(e) => setPublicado(e.target.checked)}
+                    />
+                    <label className="form-check-label fw-bold small" htmlFor="publicadoSwitch">
+                      Publicado (Visible)
+                    </label>
+                  </div>
+                </div>
+
               </div>
 
+              {/* PIE DEL MODAL */}
               <div className="custom-modal-footer">
-                <button type="button" className="btn btn-secondary btn-sm" onClick={() => setShowModal(false)}>Cancelar</button>
-                <button type="submit" className="btn btn-primary btn-sm fw-bold" disabled={saving}>
-                  {saving ? 'Guardando...' : (editingId ? 'Guardar Cambios' : 'Crear Noticia')}
+                <button
+                  type="button"
+                  className="btn btn-secondary btn-sm"
+                  onClick={() => setShowModal(false)}
+                  disabled={saving}
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="btn btn-primary btn-sm fw-bold d-flex align-items-center justify-content-center gap-2"
+                  disabled={saving || uploadingMainImg || uploadingGaleria}
+                >
+                  {saving ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      <span>Guardando...</span>
+                    </>
+                  ) : (
+                    editingId ? 'Guardar Cambios' : 'Crear Noticia'
+                  )}
                 </button>
               </div>
             </form>
+
           </div>
         </div>
       )}
