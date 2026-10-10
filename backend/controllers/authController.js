@@ -41,8 +41,7 @@ exports.login = async (req, res) => {
     const { email, password } = req.body;
     const cleanEmail = email ? email.trim().toLowerCase() : '';
 
-    console.log('--- INTENTO DE LOGIN ---');
-    console.log('1. Email buscando:', cleanEmail);
+
 
     const user = await User.findOne({ email: cleanEmail });
     
@@ -51,7 +50,6 @@ exports.login = async (req, res) => {
       return res.status(400).json({ error: 'Credenciales inválidas' });
     }
 
-    console.log('2. Usuario encontrado en BD:', user.email);
 
     // Comparar la contraseña ingresada con el hash guardado
     const isMatch = await bcrypt.compare(password, user.password);
