@@ -129,6 +129,26 @@ export default function HeaderSeguiTuCorrientes(props) {
           </div>
         </div>
       </nav>
+
+       {/* 3. BANNER PUBLICITARIO DESDE PUBLIC */}
+      <div className="saladas-banner-wrapper">
+        <a 
+          href="https://www.corrientes.gob.ar" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          className="saladas-banner-link"
+        >
+          <img 
+            src="/728x90publi_bannerweb.gif" 
+            alt="Gobierno de Corrientes" 
+            className="saladas-banner-img"
+            onError={(e) => {
+              console.warn("No se pudo cargar /728x90publi_bannerweb.gif. Verificá que el archivo esté guardado en la carpeta frontend/public/");
+            }}
+          />
+        </a>
+      </div>
+      
     </header>
   );
 }

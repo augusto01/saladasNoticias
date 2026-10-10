@@ -209,3 +209,27 @@
   font-weight: 700;
   border-color: #00a8e8;
 }
+
+.saladas-banner-wrapper {
+  background-color: #faf8f2;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 100px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.saladas-banner-link {
+  display: inline-block;
+  max-width: 100%;
+}
+
+.saladas-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  display: block;
+  object-fit: contain;
+}
