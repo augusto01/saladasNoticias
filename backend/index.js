@@ -12,29 +12,25 @@ const app = express();
 // Conectar a la Base de Datos (MongoDB)
 connectDB();
 
-// Configurar CORS
+// Configuración de CORS dinámica
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-  : ['http://localhost:3000', 'http://localhost:5173'];
+  : ['http://localhost:3000', 'http://localhost:5173', 'https://saladasnoticias.com'];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Permitir solicitudes sin origen (Postman, scripts locales)
-    // o solicitudes dentro de la lista, wildcard '*' o entorno distinto de produccion
-    if (
-      !origin || 
-      allowedOrigins.includes(origin) || 
-      allowedOrigins.includes('*') || 
-      process.env.NODE_ENV !== 'production'
-    ) {
+    // Permitir solicitudes sin origen (Postman, cron jobs) o presentes en la lista / wildcard '*'
+    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
       callback(null, true);
     } else {
-      console.warn(`⚠️ Origen bloqueado por restricción de CORS: ${origin}`);
-      // Fallback permissivo para asegurar que dominios dinámicos de Netlify respondan
+      console.warn(`⚠️ Origen no reconocido en la lista de CORS: ${origin}`);
+      // Permitir la solicitud reflejando el origen para evitar caídas en producción
       callback(null, true);
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Middlewares para parsear el cuerpo de las peticiones HTTP
