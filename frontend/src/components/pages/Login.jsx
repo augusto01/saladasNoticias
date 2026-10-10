@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import API from '../../../services/api';
-import '../../styles/Login.css'
+import '../../styles/Login.css';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -19,11 +19,14 @@ export default function Login() {
       const res = await API.post('/auth/login', { email, password });
 
       if (res.data.token) {
+        // 1. Guardar token y usuario en localStorage
         localStorage.setItem('token', res.data.token);
         if (res.data.user) {
           localStorage.setItem('user', JSON.stringify(res.data.user));
         }
-        navigate('/admin/noticias');
+
+        // 2. Redirección directa para refrescar el estado de autenticación de una
+        window.location.href = '/admin/noticias';
       }
     } catch (err) {
       console.error('Error al iniciar sesión:', err);
@@ -32,7 +35,6 @@ export default function Login() {
         err.response?.data?.error || 
         'Credenciales inválidas. Verifique sus datos.'
       );
-    } finally {
       setLoading(false);
     }
   };
