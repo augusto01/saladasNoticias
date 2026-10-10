@@ -7,6 +7,7 @@ import WeatherWidget from './WeatherWidget';
 import HeaderSaladas from '../components/Layout/Saladas/HeaderSaladas';
 import HeaderSantaRosa from '../components/Layout/SR/HeaderSantaRosa';
 import HeaderItuzaingo from '../components/Layout/Ituzaingo/HeaderItuzaingo';
+import HeaderCorrientes from '../components/Layout/Corrientes/HeaderCorrientes';
 
 import { configActual } from '../config/municipios';
 import API from '../../services/api';
@@ -39,7 +40,7 @@ export default function NewsList() {
   const [newsSummary, setNewsSummary] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Detectar municipio activo desde el archivo .env o la configuración actual
+  // Leemos municipio desde el .env
   const municipioEnv = (
     (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_MUNICIPIO_ID) ||
     (typeof process !== 'undefined' && process.env && process.env.REACT_APP_MUNICIPIO_ID) ||
@@ -47,7 +48,6 @@ export default function NewsList() {
     'saladas'
   ).toLowerCase();
 
-  // 1. Cargar noticias dinámicas desde la API de MongoDB
   useEffect(() => {
     const fetchNews = async () => {
       setLoading(true);
@@ -66,7 +66,6 @@ export default function NewsList() {
     fetchNews();
   }, [municipioEnv]);
 
-  // 2. Extraer categorías dinámicas directamente de la Base de Datos
   const dynamicCategories = [
     "Todas",
     ...Array.from(
@@ -79,7 +78,6 @@ export default function NewsList() {
     ),
   ];
 
-  // 3. Filtrar noticias por categoría seleccionada y término del buscador
   const filteredNews = newsSummary.filter((item) => {
     const cat = item.category || item.categoria || "";
     const matchesCategory =
@@ -95,7 +93,6 @@ export default function NewsList() {
     return matchesCategory && matchesSearch;
   });
 
-  // 4. Ordenar noticias por fecha más reciente
   const sortedNews = [...filteredNews].sort((a, b) => {
     const timeA = parseSafeDate(a.fechaPublicacion || a.createdAt).getTime();
     const timeB = parseSafeDate(b.fechaPublicacion || b.createdAt).getTime();
@@ -106,20 +103,31 @@ export default function NewsList() {
   const mainNews = hasNews ? sortedNews[0] : null;
   const secondaryNews = hasNews ? sortedNews.slice(1) : [];
 
-  // 5. Renderizado del Header según la variable de entorno
+  // SWITCH CONDICIONAL PARA LOS 4 MUNICIPIOS
   const renderHeader = () => {
     switch (municipioEnv) {
+      case 'corrientes':
+        return (
+          <HeaderCorrientes
+            configActual={configActual}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            dynamicCategories={dynamicCategories}
+          />
+        );
       case 'ituzaingo':
-      return (
-        <HeaderItuzaingo
-          configActual={configActual}
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTerm}
-          selectedCategory={selectedCategory}
-          setSelectedCategory={setSelectedCategory}
-          dynamicCategories={dynamicCategories}
-        />
-      );
+        return (
+          <HeaderItuzaingo
+            configActual={configActual}
+            searchTerm={searchTerm}
+            setSearchTerm={setSearchTerm}
+            selectedCategory={selectedCategory}
+            setSelectedCategory={setSelectedCategory}
+            dynamicCategories={dynamicCategories}
+          />
+        );
       case 'santarosa':
         return (
           <HeaderSantaRosa
@@ -149,14 +157,13 @@ export default function NewsList() {
   return (
     <div className="news-page-wrapper">
       
-      {/* HEADER DINÁMICO DE SEGÚN .ENV */}
+      {/* HEADER DINÁMICO SEGÚN .ENV */}
       {renderHeader()}
 
-      {/* GRILLA PRINCIPAL DE NOTICIAS Y SIDEBAR */}
+      {/* GRILLA PRINCIPAL Y SIDEBAR */}
       <div className="container news-container">
         <div className="news-grid">
           
-          {/* COLUMNA PRINCIPAL DE NOTICIAS */}
           <section className="news-main-column">
             {loading ? (
               <div className="card p-5 text-center my-4 border-0 shadow-sm">
@@ -167,64 +174,53 @@ export default function NewsList() {
               <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
                 <Newspaper size={48} className="mx-auto text-muted mb-3" />
                 <h3>Aún no hay noticias en {configActual.nombre}</h3>
-                <p className="text-muted mb-0">No se encontraron publicaciones que coincidan con la búsqueda o categoría.</p>
               </div>
             ) : (
               <>
-                {/* NOTICIA DESTACADA (PRINCIPAL) */}
                 {mainNews && (
                   <Link to={`/noticias/${mainNews._id || mainNews.id}`} className="featured-news-card">
                     <div className="featured-img-wrapper">
                       <img 
-                        src={mainNews.imagenPrincipal || mainNews.image || mainNews.imagen || DEFAULT_PLACEHOLDER} 
-                        alt={mainNews.titulo || mainNews.title} 
+                        src={mainNews.imagenPrincipal || DEFAULT_PLACEHOLDER} 
+                        alt={mainNews.titulo} 
                         className="featured-img" 
                         onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
                       />
-                      <span className="news-badge">{mainNews.categoria || mainNews.category}</span>
+                      <span className="news-badge">{mainNews.categoria}</span>
                     </div>
                     <div className="featured-content">
-                      <span className="news-date">
-                        {formatDate(mainNews.fechaPublicacion || mainNews.createdAt || mainNews.date)}
-                      </span>
-                      <h2 className="featured-title">{mainNews.titulo || mainNews.title}</h2>
-                      <p className="featured-summary">{mainNews.subtitulo || mainNews.summary || mainNews.resumen}</p>
+                      <span className="news-date">{formatDate(mainNews.fechaPublicacion || mainNews.createdAt)}</span>
+                      <h2 className="featured-title">{mainNews.titulo}</h2>
+                      <p className="featured-summary">{mainNews.subtitulo}</p>
                     </div>
                   </Link>
                 )}
 
-                {/* GRILLA SECUNDARIA */}
                 {secondaryNews.length > 0 && (
                   <div className="secondary-news-grid">
-                    {secondaryNews.map((item) => {
-                      const itemId = item._id || item.id;
-                      return (
-                        <Link to={`/noticias/${itemId}`} key={itemId} className="secondary-news-card">
-                          <div className="secondary-img-wrapper">
-                            <img 
-                              src={item.imagenPrincipal || item.image || item.imagen || DEFAULT_PLACEHOLDER} 
-                              alt={item.titulo || item.title} 
-                              className="secondary-img"
-                              onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
-                            />
-                            <span className="news-badge-sm">{item.categoria || item.category}</span>
-                          </div>
-                          <div className="secondary-content">
-                            <span className="news-date">
-                              {formatDate(item.fechaPublicacion || item.createdAt || item.date)}
-                            </span>
-                            <h3 className="secondary-title">{item.titulo || item.title}</h3>
-                          </div>
-                        </Link>
-                      );
-                    })}
+                    {secondaryNews.map((item) => (
+                      <Link to={`/noticias/${item._id}`} key={item._id} className="secondary-news-card">
+                        <div className="secondary-img-wrapper">
+                          <img 
+                            src={item.imagenPrincipal || DEFAULT_PLACEHOLDER} 
+                            alt={item.titulo} 
+                            className="secondary-img"
+                            onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
+                          />
+                          <span className="news-badge-sm">{item.categoria}</span>
+                        </div>
+                        <div className="secondary-content">
+                          <span className="news-date">{formatDate(item.fechaPublicacion || item.createdAt)}</span>
+                          <h3 className="secondary-title">{item.titulo}</h3>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
                 )}
               </>
             )}
           </section>
 
-          {/* SIDEBAR DERECHO (CLIMA + PUBLICIDAD 300x300) */}
           <aside className="news-sidebar">
             <div className="sidebar-widget">
               <WeatherWidget />

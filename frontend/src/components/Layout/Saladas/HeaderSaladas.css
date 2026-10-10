@@ -14,6 +14,7 @@
   padding: 12px 24px;
   background-color: #ffffff;
   border-bottom: 1px solid #f1f5f9;
+  gap: 16px;
 }
 
 .saladas-top-left {
@@ -31,11 +32,13 @@
   border-radius: 8px;
   padding: 6px 12px;
   width: 180px;
+  transition: width 0.2s ease;
 }
 
 .saladas-search-icon {
   color: #854d0e; /* Amarillo-Marrón Oscuro */
   margin-right: 6px;
+  flex-shrink: 0;
 }
 
 .saladas-search-input {
@@ -51,6 +54,7 @@
   border-left: 2px solid #fde047;
   padding-left: 12px;
   line-height: 1.2;
+  white-space: nowrap;
 }
 
 .saladas-weather-main {
@@ -122,6 +126,7 @@
   font-weight: 800;
   color: #a16207; /* Amarillo Ámbar Oscuro */
   margin-top: 4px;
+  white-space: nowrap;
 }
 
 /* Derecha: Redes */
@@ -153,6 +158,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
 }
 
 .saladas-nav-item {
@@ -172,7 +180,7 @@
   color: #ffffff;
 }
 
-/* 3. BANNER FULL WIDTH */
+/* 3. BANNER FULL WIDTH RESPONSIVO */
 .saladas-full-width-banner {
   width: 100vw;
   position: relative;
@@ -183,11 +191,11 @@
   background-color: #fefce8; /* Fondo Amarillo Suave */
   border-top: 1px solid #fef08a;
   border-bottom: 1px solid #fef08a;
-  padding: 10px 0;
+  padding: 8px 12px;
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
 }
 
 .saladas-banner-img {
@@ -195,4 +203,108 @@
   height: auto;
   max-height: 90px;
   object-fit: contain;
+}
+
+/* ===================================================
+   MEDIA QUERIES - RESPONSIVIDAD (MOBILE & TABLETS)
+   =================================================== */
+
+/* Laptops medianas y Tablets en horizontal (Menos de 992px) */
+@media (max-width: 991.98px) {
+  .saladas-top-bar {
+    padding: 10px 16px;
+  }
+
+  .saladas-search-btn-box {
+    width: 150px;
+  }
+
+  .saladas-brand-title {
+    font-size: 1.8rem;
+  }
+
+  .saladas-logo-img {
+    max-height: 45px;
+  }
+}
+
+/* Tablets en vertical y celulares grandes (Menos de 768px) */
+@media (max-width: 767.98px) {
+  .saladas-top-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .saladas-top-left {
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .saladas-top-center {
+    order: 1;
+    flex: 1 1 100%;
+  }
+
+  .saladas-search-btn-box {
+    width: 55%;
+  }
+
+  .saladas-weather-box {
+    border-left: none;
+    padding-left: 0;
+    text-align: right;
+  }
+
+  .saladas-brand-title {
+    font-size: 1.6rem;
+  }
+
+  .saladas-date-text {
+    font-size: 0.78rem;
+  }
+
+  .saladas-nav-item {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Celulares pequeños (Menos de 480px) */
+@media (max-width: 479.98px) {
+  .saladas-top-bar {
+    padding: 8px 12px;
+  }
+
+  .saladas-search-btn-box {
+    width: 100%;
+  }
+
+  .saladas-top-left {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .saladas-weather-box {
+    border-left: 2px solid #fde047;
+    padding-left: 8px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .saladas-weather-sub {
+    font-size: 0.68rem;
+  }
+
+  .saladas-banner-img {
+    max-height: 60px;
+  }
+
+  .saladas-full-width-banner {
+    padding: 6px 0;
+    margin-bottom: 1rem;
+  }
 }
