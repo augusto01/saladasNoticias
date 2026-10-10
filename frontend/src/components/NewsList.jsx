@@ -10,6 +10,8 @@ import HeaderSaladas from './Layout/Saladas/HeaderSaladas';
 import HeaderCorrientes from './Layout/Corrientes/HeaderCorrientes';
 import HeaderItuzaingo from './Layout/Ituzaingo/HeaderItuzaingo';
 import HeaderSantaRosa from './Layout/SR/HeaderSantaRosa';
+import HeaderSeguiTuCorrientes from './Layout/SeguiTuCorrientes/HeaderSeguiTuCorrientes';
+
 
 import { configActual } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -126,7 +128,7 @@ export default function NewsList() {
       dynamicCategories
     };
 
-    switch (municipio) {
+      switch (municipio) {
       case 'saladas':
         return <HeaderSaladas {...headerProps} />;
       case 'corrientes':
@@ -137,6 +139,10 @@ export default function NewsList() {
       case 'santa-rosa':
       case 'santa_rosa':
         return <HeaderSantaRosa {...headerProps} />;
+      case 'seguitucorrientes':
+      case 'segui-tu-corrientes':
+      case 'segui_tu_corrientes':
+        return <HeaderSeguiTuCorrientes {...headerProps} />;
       default:
         return <HeaderItuzaingo {...headerProps} />;
     }

@@ -1,33 +1,41 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import '../SeguiTuCorrientes/SeguiTuCorrientes.css';
 
 export default function HeaderSeguiTuCorrientes(props) {
-  // Manejo flexible de props recibidas desde NewsList / headerProps
-  const dynamicCategories = props.dynamicCategories || props.categories || props.categorias || [];
-  const selectedCategory = props.selectedCategory || props.category || props.categoria || '';
-  const setSelectedCategory = props.setSelectedCategory || props.onSelectCategory || props.setCategory;
-  const tags = props.tags || props.etiquetas || [];
-  
-  // Props para búsqueda
-  const onSearch = props.onSearch || props.setSearchTerm || props.handleSearch;
+  // Soporta props pasadas de forma directa o desestructuradas dentro de headerProps
+  const noticias = props.noticias || props.news || [];
+  const onSelectCategory = props.onSelectCategory || props.onSelectCat || props.setCategory;
+  const selectedCategory = props.selectedCategory || props.category || '';
 
   const [terminoBusqueda, setTerminoBusqueda] = useState('');
   const [mostrarBuscador, setMostrarBuscador] = useState(false);
 
+  // 1. Extraer categorías únicas desde MongoDB de forma robusta
+  const categoriasDinamicas = useMemo(() => {
+    if (!Array.isArray(noticias) || noticias.length === 0) return [];
+
+    const lista = noticias
+      .map((n) => n.categoria || n.cat || n.categoría)
+      .filter((cat) => cat && typeof cat === 'string' && cat.trim() !== '');
+
+    return Array.from(new Set(lista));
+  }, [noticias]);
+
+  // 2. Extraer tags/hashtags únicos desde MongoDB
+  const etiquetasDinamicas = useMemo(() => {
+    if (!Array.isArray(noticias) || noticias.length === 0) return [];
+
+    const todosLosTags = noticias.flatMap((n) => n.tags || n.etiquetas || []);
+    const unicos = Array.from(new Set(todosLosTags)).filter(Boolean);
+    return unicos.slice(0, 6);
+  }, [noticias]);
+
   const manejarBusqueda = (e) => {
     e.preventDefault();
-    if (onSearch && terminoBusqueda.trim()) {
-      onSearch(terminoBusqueda.trim());
-    } else if (setSelectedCategory && terminoBusqueda.trim()) {
-      setSelectedCategory(terminoBusqueda.trim());
+    if (onSelectCategory && terminoBusqueda.trim()) {
+      onSelectCategory(terminoBusqueda.trim());
     }
-  };
-
-  const limpiarBusqueda = () => {
-    setTerminoBusqueda('');
-    setMostrarBuscador(false);
-    if (onSearch) onSearch('');
   };
 
   return (
@@ -38,13 +46,12 @@ export default function HeaderSeguiTuCorrientes(props) {
           <div className="segui-tendencias">
             <span className="segui-badge-fuego">🔥 TENDENCIAS</span>
             <div className="segui-hashtags">
-              {tags && tags.length > 0 ? (
-                tags.map((tag) => (
+              {etiquetasDinamicas.length > 0 ? (
+                etiquetasDinamicas.map((tag, idx) => (
                   <button 
-                    key={tag} 
-                    type="button"
+                    key={idx} 
                     className="tag-btn"
-                    onClick={() => setSelectedCategory && setSelectedCategory(tag)}
+                    onClick={() => onSelectCategory && onSelectCategory(tag)}
                   >
                     #{String(tag).toUpperCase().replace(/\s+/g, '')}
                   </button>
@@ -63,7 +70,7 @@ export default function HeaderSeguiTuCorrientes(props) {
       {/* 2. HEADER PRINCIPAL */}
       <div className="segui-main-bar">
         <div className="segui-main-container">
-          <Link to="/" className="segui-brand" onClick={() => setSelectedCategory && setSelectedCategory('Todas')}>
+          <Link to="/" className="segui-brand" onClick={() => onSelectCategory && onSelectCategory('')}>
             <img 
               src="/img/logos/01_Logotipo.png" 
               alt="Seguí Tu Corrientes" 
@@ -81,8 +88,7 @@ export default function HeaderSeguiTuCorrientes(props) {
                   onChange={(e) => setTerminoBusqueda(e.target.value)}
                   autoFocus
                 />
-                <button type="submit" className="btn-ejecutar-busqueda">🔍</button>
-                <button type="button" className="close-search" onClick={limpiarBusqueda}>✕</button>
+                <button type="button" className="close-search" onClick={() => setMostrarBuscador(false)}>✕</button>
               </form>
             ) : (
               <button className="action-btn" onClick={() => setMostrarBuscador(true)} title="Buscar">
@@ -98,18 +104,25 @@ export default function HeaderSeguiTuCorrientes(props) {
         </div>
       </div>
 
-      {/* 3. BARRA DE NAVEGACIÓN Y FILTRADO DINÁMICO */}
+      {/* 3. NAVEGACIÓN Y FILTROS DINÁMICOS */}
       <nav className="segui-nav-bar">
-        <div className="container-fluid d-flex align-items-center justify-content-between overflow-x-auto">
-          <div className="segui-nav-list">
-            {(dynamicCategories || []).map((cat) => (
+        <div className="segui-nav-container">
+          <button 
+            className={`nav-chip ${!selectedCategory ? 'activo' : ''}`}
+            onClick={() => onSelectCategory && onSelectCategory('')}
+          >
+            🏠 Todas las Noticias
+          </button>
+
+          {/* Renderizado dinámico de las categorías traídas de la base de datos */}
+          <div className="segui-categorias-scroll">
+            {categoriasDinamicas.map((cat, idx) => (
               <button
-                key={cat}
-                type="button"
-                className={`nav-chip ${(selectedCategory || '').toUpperCase() === cat.toUpperCase() ? 'activo' : ''}`}
-                onClick={() => setSelectedCategory && setSelectedCategory(cat)}
+                key={idx}
+                className={`nav-chip ${selectedCategory === cat ? 'activo' : ''}`}
+                onClick={() => onSelectCategory && onSelectCategory(cat)}
               >
-                {cat === 'Todas' ? 'PORTADA' : cat}
+                {cat}
               </button>
             ))}
           </div>
