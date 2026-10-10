@@ -13,8 +13,19 @@ const app = express();
 connectDB();
 
 // Configuración de CORS Dinámica (Garantiza que saladasnoticias.com y cualquier origen reciban headers válidos sin error 500)
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
+  : ['https://saladasnoticias.com', 'http://localhost:5173', 'http://localhost:3000'];
+
 app.use(cors({
-  origin: true, // Refleja automáticamente el Origin de la petición enviada por el navegador
+  origin: (origin, callback) => {
+    // Si no hay origen (Postman/scripts), o si es un origen permitido o wildcard '*'
+    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+    // Fallback permissivo: permite el origen enviando 'null, true' para NUNCA lanzar un Error 500
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
