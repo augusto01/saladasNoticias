@@ -1,0 +1,211 @@
+/* Header Compacto - Estilo Futura Dark */
+.segui-header-compacto {
+  width: 100%;
+  background-color: #0b132b;
+  color: #f1f5f9;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  border-bottom: 2px solid #00a8e8;
+}
+
+/* 1. Barra Superior */
+.segui-top-bar {
+  background-color: #050811;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 6px 16px;
+  font-size: 0.75rem;
+}
+
+.segui-top-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.segui-tendencias {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.segui-badge-fuego {
+  background: #f59e0b;
+  color: #000000;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 0.7rem;
+}
+
+.segui-hashtags {
+  display: flex;
+  gap: 8px;
+}
+
+.tag-btn {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.tag-btn:hover {
+  color: #00a8e8;
+}
+
+.tag-estatico {
+  color: #64748b;
+  font-weight: 600;
+}
+
+.segui-fecha {
+  color: #64748b;
+  text-transform: capitalize;
+}
+
+/* 2. Barra Principal */
+.segui-main-bar {
+  padding: 12px 16px;
+}
+
+.segui-main-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.segui-logo-img {
+  height: 42px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+.segui-acciones {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #ffffff;
+  padding: 6px 12px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.segui-caja-busqueda {
+  display: flex;
+  align-items: center;
+  background: #1c2a4a;
+  border-radius: 20px;
+  padding: 2px 8px;
+}
+
+.segui-caja-busqueda input {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  padding: 4px 8px;
+  outline: none;
+  font-size: 0.85rem;
+}
+
+.btn-ejecutar-busqueda {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0 4px;
+}
+
+.close-search {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+}
+
+.segui-en-vivo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(220, 38, 38, 0.2);
+  border: 1px solid #ef4444;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.puntos-vivo {
+  width: 8px;
+  height: 8px;
+  background-color: #ef4444;
+  border-radius: 50%;
+  animation: pulso 1.5s infinite;
+}
+
+.texto-vivo {
+  color: #fca5a5;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+@keyframes pulso {
+  0% { opacity: 1; }
+  50% { opacity: 0.4; }
+  100% { opacity: 1; }
+}
+
+/* 3. Filtros Dinámicos */
+.segui-nav-bar {
+  background-color: #070a14;
+  padding: 8px 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.segui-nav-list {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.nav-chip {
+  background: #1e293b;
+  color: #cbd5e1;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 6px 14px;
+  border-radius: 16px;
+  font-size: 0.825rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-chip:hover {
+  background: #334155;
+  color: #ffffff;
+}
+
+.nav-chip.activo {
+  background: #00a8e8;
+  color: #000000;
+  font-weight: 700;
+  border-color: #00a8e8;
+}

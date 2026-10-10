@@ -10,6 +10,7 @@ import HeaderSaladas from './Layout/Saladas/HeaderSaladas';
 import HeaderCorrientes from './Layout/Corrientes/HeaderCorrientes';
 import HeaderItuzaingo from './Layout/Ituzaingo/HeaderItuzaingo';
 import HeaderSantaRosa from './Layout/SR/HeaderSantaRosa';
+import HeaderSeguiTuCorrientes from './Layout/SeguiTuCorrientes/HeaderSeguiTuCorrientes';
 
 import { configActual } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -81,11 +82,19 @@ export default function NewsList() {
     ),
   ];
 
+  // Extraer etiquetas/hashtags de las noticias cargadas de la base de datos
+  const tags = Array.from(
+    new Set(
+      newsSummary.flatMap((item) => item.tags || item.etiquetas || [])
+    )
+  ).filter(Boolean).slice(0, 6);
+
   const filteredNews = newsSummary.filter((item) => {
     const cat = item.categoria || item.category || "";
     const matchesCategory =
       selectedCategory === "Todas" ||
-      cat.toUpperCase() === selectedCategory.toUpperCase();
+      cat.toUpperCase() === selectedCategory.toUpperCase() ||
+      (item.tags && item.tags.some(t => t.toUpperCase() === selectedCategory.toUpperCase()));
 
     const title = item.titulo || item.title || "";
     const summary = item.subtitulo || item.summary || item.resumen || "";
@@ -119,9 +128,12 @@ export default function NewsList() {
       configActual,
       searchTerm,
       setSearchTerm,
+      onSearch: setSearchTerm,
       selectedCategory,
       setSelectedCategory,
-      dynamicCategories
+      dynamicCategories,
+      tags,
+      noticias: newsSummary
     };
 
     switch (municipio) {
@@ -135,6 +147,10 @@ export default function NewsList() {
       case 'santa-rosa':
       case 'santa_rosa':
         return <HeaderSantaRosa {...headerProps} />;
+      case 'seguitucorrientes':
+      case 'segui-tu-corrientes':
+      case 'segui_tu_corrientes':
+        return <HeaderSeguiTuCorrientes {...headerProps} />;
       default:
         return <HeaderItuzaingo {...headerProps} />;
     }

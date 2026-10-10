@@ -48,10 +48,23 @@ export const MUNICIPIOS = {
     colorSecundario: "#54d434",
     colorAccento: "#000001",
     logo: "/img/logos/enfoquecorrienteslogo.png"
+  },
+  seguitucorrientes: {
+    id: "seguitucorrientes",
+    nombre: "Seguí Tu Corrientes",
+    portal: "Seguí Tu Corrientes",
+    saludo: "¡Hola Correntino!",
+    slogan: "Seguí Tu Corrientes",
+    descripcion: "Portal de información y actualidad regional. Enterate de todas las noticias en un solo lugar.",
+    colorPrimario: "#002b5c",
+    colorSecundario: "#00a8e8",
+    colorAccento: "#0f172a",
+    logo: "/img/logos/01_Logotipo.png",
+    isotipo: "/img/logos/01_Isotipo.png"
   }
 };
 
 // Lee la clave del municipio desde el archivo .env (Por defecto usa saladas)
-const claveMunicipio = import.meta.env.VITE_MUNICIPIO || "saladas";
+const claveMunicipio = (import.meta.env.VITE_MUNICIPIO || "saladas").toLowerCase().trim();
 
 export const configActual = MUNICIPIOS[claveMunicipio] || MUNICIPIOS.saladas;
