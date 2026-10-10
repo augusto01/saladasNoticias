@@ -1,0 +1,198 @@
+/* WRAPPER CORRIENTES ESTILO CLICKNEWS */
+.corrientes-header-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 1. TOP BANNER FINO */
+.corrientes-top-banner {
+  background-color: #12331c;
+  padding: 6px 16px;
+  font-size: 0.78rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.badge-sparkle {
+  background-color: #22c55e;
+  color: #062112;
+  font-weight: 800;
+  padding: 2px 8px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* 2. NAVBAR PRINCIPAL EN VERDE MÁS CLARO (#1e4d2b) */
+.corrientes-main-nav {
+  background-color: #1e4d2b; /* Verde Bosque Claro para resaltar logos oscuros y claros */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  gap: 16px;
+}
+
+.corrientes-logo-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.corrientes-logo-img {
+  max-height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.corrientes-brand-tech {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #ffffff;
+}
+
+.brand-icon {
+  color: #4ade80;
+}
+
+.brand-title {
+  font-size: 1.4rem;
+  font-weight: 900;
+  letter-spacing: -0.5px;
+}
+
+.brand-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #15803d;
+  background: #22c55e;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+/* CÁPSULAS DE CATEGORÍAS */
+.corrientes-pills-nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.corrientes-pill-btn {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.corrientes-pill-btn:hover {
+  color: #ffffff;
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.corrientes-pill-btn.active {
+  background-color: #22c55e;
+  color: #062112;
+  font-weight: 800;
+}
+
+/* ACCIONES: BUSCADOR Y BOTÓN CON LA MISMA ALTURA (38px) */
+.corrientes-actions-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.corrientes-search-box {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 0 14px;
+  width: 170px;
+  height: 38px; /* Mismo alto que el botón */
+  box-sizing: border-box;
+}
+
+.corrientes-search-box .search-icon {
+  color: #ffffff;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.corrientes-search-box .search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  color: #ffffff;
+  font-size: 0.82rem;
+  width: 100%;
+}
+
+.corrientes-search-box .search-input::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+
+.btn-corrientes-lime {
+  background-color: #22c55e; /* Verde Lima Brillante */
+  color: #062112;
+  font-weight: 800;
+  font-size: 0.82rem;
+  padding: 0 18px;
+  height: 38px; /* Mismo alto que la barra de búsqueda */
+  border-radius: 20px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+  border: none;
+}
+
+.btn-corrientes-lime:hover {
+  background-color: #16a34a;
+  color: #ffffff;
+}
+
+/* MOBILE CÁPSULAS */
+.corrientes-mobile-pills {
+  background-color: #12331c;
+  padding: 8px 16px;
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+/* BANNER FULL WIDTH */
+.corrientes-full-width-banner {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.corrientes-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+}

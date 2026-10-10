@@ -80,7 +80,7 @@
 .filter-btn:hover {
   border-color: var(--color-primary, #1e3a8a);
   color: var(--color-primary, #1e3a8a);
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: #ffc107;
 }
 
 .filter-btn.active {
@@ -358,7 +358,7 @@
 
 .ad-label {
   font-size: 0.65rem;
-  color: #94a3b8;
+  color: transparent !important;
   letter-spacing: 0.1em;
   margin-bottom: 0.35rem;
   text-transform: uppercase;

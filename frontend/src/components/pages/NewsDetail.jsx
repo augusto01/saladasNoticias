@@ -3,41 +3,25 @@ import { useParams, Link } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import remarkFrontmatter from 'remark-frontmatter';
 import { ArrowLeft, Calendar, Tag, Image as ImageIcon, Video as VideoIcon, Newspaper } from 'lucide-react';
+import axios from 'axios';
 
-import { getNoticias } from '../../config/getNews';
 import { configActual } from '../../config/municipios';
-
 import '../../styles/NewsDetail.css';
 
-const markdownFiles = import.meta.glob('../content/**/*.md', { query: '?raw', import: 'default' });
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const MUNICIPIO_ID = import.meta.env.VITE_MUNICIPIO_ID || import.meta.env.VITE_MUNICIPIO;
 
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
-function stripFrontmatter(text) {
-  if (!text) return '';
-  return text.replace(/^---[\s\S]*?---\s*/, '');
-}
-
 function parseSafeDate(dateString) {
-  if (!dateString || typeof dateString !== 'string') return new Date(0);
-  const parts = dateString.split('-');
-  if (parts.length !== 3) return new Date(0);
-
-  if (parts[0].length === 2 && parts[2].length === 4) {
-    const [day, month, year] = parts;
-    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
-  }
-  if (parts[0].length === 4) {
-    const [year, month, day] = parts;
-    return new Date(Number(year), Number(month) - 1, Number(day), 12, 0, 0);
-  }
-
-  return new Date(0);
+  if (!dateString) return new Date(0);
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? new Date(0) : date;
 }
 
 function formatDate(dateString) {
   const date = parseSafeDate(dateString);
-  if (date.getTime() === 0) return dateString;
+  if (date.getTime() === 0) return dateString || '';
 
   return new Intl.DateTimeFormat('es-AR', {
     day: 'numeric',
@@ -48,49 +32,68 @@ function formatDate(dateString) {
 
 export default function NewsDetail() {
   const { id } = useParams();
-  const [content, setContent] = useState('');
+  const [newsItem, setNewsItem] = useState(null);
+  const [otherNews, setOtherNews] = useState([]);
   const [loading, setLoading] = useState(true);
-
-  const newsSummary = getNoticias() || [];
-  const newsItem = newsSummary.find((item) => item.id === id);
-
-  const otherNews = newsSummary.filter((item) => item.id !== id).slice(0, 3);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
     if (!id || id === 'undefined') {
       setLoading(false);
+      setError('ID de noticia no válido');
       return;
     }
 
-    const folderName = `news_${configActual.id}`;
-    const path = `../content/${folderName}/${id}.md`;
+    const fetchNewsDetail = async () => {
+      try {
+        setLoading(true);
+        setError(null);
 
-    if (markdownFiles[path]) {
-      setLoading(true);
-      markdownFiles[path]()
-        .then((mdContent) => {
-          setContent(stripFrontmatter(mdContent));
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error('Error cargando el archivo Markdown:', err);
-          setContent('Error al procesar el cuerpo de la noticia.');
-          setLoading(false);
+        // 1. Cargar noticia detallada desde MongoDB
+        const resDetail = await axios.get(`${BACKEND_URL}/noticias/${id}`);
+        const dataDetail = resDetail.data?.data || resDetail.data;
+        setNewsItem(dataDetail);
+
+        // 2. Cargar otras noticias del mismo municipio para la grilla inferior
+        const resOthers = await axios.get(`${BACKEND_URL}/noticias`, {
+          params: { municipio: MUNICIPIO_ID }
         });
-    } else {
-      console.warn(`No se encontró el archivo markdown en la ruta: ${path}`);
-      setContent('No se encontró el archivo de texto para esta noticia.');
-      setLoading(false);
-    }
+        const allNews = resOthers.data?.data || (Array.isArray(resOthers.data) ? resOthers.data : []);
+        
+        const filtered = allNews
+          .filter((item) => (item._id || item.id) !== id)
+          .slice(0, 3);
+          
+        setOtherNews(filtered);
+      } catch (err) {
+        console.error('Error al cargar la noticia desde la API:', err);
+        setError('La noticia que buscas no existe o fue removida.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNewsDetail();
   }, [id]);
 
-  if (!newsItem) {
+  if (loading) {
+    return (
+      <div className="news-detail-container text-center py-5">
+        <div className="spinner-border text-primary my-4" role="status">
+          <span className="visually-hidden">Cargando noticia...</span>
+        </div>
+        <p className="text-muted">Cargando contenido de la noticia...</p>
+      </div>
+    );
+  }
+
+  if (error || !newsItem) {
     return (
       <div className="news-detail-container not-found">
         <h2>Noticia no encontrada</h2>
-        <p>La noticia que estás buscando no existe o fue removida.</p>
+        <p>{error || 'La noticia que estás buscando no existe o fue removida.'}</p>
         <Link to="/" className="back-btn">
           <ArrowLeft size={18} /> Volver a Noticias
         </Link>
@@ -98,7 +101,8 @@ export default function NewsDetail() {
     );
   }
 
-  const mainImgSrc = newsItem.image || newsItem.imagen || `/news_${configActual.id}/${newsItem.id}.jpg`;
+  const mainImgSrc = newsItem.imagenPrincipal || DEFAULT_PLACEHOLDER;
+  const rawMarkdown = newsItem.contenidoMarkdown || newsItem.contenido || '';
 
   return (
     <article className="news-detail-container">
@@ -109,17 +113,17 @@ export default function NewsDetail() {
       <header className="detail-header">
         <div className="detail-meta">
           <span className="detail-badge">
-            <Tag size={13} /> {newsItem.category || newsItem.categoria}
+            <Tag size={13} /> {newsItem.categoria || newsItem.category}
           </span>
           <span className="detail-date">
-            <Calendar size={13} /> {formatDate(newsItem.date || newsItem.fecha)}
+            <Calendar size={13} /> {formatDate(newsItem.fechaPublicacion || newsItem.createdAt || newsItem.date)}
           </span>
         </div>
-        <h1 className="detail-title">{newsItem.title || newsItem.titulo}</h1>
-        <p className="detail-summary">{newsItem.summary || newsItem.subtitulo || newsItem.resumen}</p>
+        <h1 className="detail-title">{newsItem.titulo || newsItem.title}</h1>
+        <p className="detail-summary">{newsItem.subtitulo || newsItem.summary || newsItem.resumen}</p>
       </header>
 
-      {/* BANNER INSTITUCIONAL HORIZONTAL (INICIO) */}
+      {/* BANNER INSTITUCIONAL HORIZONTAL */}
       <div className="detail-ad-banner-container">
         <div className="detail-ad-box">
           <img 
@@ -136,7 +140,7 @@ export default function NewsDetail() {
       <div className="detail-main-img-wrapper">
         <img 
           src={mainImgSrc} 
-          alt={newsItem.title || newsItem.titulo} 
+          alt={newsItem.titulo || newsItem.title} 
           className="detail-main-img" 
           onError={(e) => {
             e.target.onerror = null;
@@ -145,11 +149,9 @@ export default function NewsDetail() {
         />
       </div>
 
-      {/* CUERPO DE LA NOTICIA */}
+      {/* CUERPO DE LA NOTICIA (MARKDOWN) */}
       <div className="detail-content">
-        {loading ? (
-          <div className="loading-spinner">Cargando contenido...</div>
-        ) : (
+        {rawMarkdown ? (
           <ReactMarkdown
             remarkPlugins={[remarkFrontmatter]}
             components={{
@@ -169,19 +171,21 @@ export default function NewsDetail() {
               )
             }}
           >
-            {content}
+            {rawMarkdown}
           </ReactMarkdown>
+        ) : (
+          <p className="text-muted">No hay texto adicional para esta publicación.</p>
         )}
       </div>
 
       {/* GALERÍA DE IMÁGENES */}
-      {newsItem.gallery && newsItem.gallery.length > 0 && (
+      {newsItem.galeria && newsItem.galeria.length > 0 && (
         <section className="news-gallery-section">
           <h3 className="gallery-title">
             <ImageIcon size={20} /> Galería de imágenes
           </h3>
           <div className="news-gallery-grid">
-            {newsItem.gallery.map((imgUrl, index) => (
+            {newsItem.galeria.map((imgUrl, index) => (
               <a 
                 key={index} 
                 href={imgUrl} 
@@ -191,7 +195,7 @@ export default function NewsDetail() {
               >
                 <img 
                   src={imgUrl} 
-                  alt={`Imagen ${index + 1} de ${newsItem.title || newsItem.titulo}`} 
+                  alt={`Imagen ${index + 1} de ${newsItem.titulo || newsItem.title}`} 
                   loading="lazy"
                   onError={(e) => {
                     e.target.onerror = null;
@@ -214,10 +218,10 @@ export default function NewsDetail() {
             {newsItem.videos.map((video, index) => (
               <div key={index} className="video-card">
                 <div className="video-wrapper">
-                  {video.url.includes('youtube') || video.url.includes('embed') ? (
+                  {video.url?.includes('youtube') || video.url?.includes('embed') ? (
                     <iframe
                       src={video.url}
-                      title={video.title || `Video ${index + 1}`}
+                      title={video.titulo || video.title || `Video ${index + 1}`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     ></iframe>
@@ -228,14 +232,16 @@ export default function NewsDetail() {
                     </video>
                   )}
                 </div>
-                {video.title && <p className="video-caption">{video.title}</p>}
+                {(video.titulo || video.title) && (
+                  <p className="video-caption">{video.titulo || video.title}</p>
+                )}
               </div>
             ))}
           </div>
         </section>
       )}
 
-      {/* BANNER INSTITUCIONAL HORIZONTAL (FINAL) */}
+      {/* BANNER INSTITUCIONAL HORIZONTAL */}
       <div className="detail-ad-banner-container">
         <div className="detail-ad-box">
           <img 
@@ -253,33 +259,36 @@ export default function NewsDetail() {
       {otherNews.length > 0 && (
         <section className="more-news-section">
           <h3 className="more-news-title">
-            <Newspaper size={22} /> Más noticias de {configActual.nombre}
+            <Newspaper size={22} /> Más noticias de {configActual?.nombre || 'la localidad'}
           </h3>
           <div className="more-news-grid">
-            {otherNews.map((item, index) => (
-              <Link 
-                to={`/noticias/${item.id}`} 
-                key={item.id ? `more-${item.id}` : `more-${index}`} 
-                className="more-news-card"
-              >
-                <div className="more-news-img-wrapper">
-                  <img 
-                    src={item.image || item.imagen || `/news_${configActual.id}/${item.id}.jpg`} 
-                    alt={item.title || item.titulo} 
-                    className="more-news-img"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = DEFAULT_PLACEHOLDER;
-                    }}
-                  />
-                  <span className="news-badge-sm">{item.category || item.categoria}</span>
-                </div>
-                <div className="more-news-content">
-                  <span className="news-date">{formatDate(item.date || item.fecha)}</span>
-                  <h4 className="more-news-card-title">{item.title || item.titulo}</h4>
-                </div>
-              </Link>
-            ))}
+            {otherNews.map((item, index) => {
+              const otherId = item._id || item.id || index;
+              return (
+                <Link 
+                  to={`/noticias/${otherId}`} 
+                  key={otherId} 
+                  className="more-news-card"
+                >
+                  <div className="more-news-img-wrapper">
+                    <img 
+                      src={item.imagenPrincipal || DEFAULT_PLACEHOLDER} 
+                      alt={item.titulo || item.title} 
+                      className="more-news-img"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src = DEFAULT_PLACEHOLDER;
+                      }}
+                    />
+                    <span className="news-badge-sm">{item.categoria || item.category}</span>
+                  </div>
+                  <div className="more-news-content">
+                    <span className="news-date">{formatDate(item.fechaPublicacion || item.createdAt || item.date)}</span>
+                    <h4 className="more-news-card-title">{item.titulo || item.title}</h4>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}

@@ -1,0 +1,310 @@
+/* WRAPPER DEL HEADER SALADAS */
+.saladas-header-wrapper {
+  width: 100%;
+  background-color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  border-top: 4px solid #eab308; /* Franja Amarilla Superior */
+}
+
+/* 1. TOP BAR SUPERIOR */
+.saladas-top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #f1f5f9;
+  gap: 16px;
+}
+
+.saladas-top-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.saladas-search-btn-box {
+  display: flex;
+  align-items: center;
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 6px 12px;
+  width: 180px;
+  transition: width 0.2s ease;
+}
+
+.saladas-search-icon {
+  color: #854d0e; /* Amarillo-Marrón Oscuro */
+  margin-right: 6px;
+  flex-shrink: 0;
+}
+
+.saladas-search-input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.85rem;
+  width: 100%;
+  color: #1e293b;
+}
+
+.saladas-weather-box {
+  border-left: 2px solid #fde047;
+  padding-left: 12px;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.saladas-weather-main {
+  font-size: 0.95rem;
+  color: #1e293b;
+}
+
+.saladas-weather-main strong {
+  font-weight: 700;
+}
+
+.saladas-weather-main span {
+  font-weight: 800;
+  color: #854d0e;
+  margin-left: 4px;
+}
+
+.saladas-weather-sub {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Centro: Logo + Fecha */
+.saladas-top-center {
+  text-align: center;
+  flex: 1;
+}
+
+.saladas-logo-link {
+  text-decoration: none;
+  display: inline-block;
+}
+
+.saladas-logo-img {
+  max-height: 55px;
+  width: auto;
+  object-fit: contain;
+}
+
+.saladas-brand-fallback {
+  line-height: 1;
+}
+
+.saladas-brand-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #1e293b;
+  letter-spacing: -1px;
+  margin: 0;
+  font-family: Georgia, serif;
+}
+
+.saladas-brand-title span {
+  color: #eab308; /* Amarillo Vibrante */
+}
+
+.saladas-brand-sub {
+  font-size: 0.75rem;
+  color: #854d0e;
+  font-weight: 800;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.saladas-date-text {
+  font-size: 0.85rem;
+  font-weight: 800;
+  color: #a16207; /* Amarillo Ámbar Oscuro */
+  margin-top: 4px;
+  white-space: nowrap;
+}
+
+/* Derecha: Redes */
+.saladas-top-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 14px;
+  flex: 1;
+}
+
+.saladas-top-right a {
+  color: #334155;
+  transition: color 0.2s ease;
+}
+
+.saladas-top-right a:hover {
+  color: #ca8a04;
+}
+
+/* 2. NAVBAR INFERIOR AMARILLO */
+.saladas-nav-bar {
+  background-color: #eab308; /* Amarillo Cítrico / Dorado de Saladas */
+  padding: 0 16px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.saladas-nav-list {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow-x: auto;
+  white-space: nowrap;
+  scrollbar-width: thin;
+}
+
+.saladas-nav-item {
+  background: transparent;
+  border: none;
+  color: #1e293b; /* Texto Oscuro de Alto Contraste */
+  font-size: 0.85rem;
+  font-weight: 800;
+  padding: 12px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.saladas-nav-item:hover, .saladas-nav-item.active {
+  background-color: #ca8a04; /* Amarillo Ámbar Más Oscuro */
+  color: #ffffff;
+}
+
+/* 3. BANNER FULL WIDTH RESPONSIVO */
+.saladas-full-width-banner {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background-color: #fefce8; /* Fondo Amarillo Suave */
+  border-top: 1px solid #fef08a;
+  border-bottom: 1px solid #fef08a;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.saladas-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+}
+
+/* ===================================================
+   MEDIA QUERIES - RESPONSIVIDAD (MOBILE & TABLETS)
+   =================================================== */
+
+/* Laptops medianas y Tablets en horizontal (Menos de 992px) */
+@media (max-width: 991.98px) {
+  .saladas-top-bar {
+    padding: 10px 16px;
+  }
+
+  .saladas-search-btn-box {
+    width: 150px;
+  }
+
+  .saladas-brand-title {
+    font-size: 1.8rem;
+  }
+
+  .saladas-logo-img {
+    max-height: 45px;
+  }
+}
+
+/* Tablets en vertical y celulares grandes (Menos de 768px) */
+@media (max-width: 767.98px) {
+  .saladas-top-bar {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .saladas-top-left {
+    order: 2;
+    flex: 1 1 100%;
+    justify-content: space-between;
+  }
+
+  .saladas-top-center {
+    order: 1;
+    flex: 1 1 100%;
+  }
+
+  .saladas-search-btn-box {
+    width: 55%;
+  }
+
+  .saladas-weather-box {
+    border-left: none;
+    padding-left: 0;
+    text-align: right;
+  }
+
+  .saladas-brand-title {
+    font-size: 1.6rem;
+  }
+
+  .saladas-date-text {
+    font-size: 0.78rem;
+  }
+
+  .saladas-nav-item {
+    padding: 10px 12px;
+    font-size: 0.8rem;
+  }
+}
+
+/* Celulares pequeños (Menos de 480px) */
+@media (max-width: 479.98px) {
+  .saladas-top-bar {
+    padding: 8px 12px;
+  }
+
+  .saladas-search-btn-box {
+    width: 100%;
+  }
+
+  .saladas-top-left {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .saladas-weather-box {
+    border-left: 2px solid #fde047;
+    padding-left: 8px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .saladas-weather-sub {
+    font-size: 0.68rem;
+  }
+
+  .saladas-banner-img {
+    max-height: 60px;
+  }
+
+  .saladas-full-width-banner {
+    padding: 6px 0;
+    margin-bottom: 1rem;
+  }
+}

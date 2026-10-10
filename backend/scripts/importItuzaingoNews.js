@@ -1,0 +1,354 @@
+const mongoose = require('mongoose');
+const fs = require('fs');
+const path = require('path');
+require('dotenv').config();
+
+// Conectar forzando la base de datos municipios_db
+let MONGO_URI = process.env.MONGO_URI;
+if (MONGO_URI && !MONGO_URI.includes('municipios_db') && MONGO_URI.includes('mongodb.net/')) {
+  MONGO_URI = MONGO_URI.replace('mongodb.net/', 'mongodb.net/municipios_db');
+}
+
+const SUPABASE_URL = process.env.SUPABASE_URL || 'https://iyvncqiylnhwphqbllyp.supabase.co';
+const SUPABASE_BUCKET = process.env.SUPABASE_BUCKET || 'noticias-imagenes';
+const SUPABASE_BASE_URL = `${SUPABASE_URL}/storage/v1/object/public/${SUPABASE_BUCKET}`;
+
+const NewsSchema = new mongoose.Schema({}, { strict: false, collection: 'news' });
+const News = mongoose.model('News', NewsSchema);
+
+// Datos del JSON de Ituzaingó incorporados
+const newsData = [
+  {
+    "id": "01-09-2026-1",
+    "title": "Con las rutas, Yacyretá y las tarifas en agenda, Valdés define la estrategia de Corrientes ante el Gobierno nacional",
+    "summary": "El gobernador Juan Pablo Valdes, destacó los espacios de diálogo con la gestión nacional, pero ratificó que no cederá en las demandas históricas de la provincia por las regalías de la represa y el manejo de los corredores viales.",
+    "category": "PROVINCIALES",
+    "date": "2026-09-01",
+    "image": "/news_ituzaingo/01-09-2026-1.jpg",
+    "views": 56
+  },
+  {
+    "id": "31-08-2026-1",
+    "title": "Cuarto año consecutivo: El equipo de Newcom Yacyretá representará a Corrientes en el Nacional para Adultos Mayores",
+    "summary": "Tras imponerse en las finales provinciales de los Juegos Correntinos, el equipo del Club Social y Deportivo Yacyretá logró la clasificación a los Juegos Nacionales que se disputarán en San Juan.",
+    "category": "LOCALES",
+    "date": "2026-08-31",
+    "image": "/news_ituzaingo/31-08-2026-1.jpg",
+    "views": 86
+  },
+  {
+    "id": "01-09-2026-2",
+    "title": "Referentes nacionales e internacionales capacitaron a más de 150 profesionales de la obstetricia",
+    "summary": "En el marco del Día de la Obstetricia y de la Embarazada, el Ministerio de Salud Pública llevó a cabo una jornada de actualización profesional con especialistas de la región, abordando legislaciones, desafíos actuales y contención integral.",
+    "category": "PROVINCIALES",
+    "date": "2026-09-01",
+    "image": "/news_ituzaingo/01-09-2026-2.jpg",
+    "views": 52
+  },
+  {
+    "id": "25-08-2026-1",
+    "title": "El desafío de enseñar sin gritar. El 3 de septiembre Laura Lewin capacitará a docentes en Ituzaingó",
+    "summary": "El Gobierno provincial brindará capacitaciones a docentes y directivos a cargo de Laura Lewin bajo el título 'Cómo gestionar tu aula sin gritar (ni enloquecer)', con jornadas en Santo Tomé e Ituzaingó y puntaje docente.",
+    "category": "LOCALES",
+    "date": "2026-08-25",
+    "image": "/news_ituzaingo/25-08-2026-1.jpg",
+    "views": 324
+  },
+  {
+    "id": "30-08-2026-1",
+    "title": "Ituzaingó fue sede de los Juegos Correntinos 2026 para Adultos Mayores",
+    "summary": "Con el respaldo del Gobierno provincial, Ituzaingó albergó una jornada de los Juegos Correntinos 2026 para Adultos Mayores con múltiples disciplinas deportivas y clasificados a la instancia nacional en San Juan.",
+    "category": "LOCALES",
+    "date": "2026-08-30",
+    "image": "/news_ituzaingo/30-08-2026-1.jpg",
+    "views": 92
+  },
+  {
+    "id": "24-08-2026-1",
+    "title": "Ocurrió en B° Cazadores de esta ciudad. Un detenido y un herido de gravedad tras una pelea con un arma blanca",
+    "summary": "Un hombre de 27 años se encuentra internado en cuidados intensivos tras ser atacado con un arma blanca en el barrio Cazadores Correntinos de Ituzaingó. La Policía detuvo a un sospechoso de 34 años y secuestró el cuchillo utilizado.",
+    "category": "LOCALES",
+    "date": "2026-08-24",
+    "image": "/news_ituzaingo/24-08-2026-1.jpg",
+    "views": 149
+  },
+  {
+    "id": "13-08-2026-1",
+    "title": "Suspenden clases de la carreras de la UTN en Ituzaingó",
+    "summary": "El Rectorado de la UTN-Resistencia suspendió momentáneamente las clases del segundo cuatrimestre en la Extensión Áulica Ituzaingó por dificultades presupuestarias y compromisos con docentes. El municipio pidió no asistir al Centro Cultural mientras gestionan alternativas.",
+    "category": "LOCALES",
+    "date": "2026-08-13",
+    "image": "/news_ituzaingo/13-08-2026-1.jpg",
+    "views": 166
+  },
+  {
+    "id": "02-09-2026-1",
+    "title": "Servicio Militar Voluntario: jóvenes sin secundario completo pueden ingresar y capacitarse en oficios",
+    "summary": "El Ejército Argentino convoca a jóvenes de entre 18 y 24 años sin secundario completo. El régimen permite permanecer hasta los 28 años, finalizar los estudios obligatorios y obtener certificados de oficios con validez nacional.",
+    "category": "INTERÉS GENERAL",
+    "date": "2026-09-02",
+    "image": "/news_ituzaingo/02-09-2026-1.jpg",
+    "views": 72
+  },
+  {
+    "id": "02-09-2026-2",
+    "title": "JP Valdés: presencia en Iguazú, producción, puerto de Ituzaingó, peajes y aumentos salariales",
+    "summary": "El gobernador Juan Pablo Valdés repasó la agenda provincial: su participación en la convención de IAEF en Iguazú, la habilitación del puerto de Ituzaingó en 60 días, la confirmación de aumentos salariales antes de fin de año y las obras preventivas ante El Niño.",
+    "category": "PROVINCIALES",
+    "date": "2026-09-02",
+    "image": "/news_corrientes/02-09-2026-2.jpg",
+    "views": 67
+  },
+  {
+    "id": "02-09-2026-3",
+    "title": "JP Valdés: presencia en Iguazú, producción, puerto de Ituzaingó, peajes y aumentos salariales",
+    "summary": "El gobernador Juan Pablo Valdés repasó la agenda provincial: su participación en la convención de IAEF en Iguazú, la habilitación del puerto de Ituzaingó en 60 días, la confirmación de aumentos salariales antes de fin de año y las obras preventivas ante El Niño.",
+    "category": "PROVINCIALES",
+    "date": "2026-09-02",
+    "image": "/news_ituzaingo/02-09-2026-3.jpg",
+    "views": 67
+  },
+  {
+    "id": "03-09-2026-2",
+    "title": "A través de FODIN, el Gobierno de Corrientes asiste a más de 35 proyectos industriales",
+    "summary": "A través del Fondo de Desarrollo Industrial (FODIN), la Provincia brindó asistencia financiera a más de 35 empresas en Capital y 14 municipios del interior para la modernización de maquinaria, relocalización en parques industriales y generación de empleo.",
+    "category": "PROVINCIALES",
+    "date": "2026-09-03",
+    "image": "/news_corrientes/03-09-2026-2.jpg",
+    "views": 29
+  },
+  {
+    "id": "03-09-2026-1",
+    "title": "Policía, Prefectura, Municipalidad y productores coordinan acciones contra cuatreros extranjeros",
+    "summary": "Ante reiterados intentos de robo de ganado a través del río Paraná, la Policía Rural, Prefectura Naval, el Municipio y productores de Apipé articularon un esquema de vigilancia conjunta y alerta temprana en la zona de La Mosca.",
+    "category": "LOCALES",
+    "date": "2026-09-03",
+    "image": "/news_ituzaingo/03-09-2026-1.jpg",
+    "views": 69
+  },
+  {
+    "id": "04-09-2026-1",
+    "title": "Juan Pablo Valdés y Emilio Nicolás mantuvieron una reunión clave para nuevas obras en Ituzaingó",
+    "summary": "El gobernador Juan Pablo Valdés y el intendente Emilio Nicolás mantuvieron un encuentro de trabajo para coordinar la planificación de nuevas obras de desagües pluviales y pavimentación urbana en Ituzaingó.",
+    "category": "LOCALES",
+    "date": "2026-09-04",
+    "image": "/news_ituzaingo/04-09-2026-1.jpg",
+    "views": 72
+  },
+  {
+    "id": "09-09-2026-1",
+    "title": "Ituzaingó se prepara para vivir la XIX Fiesta Nacional de la Yerra y Doma Correntina",
+    "summary": "En el Centro de Interpretación del Corredor de Naturaleza del Litoral se lanzó la 19ª edición del tradicional encuentro criollo, que tendrá lugar del 11 al 13 de septiembre en el multiespacio San Juan Bautista.",
+    "category": "LOCALES",
+    "date": "2026-09-09",
+    "image": "/news_ituzaingo/09-09-2026-1.jpg",
+    "views": 61
+  },
+  {
+    "id": "08-09-2026-1",
+    "title": "El programa \"Ver para Ser Libres\" brindó atención oftalmológica y entregó anteojos en Ituzaingó",
+    "summary": "El operativo sanitario móvil asistió a 160 vecinos de Ituzaingó con controles de agudeza visual y la entrega de 66 pares de anteojos, en un trabajo conjunto entre Nación, Provincia y Municipio.",
+    "category": "SALUD",
+    "date": "2026-09-08",
+    "image": "/news_ituzaingo/08-09-2026-1.jpg",
+    "views": 0
+  },
+  {
+    "id": "10-09-2026-1",
+    "title": "Salud Pública de la Provincia entregó equipamiento para el Hospital Billinghurst y el CIC del barrio San Jorge",
+    "summary": "El Ministerio de Salud Pública de Corrientes dotó al Hospital Billinghurst de un coagulómetro y una macrocentrífuga, mientras que el Municipio de Ituzaingó recibió un ecógrafo con transductor y medicamentos para la atención primaria.",
+    "category": "SALUD",
+    "date": "2026-09-10",
+    "image": "/news_ituzaingo/10-09-2026-1.jpg",
+    "views": 22
+  },
+  {
+    "id": "10-09-2026-2",
+    "title": "Ituzaingó: secuestraron marihuana, cigarrillos y dinero tras un allanamiento en barrio La Florida",
+    "summary": "Efectivos de la Comisaría Tercera de Ituzaingó incautaron 300 gramos de marihuana, cigarrillos extranjeros, una balanza de precisión y efectivo en una vivienda de La Florida. Dos personas quedaron demoradas.",
+    "category": "POLICIALES",
+    "date": "2026-09-10",
+    "image": "/news_ituzaingo/10-09-2026-2.jpg",
+    "views": 95
+  },
+  {
+    "id": "11-09-2026-1",
+    "title": "Todo listo para la XIX Fiesta Nacional de la Yerra y Doma Correntina",
+    "summary": "Del 11 al 13 de septiembre, Ituzaingó celebra la 19ª edición de la Fiesta Nacional de la Yerra y Doma Correntina en el multiespacio San Juan Bautista, con jineteada, elección de la Guainita y espectáculos en vivo.",
+    "category": "LOCALES",
+    "date": "2026-09-11",
+    "image": "/news_ituzaingo/11-09-2026-1.jpg",
+    "views": 103
+  },
+  {
+    "id": "10-09-2026-3",
+    "title": "Workshop binacional: Argentina y Paraguay articulan acciones para cuidar los recursos del río Paraná",
+    "summary": "En el Centro Cultural de Ituzaingó se realizó un workshop binacional junto a la COMIP y autoridades de Paraguay, encabezado por el intendente Emilio Nicolás, enfocado en la pesca sustentable y el cuidado de la fauna íctica del Paraná.",
+    "category": "LOCALES",
+    "date": "2026-09-10",
+    "image": "/news_ituzaingo/10-09-2026-3.jpg",
+    "views": 93
+  },
+  {
+    "id": "14-09-2026-1",
+    "title": "Juan Pablo Valdés acompañó la 19° Fiesta Nacional de la Yerra y Doma Correntina",
+    "summary": "El gobernador Juan Pablo Valdés recorrió el Multiespacio San Juan Bautista junto al intendente Emilio Nicolás durante la 19° edición de la fiesta tradicionalista, destacando el valor de las costumbres del campo y la identidad chamamecera.",
+    "category": "LOCALES",
+    "date": "2026-09-14",
+    "image": "/news_ituzaingo/14-09-2026-1.jpg",
+    "views": 76
+  },
+  {
+    "id": "14-09-2026-2",
+    "title": "El pacú gana terreno en Corrientes: monitorean cultivos y acompañan a productores en Ituzaingó",
+    "summary": "Técnicos del Plan Ictícola del Ministerio de Producción recorrieron estanques de cría de pacú en Ituzaingó para monitorear el ciclo biológico y acompañar a los productores locales con vistas a la cosecha de fin de año.",
+    "category": "PRODUCCIÓN",
+    "date": "2026-09-14",
+    "image": "/news_ituzaingo/14-09-2026-2.jpg",
+    "views": 70
+  },
+  {
+    "id": "16-09-2026-1",
+    "title": "Ituzaingó se consagró ganadora del Mundialito de Ciudades de Argentina organizado por OLGA",
+    "summary": "Tras una ajustada votación final frente a Río Grande, Ituzaingó se coronó campeona del certamen del canal de streaming OLGA. Migue Granados transmitirá 'Soñé que Volaba' en vivo desde la ciudad correntina.",
+    "category": "LOCALES",
+    "date": "2026-09-16",
+    "image": "/news_ituzaingo/16-09-2026-1.jpg",
+    "views": 77
+  },
+  {
+    "id": "18-09-2026-1",
+    "title": "Planta de Faena Industrial en Ituzaingó: ultiman detalles para la puesta en marcha de una obra estratégica",
+    "summary": "El intendente Emilio Nicolás y el ministro de Producción, Walter Chávez, supervisaron los avances finales de la Planta de Faena Industrial, una obra financiada por la Provincia para potenciar el sector ganadero y bufalero.",
+    "category": "PRODUCCIÓN",
+    "date": "2026-09-18",
+    "image": "/news_ituzaingo/18-09-2026-1.jpg",
+    "views": 154
+  },
+  {
+    "id": "21-09-2026-1",
+    "title": "Ituzaingó: capturaron a un prófugo brasileño con alerta roja de INTERPOL condenado por violación",
+    "summary": "Gilmar Busanello (56), sentenciado a más de 38 años de cárcel en Brasil, fue detenido en una estancia sobre la Ruta 12. Estaba armado, acompañado por una mujer y portaba cerca de 20 millones de pesos entre moneda nacional y dólares.",
+    "category": "POLICIALES",
+    "date": "2026-09-21",
+    "image": "/news_ituzaingo/21-09-2026-1.jpg",
+    "views": 171
+  },
+  {
+    "id": "30-09-2026-1",
+    "title": "Ruta 12: Gendarmería interceptó más de 2 kilos de marihuana en un vehículo a la altura de Paraje Filadelfia",
+    "summary": "Efectivos del Escuadrón 47 Ituzaingó detectaron cogollos de marihuana ocultos bajo el asiento de un Renault Kwid mediante el can detector Roque. Dos personas quedaron supeditadas a la causa federal.",
+    "category": "POLICIALES",
+    "date": "2026-09-30",
+    "image": "/news_ituzaingo/30-09-2026-1.jpg",
+    "views": 51
+  },
+  {
+    "id": "17-09-2026-1",
+    "title": "Día del Profesor: por qué se celebra el 17 de septiembre en Argentina",
+    "summary": "Cada 17 de septiembre se conmemora en todo el país el Día del Profesor en homenaje a José Manuel Estrada, escritor, docente y político argentino fallecido en 1894, recordado por su defensa de la educación y la libertad de cátedra.",
+    "category": "EDUCACIÓN",
+    "date": "2026-09-17",
+    "image": "/news_ituzaingo/17-09-2026-1.jpg",
+    "views": 120
+  },
+  {
+    "id": "18-09-2026-2",
+    "title": "Rige alerta amarilla por lluvias y tormentas para la provincia de Corrientes",
+    "summary": "El Servicio Meteorológico Nacional emitió una advertencia por tormentas de variada intensidad y actividad eléctrica desde el viernes a la noche hasta el mediodía del sábado. Mejorará hacia el domingo, pero las lluvias regresarían el lunes.",
+    "category": "CLIMA",
+    "date": "2026-09-18",
+    "image": "/news_ituzaingo/18-09-2026-2.jpg",
+    "views": 125
+  },
+  {
+    "id": "22-09-2026-1",
+    "title": "Informe de Yacyretá: proyectan un fenómeno de 'Súper Niño' y monitorean el caudal del río Paraná",
+    "summary": "La Entidad Binacional Yacyretá advirtió que la probabilidad de persistencia del fenómeno ENOS es cercana al 100% para lo que resta de 2026 y comienzos de 2027. Monitorean posibles picos de crecida y explican la dinámica de generación energética.",
+    "category": "GENERAL",
+    "date": "2026-09-22",
+    "image": "/news_ituzaingo/22-09-2026-1.jpg",
+    "views": 103
+  },
+  {
+    "id": "23-09-2026-1",
+    "title": "Ingreso 2027: abrieron las inscripciones para formarse como oficial en el Colegio Militar de la Nación",
+    "summary": "El Colegio Militar de la Nación abrió la convocatoria de postulantes para el ciclo 2027. Las inscripciones estarán habilitadas hasta el 26 de octubre, con exámenes presenciales en noviembre e incorporación en febrero.",
+    "category": "EDUCACIÓN",
+    "date": "2026-09-23",
+    "image": "/news_ituzaingo/23-09-2026-1.jpg",
+    "views": 172
+  },
+  {
+    "id": "23-09-2026-2",
+    "title": "En el centenario de Virasoro, Valdés entregó más de 600 notebooks e inauguró cuadras de asfalto",
+    "summary": "En el 100° aniversario de Gobernador Virasoro, Juan Pablo Valdés distribuyó 613 computadoras del programa Incluir Futuro, anunció la compra de otros 10 mil equipos, habilitó 20 cuadras de pavimento y presentó el proyecto de la futura circunvalación.",
+    "category": "PROVINCIALES",
+    "date": "2026-09-23",
+    "image": "/news_ituzaingo/23-09-2026-2.jpg",
+    "views": 137
+  },
+  {
+    "id": "30-09-2026-2",
+    "title": "A partir del 7 de octubre el peaje de Ituzaingó ya no podrá pagarse en efectivo",
+    "summary": "La estación de peaje sobre la Ruta Nacional 12 pasará a operar de manera 100% digital desde el 7 de octubre. Se admitirá únicamente el pago con TelePASE, tarjetas de débito/crédito, transferencias y billeteras virtuales mediante QR.",
+    "category": "LOCALES",
+    "date": "2026-09-30",
+    "image": "/news_ituzaingo/30-09-2026-2.jpg",
+    "views": 13
+  },
+  {
+    "id": "06-10-2026-1",
+    "title": "Fenómeno de El Niño: la Armada Argentina desplegará buques y medios anfibios en Corrientes y el Litoral",
+    "summary": "El Comando del Área Naval Fluvial alista el buque multipropósito ARA 'Ciudad de Zárate', la patrullera ARA 'Punta Mogotes' y vehículos anfibios con base en el puerto de Corrientes para asistir a poblaciones vulnerables ante posibles crecidas e inundaciones.",
+    "category": "PROVINCIALES",
+    "date": "2026-10-06",
+    "image": "/news_corrientes/06-10-2026-1.jpg",
+    "views": 135
+  }
+];
+
+async function importNews() {
+  try {
+    console.log('Conectando a MongoDB Atlas...');
+    await mongoose.connect(MONGO_URI);
+    console.log(`✅ Conectado a BD: "${mongoose.connection.db.databaseName}"`);
+
+    let count = 0;
+
+    for (const item of newsData) {
+      const cleanPath = item.image.replace(/^\//, '');
+      const supabaseUrl = `${SUPABASE_BASE_URL}/${cleanPath}`;
+
+      const docToUpsert = {
+        idOriginal: item.id,
+        titulo: item.title,
+        subtitulo: item.summary,
+        contenidoMarkdown: item.summary, // O el texto cargado de sus .md
+        categoria: item.category,
+        fechaPublicacion: new Date(item.date),
+        imagenPrincipal: supabaseUrl,
+        vistas: item.views || 0,
+        municipio: 'ituzaingo',
+        publicado: true
+      };
+
+      await News.updateOne(
+        { idOriginal: item.id, municipio: 'ituzaingo' },
+        { $set: docToUpsert },
+        { upsert: true }
+      );
+
+      count++;
+      console.log(`[+] [${count}/${newsData.length}] Noticia procesada: "${item.title.substring(0, 45)}..."`);
+    }
+
+    console.log(`\n🎉 Carga de noticias para Ituzaingó completada. Se importaron/actualizaron ${count} publicaciones.`);
+    process.exit(0);
+  } catch (err) {
+    console.error('❌ Error importando noticias:', err);
+    process.exit(1);
+  }
+}
+
+importNews();

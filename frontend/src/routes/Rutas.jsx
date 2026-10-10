@@ -3,6 +3,11 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 // CONFIGURACIÓN DINÁMICA
 import { configActual } from '../config/municipios';
 
+// Autenticación y Panel de Administración
+import Login from '../components/pages/Login';
+import NewsAdmin from '../components/pages/NewsAdmin';
+import ProtectedRoute from '../components/ProtectedRoute';
+
 // Páginas principales
 import Portada from '../components/pages/Portada';
 import Noticias from '../components/pages/Noticias';
@@ -37,6 +42,13 @@ import NotFound from '../components/pages/NotFound';
 const Rutas = () => {
   return (
     <Routes>
+      {/* Autenticación y Administración */}
+      <Route path="/login" element={<Login />} />
+      
+      <Route element={<ProtectedRoute />}>
+        <Route path="/admin/noticias" element={<NewsAdmin />} />
+      </Route>
+
       {/* Las rutas que estan comentadas son las que no estan activas 
       en este momento pero pueden servir para despues */}
       <Route path="/" element={<Portada />} />

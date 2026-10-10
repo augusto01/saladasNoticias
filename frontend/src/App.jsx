@@ -7,6 +7,9 @@ import Rutas from './routes/Rutas';
 import SponsorsCarousel from './components/Layout/SponsorsCarousel';
 import Footer from './components/Layout/Footer';
 
+// CONTEXTO DE AUTENTICACIÓN
+import { AuthProvider } from './context/AuthContext';
+
 // CONFIGURACIÓN DINÁMICA DE MUNICIPIOS
 import { configActual } from './config/municipios';
 
@@ -21,31 +24,32 @@ function App() {
   }, []);
 
   return (
-    <BrowserRouter>
-      {/* METADATOS DINÁMICOS POR MUNICIPIO */}
-      <Helmet>
-        <title>{configActual.portal || "Portal Municipal"}</title>
-        <link 
-          rel="icon" 
-          type="image/png" 
-          href={configActual.favicon || configActual.logo} 
-        />
-      </Helmet>
+    <AuthProvider>
+      <BrowserRouter>
+        {/* METADATOS DINÁMICOS POR MUNICIPIO */}
+        <Helmet>
+          <title>{configActual.portal || "Portal Municipal"}</title>
+          <link 
+            rel="icon" 
+            type="image/png" 
+            href={configActual.favicon || configActual.logo} 
+          />
+        </Helmet>
 
-      {/* w-100 asegura todo el ancho, min-vh-100 todo el alto */}
-      <div className="d-flex flex-column min-vh-100 w-100">
-        <Navbar />
-        
-        {/* Contenido principal flex-grow-1 empuja el footer hacia abajo */}
-        <main className="flex-grow-1 w-100">
-          <Rutas />
-        </main>
+        {/* w-100 asegura todo el ancho, min-vh-100 todo el alto */}
+        <div className="d-flex flex-column min-vh-100 w-100">
+          
+          {/* Contenido principal flex-grow-1 empuja el footer hacia abajo */}
+          <main className="flex-grow-1 w-100">
+            <Rutas />
+          </main>
 
-        {/* <SponsorsCarousel /> */}
-        
-        <Footer />
-      </div>
-    </BrowserRouter>
+          {/* <SponsorsCarousel /> */}
+          
+          <Footer />
+        </div>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }
 
