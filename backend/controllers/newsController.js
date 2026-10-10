@@ -1,4 +1,5 @@
 const News = require('../models/News');
+const mongoose = require('mongoose');
 
 // 1. GET: Obtener noticias de un municipio específico
 const getNewsByMunicipio = async (req, res) => {
