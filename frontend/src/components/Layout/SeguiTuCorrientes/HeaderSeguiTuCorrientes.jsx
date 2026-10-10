@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { configActual } from '../../../config/municipios';
 import '../SeguiTuCorrientes/SeguiTuCorrientes.css';
 
 export default function HeaderSeguiTuCorrientes(props) {
@@ -8,11 +9,16 @@ export default function HeaderSeguiTuCorrientes(props) {
   const setSelectedCategory = props.setSelectedCategory || props.onSelectCategory || props.setCategory;
   const tags = props.tags || props.etiquetas || [];
   
-  // Función para enviar el término de búsqueda al estado principal de NewsList
+  // Función para enviar el término de búsqueda al estado principal
   const onSearch = props.onSearch || props.setSearchTerm || props.handleSearch;
 
   const [terminoLocal, setTerminoLocal] = useState(props.searchTerm || '');
   const [mostrarBuscador, setMostrarBuscador] = useState(false);
+
+  // Datos dinámicos del municipio activo
+  const esSaladas = configActual?.id === 'saladas';
+  const logoMunicipio = configActual?.logo || (esSaladas ? '/img/logos/saladas.png' : '/img/logos/01_Logotipo.png');
+  const nombreMunicipio = configActual?.nombre || 'Portal de Noticias';
 
   // Manejador en tiempo real mientras el usuario escribe
   const manejarCambioInput = (e) => {
@@ -39,7 +45,7 @@ export default function HeaderSeguiTuCorrientes(props) {
   };
 
   return (
-    <header className="segui-header-compacto">
+    <header className={`segui-header-compacto ${esSaladas ? 'header-saladas' : ''}`}>
       {/* 1. BARRA SUPERIOR: Tendencias (Hashtags) y Fecha */}
       <div className="segui-top-bar">
         <div className="segui-top-container">
@@ -58,7 +64,9 @@ export default function HeaderSeguiTuCorrientes(props) {
                   </button>
                 ))
               ) : (
-                <span className="tag-estatico">#SEGUITUCORRIENTES</span>
+                <span className="tag-estatico">
+                  #{esSaladas ? 'SALADAS' : 'SEGUITUCORRIENTES'}
+                </span>
               )}
             </div>
           </div>
@@ -68,13 +76,13 @@ export default function HeaderSeguiTuCorrientes(props) {
         </div>
       </div>
 
-      {/* 2. HEADER PRINCIPAL */}
+      {/* 2. HEADER PRINCIPAL CON LOGO DINÁMICO */}
       <div className="segui-main-bar">
         <div className="segui-main-container">
           <Link to="/" className="segui-brand" onClick={() => setSelectedCategory && setSelectedCategory('Todas')}>
             <img 
-              src="/img/logos/01_Logotipo.png" 
-              alt="Seguí Tu Corrientes" 
+              src={logoMunicipio} 
+              alt={nombreMunicipio} 
               className="segui-logo-img"
             />
           </Link>
