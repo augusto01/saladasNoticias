@@ -12,14 +12,32 @@ const app = express();
 // Conectar a la Base de Datos (MongoDB Atlas)
 connectDB();
 
-// Configuración de CORS Dinámica (Compatible con credenciales y dominios personalizados)
+// Configurar CORS
+const allowedOrigins = process.env.ALLOWED_ORIGINS 
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
+  : ['http://localhost:3000', 'http://localhost:5173', 'https://saladasnoticias.com'];
+
 app.use(cors({
-  origin: true, // Refleja dinámicamente el origen de la solicitud (saladasnoticias.com, localhost, etc.)
+  origin: (origin, callback) => {
+    // 1. Permitir solicitudes sin origen (Postman, scripts locales, server-to-server)
+    if (!origin) {
+      return callback(null, true);
+    }
+
+    // 2. Si la variable es '*' o el origen está explícitamente en la lista
+    if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // 3. FALLBACK PERMISIVO: En lugar de hacer callback(new Error(...)), 
+    // permitimos la petición para evitar que Express crashee
+    console.warn(`⚠️ Origen recibido fuera de lista, permitiendo por fallback: ${origin}`);
+    return callback(null, true);
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
-
 // Middlewares para parsear el cuerpo de las peticiones HTTP
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
