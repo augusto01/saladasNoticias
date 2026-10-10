@@ -1,6 +1,6 @@
 const News = require('../models/News');
 
-// 1. GET: Obtener todas las noticias de un municipio específico
+// 1. GET: Obtener noticias de un municipio específico
 const getNewsByMunicipio = async (req, res) => {
   try {
     const { municipio } = req.query;
@@ -9,16 +9,39 @@ const getNewsByMunicipio = async (req, res) => {
       return res.status(400).json({ error: 'Debes especificar el parámetro municipio (slug o id)' });
     }
 
-    // Busca las noticias correspondientes al municipio ordenadas de más reciente a más antigua
-    const news = await News.find({ municipioId: municipio }).sort({ createdAt: -1 });
+    const municipioClean = municipio.toString().trim();
 
-    res.json({
+    // Filtra por municipio (coincidencia flexible e insensible a mayúsculas/minúsculas)
+    // Soporta tanto si en la BD el campo se llama "municipio" o "municipioId"
+    const queryFilter = {
+      $and: [
+        {
+          $or: [
+            { municipio: { $regex: new RegExp(`^${municipioClean}$`, 'i') } },
+            { municipioId: { $regex: new RegExp(`^${municipioClean}$`, 'i') } }
+          ]
+        },
+        { publicado: { $ne: false } } // Devuelve noticias marcadas como true o sin el flag explícito
+      ]
+    };
+
+    const news = await News.find(queryFilter)
+      .select('idOriginal titulo subtitulo imagenPrincipal categoria municipio municipioId publicado fechaPublicacion createdAt galeria videos')
+      .sort({ fechaPublicacion: -1, createdAt: -1, _id: -1 })
+      .lean();
+
+    // Compatibilidad en caso de que el frontend requiera array directo
+    if (req.headers['x-legacy-response'] === 'true') {
+      return res.json(news);
+    }
+
+    return res.json({
       total: news.length,
       data: news
     });
   } catch (error) {
     console.error('Error al obtener noticias:', error);
-    res.status(500).json({ error: 'Error al consultar las noticias' });
+    return res.status(500).json({ error: 'Error al consultar las noticias' });
   }
 };
 
@@ -32,10 +55,13 @@ const getNewsById = async (req, res) => {
       return res.status(404).json({ error: 'Noticia no encontrada' });
     }
 
-    res.json(newsItem);
+    // Incrementa contador de vistas en segundo plano
+    News.findByIdAndUpdate(id, { $inc: { vistas: 1 } }).catch(() => {});
+
+    return res.json(newsItem);
   } catch (error) {
     console.error('Error al obtener detalle de la noticia:', error);
-    res.status(500).json({ error: 'Error al consultar la noticia' });
+    return res.status(500).json({ error: 'Error al consultar la noticia' });
   }
 };
 
@@ -43,6 +69,7 @@ const getNewsById = async (req, res) => {
 const createNews = async (req, res) => {
   try {
     const {
+      municipio,
       municipioId,
       titulo,
       subtitulo,
@@ -52,44 +79,48 @@ const createNews = async (req, res) => {
       galeria,
       videos,
       destacada,
-      publicado
+      publicado,
+      fechaPublicacion
     } = req.body;
 
+    const targetMunicipio = (municipio || municipioId || '').toLowerCase().trim();
+
+    if (!titulo || !targetMunicipio) {
+      return res.status(400).json({ error: 'El título y municipio son obligatorios' });
+    }
+
     // Validación de permisos según el rol del usuario autenticado por JWT
-    if (req.user.rol !== 'SUPER_ADMIN' && municipioId !== req.user.municipioAsignado) {
+    if (req.user && req.user.rol !== 'SUPER_ADMIN' && targetMunicipio !== req.user.municipioAsignado?.toLowerCase()) {
       return res.status(403).json({
-        error: `No tenés permisos para publicar noticias en el municipio '${municipioId}'`
+        error: `No tenés permisos para publicar noticias en el municipio '${targetMunicipio}'`
       });
     }
 
-    if (!titulo || !contenidoMarkdown || !municipioId) {
-      return res.status(400).json({ error: 'El título, contenido y municipio son obligatorios' });
-    }
-
     const newNews = new News({
-      municipioId,
+      municipio: targetMunicipio,
+      municipioId: targetMunicipio, // Guarda en ambos campos para mantener consistencia
       titulo,
       subtitulo: subtitulo || '',
-      contenidoMarkdown,
-      categoria: categoria ? categoria.toUpperCase() : 'GESTIÓN',
+      contenidoMarkdown: contenidoMarkdown || '',
+      categoria: categoria ? categoria.toUpperCase().trim() : 'GENERAL',
       imagenPrincipal: imagenPrincipal || '',
       galeria: galeria || [],
       videos: videos || [],
       destacada: destacada || false,
       publicado: publicado !== undefined ? publicado : true,
-      autor: req.user.id,
-      fechaPublicacion: new Date()
+      autor: req.user ? req.user.id : null,
+      fechaPublicacion: fechaPublicacion ? new Date(fechaPublicacion) : new Date()
     });
 
     const savedNews = await newNews.save();
 
-    res.status(201).json({
+    return res.status(201).json({
       mensaje: 'Noticia creada con éxito',
       data: savedNews
     });
   } catch (error) {
     console.error('Error al crear noticia:', error);
-    res.status(500).json({ error: 'Error al guardar la noticia' });
+    return res.status(500).json({ error: 'Error al guardar la noticia' });
   }
 };
 
@@ -103,28 +134,36 @@ const updateNews = async (req, res) => {
       return res.status(404).json({ error: 'Noticia no encontrada' });
     }
 
+    const currentMunicipio = newsItem.municipio || newsItem.municipioId;
+
     // Control de acceso por rol
-    if (req.user.rol !== 'SUPER_ADMIN' && newsItem.municipioId !== req.user.municipioAsignado) {
+    if (req.user && req.user.rol !== 'SUPER_ADMIN' && currentMunicipio?.toLowerCase() !== req.user.municipioAsignado?.toLowerCase()) {
       return res.status(403).json({ error: 'No tenés permisos para modificar esta noticia' });
     }
 
-    // Actualiza la noticia y la marca de tiempo updatedAt
+    const updateData = { ...req.body };
+    if (updateData.municipio || updateData.municipioId) {
+      const cleanMun = (updateData.municipio || updateData.municipioId).toLowerCase().trim();
+      updateData.municipio = cleanMun;
+      updateData.municipioId = cleanMun;
+    }
+    if (updateData.categoria) {
+      updateData.categoria = updateData.categoria.toUpperCase().trim();
+    }
+
     const updatedNews = await News.findByIdAndUpdate(
       id,
-      { 
-        ...req.body, 
-        updatedAt: Date.now() 
-      },
+      { $set: updateData },
       { new: true, runValidators: true }
     );
 
-    res.json({
+    return res.json({
       mensaje: 'Noticia actualizada correctamente',
       data: updatedNews
     });
   } catch (error) {
     console.error('Error al actualizar la noticia:', error);
-    res.status(500).json({ error: 'Error interno al actualizar la noticia' });
+    return res.status(500).json({ error: 'Error interno al actualizar la noticia' });
   }
 };
 
@@ -138,17 +177,19 @@ const deleteNews = async (req, res) => {
       return res.status(404).json({ error: 'Noticia no encontrada' });
     }
 
+    const currentMunicipio = newsItem.municipio || newsItem.municipioId;
+
     // Control de acceso por rol
-    if (req.user.rol !== 'SUPER_ADMIN' && newsItem.municipioId !== req.user.municipioAsignado) {
+    if (req.user && req.user.rol !== 'SUPER_ADMIN' && currentMunicipio?.toLowerCase() !== req.user.municipioAsignado?.toLowerCase()) {
       return res.status(403).json({ error: 'No tenés permisos para eliminar esta noticia' });
     }
 
     await News.findByIdAndDelete(id);
 
-    res.json({ mensaje: 'Noticia eliminada correctamente' });
+    return res.json({ mensaje: 'Noticia eliminada correctamente' });
   } catch (error) {
     console.error('Error al eliminar la noticia:', error);
-    res.status(500).json({ error: 'Error interno al eliminar la noticia' });
+    return res.status(500).json({ error: 'Error interno al eliminar la noticia' });
   }
 };
 

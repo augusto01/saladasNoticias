@@ -1,246 +1,131 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Newspaper } from 'lucide-react';
-import WeatherWidget from './WeatherWidget';
+import axios from 'axios';
 
-// Componentes de Header por Municipio
-import HeaderSaladas from '../components/Layout/Saladas/HeaderSaladas';
-import HeaderSantaRosa from '../components/Layout/SR/HeaderSantaRosa';
-import HeaderItuzaingo from '../components/Layout/Ituzaingo/HeaderItuzaingo';
-import HeaderCorrientes from '../components/Layout/Corrientes/HeaderCorrientes';
-
-import { configActual } from '../config/municipios';
-import API from '../../services/api';
-
-import '../styles/NewsList.css';
-
-const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
-
-function parseSafeDate(dateString) {
-  if (!dateString) return new Date(0);
-  const parsed = new Date(dateString);
-  if (!isNaN(parsed.getTime())) return parsed;
-  return new Date(0);
-}
-
-function formatDate(dateString) {
-  const date = parseSafeDate(dateString);
-  if (date.getTime() === 0) return dateString;
-
-  return new Intl.DateTimeFormat('es-AR', {
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  }).format(date);
-}
-
-export default function NewsList() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Todas");
-  const [newsSummary, setNewsSummary] = useState([]);
+const NewsList = () => {
+  const [news, setNews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Leemos municipio desde el .env
-  const municipioEnv = (
-    (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.VITE_MUNICIPIO_ID) ||
-    (typeof process !== 'undefined' && process.env && process.env.REACT_APP_MUNICIPIO_ID) ||
-    configActual.id ||
-    'saladas'
-  ).toLowerCase();
+  // Obtiene la URL base y el ID del municipio desde las variables de entorno de Vite (.env)
+  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://tu-backend.onrender.com/api';
+  const MUNICIPIO_ID = import.meta.env.VITE_MUNICIPIO_ID || 'saladas';
 
   useEffect(() => {
     const fetchNews = async () => {
-      setLoading(true);
       try {
-        const res = await API.get(`/noticias?municipio=${municipioEnv}`);
-        const data = Array.isArray(res.data) ? res.data : (res.data.data || []);
-        const publicadas = data.filter(item => item.publicado !== false);
-        setNewsSummary(publicadas);
-      } catch (error) {
-        console.error('Error al cargar noticias:', error);
+        setLoading(true);
+        setError(null);
+
+        // Petición al backend filtrando por el municipio actual
+        const response = await axios.get(`${BACKEND_URL}/news`, {
+          params: { municipio: MUNICIPIO_ID }
+        });
+
+        // Soporta respuesta en formato array directo o dentro de { data: [...] }
+        const newsData = Array.isArray(response.data) 
+          ? response.data 
+          : response.data.data || [];
+
+        setNews(newsData);
+      } catch (err) {
+        console.error('Error al cargar las noticias:', err);
+        setError('No se pudieron cargar las noticias. Intente nuevamente más tarde.');
       } finally {
         setLoading(false);
       }
     };
 
     fetchNews();
-  }, [municipioEnv]);
+  }, [BACKEND_URL, MUNICIPIO_ID]);
 
-  const dynamicCategories = [
-    "Todas",
-    ...Array.from(
-      new Set(
-        newsSummary
-          .map((item) => item.category || item.categoria)
-          .filter(Boolean)
-          .map((cat) => cat.trim().toUpperCase())
-      )
-    ),
-  ];
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center min-h-[300px]">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
+      </div>
+    );
+  }
 
-  const filteredNews = newsSummary.filter((item) => {
-    const cat = item.category || item.categoria || "";
-    const matchesCategory =
-      selectedCategory === "Todas" ||
-      cat.toUpperCase() === selectedCategory.toUpperCase();
+  if (error) {
+    return (
+      <div className="text-center py-10 text-red-600 font-semibold">
+        {error}
+      </div>
+    );
+  }
 
-    const title = item.title || item.titulo || "";
-    const summary = item.summary || item.subtitulo || item.resumen || "";
-    const matchesSearch =
-      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      summary.toLowerCase().includes(searchTerm.toLowerCase());
-
-    return matchesCategory && matchesSearch;
-  });
-
-  const sortedNews = [...filteredNews].sort((a, b) => {
-    const timeA = parseSafeDate(a.fechaPublicacion || a.createdAt).getTime();
-    const timeB = parseSafeDate(b.fechaPublicacion || b.createdAt).getTime();
-    return timeB - timeA;
-  });
-
-  const hasNews = sortedNews.length > 0;
-  const mainNews = hasNews ? sortedNews[0] : null;
-  const secondaryNews = hasNews ? sortedNews.slice(1) : [];
-
-  // SWITCH CONDICIONAL PARA LOS 4 MUNICIPIOS
-  const renderHeader = () => {
-    switch (municipioEnv) {
-      case 'corrientes':
-        return (
-          <HeaderCorrientes
-            configActual={configActual}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            dynamicCategories={dynamicCategories}
-          />
-        );
-      case 'ituzaingo':
-        return (
-          <HeaderItuzaingo
-            configActual={configActual}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            dynamicCategories={dynamicCategories}
-          />
-        );
-      case 'santarosa':
-        return (
-          <HeaderSantaRosa
-            configActual={configActual}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            dynamicCategories={dynamicCategories}
-          />
-        );
-      case 'saladas':
-      default:
-        return (
-          <HeaderSaladas
-            configActual={configActual}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedCategory={selectedCategory}
-            setSelectedCategory={setSelectedCategory}
-            dynamicCategories={dynamicCategories}
-          />
-        );
-    }
-  };
+  if (news.length === 0) {
+    return (
+      <div className="text-center py-10 text-gray-500">
+        No hay noticias publicadas para esta localidad en este momento.
+      </div>
+    );
+  }
 
   return (
-    <div className="news-page-wrapper">
-      
-      {/* HEADER DINÁMICO SEGÚN .ENV */}
-      {renderHeader()}
+    <div className="container mx-auto px-4 py-8">
+      <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-blue-600 pb-2 capitalize">
+        Últimas Noticias - {MUNICIPIO_ID}
+      </h2>
 
-      {/* GRILLA PRINCIPAL Y SIDEBAR */}
-      <div className="container news-container">
-        <div className="news-grid">
-          
-          <section className="news-main-column">
-            {loading ? (
-              <div className="card p-5 text-center my-4 border-0 shadow-sm">
-                <div className="spinner-border text-primary mx-auto mb-3" role="status"></div>
-                <p className="text-muted mb-0">Cargando noticias de {configActual.nombre}...</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {news.map((item) => (
+          <article 
+            key={item._id} 
+            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between"
+          >
+            <div>
+              {item.imagenPrincipal && (
+                <div className="relative h-48 overflow-hidden">
+                  <img
+                    src={item.imagenPrincipal}
+                    alt={item.titulo}
+                    className="w-full h-full object-cover"
+                    onError={(e) => {
+                      e.target.src = '/placeholder-news.jpg'; // Imagen de respaldo si falla
+                    }}
+                  />
+                  {item.categoria && (
+                    <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded uppercase">
+                      {item.categoria}
+                    </span>
+                  )}
+                </div>
+              )}
+
+              <div className="p-4">
+                <p className="text-xs text-gray-500 mb-1">
+                  {item.fechaPublicacion 
+                    ? new Date(item.fechaPublicacion).toLocaleDateString('es-AR', {
+                        day: '2-digit',
+                        month: '2-digit',
+                        year: 'numeric'
+                      })
+                    : ''}
+                </p>
+                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                  {item.titulo}
+                </h3>
+                <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                  {item.subtitulo}
+                </p>
               </div>
-            ) : !hasNews ? (
-              <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
-                <Newspaper size={48} className="mx-auto text-muted mb-3" />
-                <h3>Aún no hay noticias en {configActual.nombre}</h3>
-              </div>
-            ) : (
-              <>
-                {mainNews && (
-                  <Link to={`/noticias/${mainNews._id || mainNews.id}`} className="featured-news-card">
-                    <div className="featured-img-wrapper">
-                      <img 
-                        src={mainNews.imagenPrincipal || DEFAULT_PLACEHOLDER} 
-                        alt={mainNews.titulo} 
-                        className="featured-img" 
-                        onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
-                      />
-                      <span className="news-badge">{mainNews.categoria}</span>
-                    </div>
-                    <div className="featured-content">
-                      <span className="news-date">{formatDate(mainNews.fechaPublicacion || mainNews.createdAt)}</span>
-                      <h2 className="featured-title">{mainNews.titulo}</h2>
-                      <p className="featured-summary">{mainNews.subtitulo}</p>
-                    </div>
-                  </Link>
-                )}
-
-                {secondaryNews.length > 0 && (
-                  <div className="secondary-news-grid">
-                    {secondaryNews.map((item) => (
-                      <Link to={`/noticias/${item._id}`} key={item._id} className="secondary-news-card">
-                        <div className="secondary-img-wrapper">
-                          <img 
-                            src={item.imagenPrincipal || DEFAULT_PLACEHOLDER} 
-                            alt={item.titulo} 
-                            className="secondary-img"
-                            onError={(e) => { e.target.onerror = null; e.target.src = DEFAULT_PLACEHOLDER; }}
-                          />
-                          <span className="news-badge-sm">{item.categoria}</span>
-                        </div>
-                        <div className="secondary-content">
-                          <span className="news-date">{formatDate(item.fechaPublicacion || item.createdAt)}</span>
-                          <h3 className="secondary-title">{item.titulo}</h3>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </>
-            )}
-          </section>
-
-          <aside className="news-sidebar">
-            <div className="sidebar-widget">
-              <WeatherWidget />
             </div>
 
-            <div className="sidebar-widget ad-widget text-center">
-              <a href="https://www.argentina.gob.ar" target="_blank" rel="noopener noreferrer">
-                <img 
-                  src="/300x300bannerweb.gif" 
-                  alt="Publicidad Lateral" 
-                  className="img-fluid rounded shadow-sm"
-                  onError={(e) => { e.target.style.display = 'none'; }}
-                />
-              </a>
+            <div className="p-4 pt-0">
+              <Link
+                to={`/noticia/${item._id}`}
+                className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200"
+              >
+                Leer noticia completa
+              </Link>
             </div>
-          </aside>
-
-        </div>
+          </article>
+        ))}
       </div>
-
     </div>
   );
-}
+};
+
+export default NewsList;
