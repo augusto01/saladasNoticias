@@ -11,8 +11,7 @@ const getNewsByMunicipio = async (req, res) => {
 
     const municipioClean = municipio.toString().trim();
 
-    // Filtra por municipio de forma flexible (insensible a mayúsculas/minúsculas)
-    // Busca tanto en "municipio" como en "municipioId" para maxima compatibilidad
+    // Filtra por municipio y excluye las dadas de baja lógicamente (publicado != false / publicado != 0)
     const queryFilter = {
       $and: [
         {
@@ -21,7 +20,7 @@ const getNewsByMunicipio = async (req, res) => {
             { municipioId: { $regex: new RegExp(`^${municipioClean}$`, 'i') } }
           ]
         },
-        { publicado: { $ne: false } } // Retorna publicadas o sin flag explícito
+        { publicado: { $ne: false,$ne: 0 } } // Excluye bajas lógicas
       ]
     };
 
@@ -30,7 +29,6 @@ const getNewsByMunicipio = async (req, res) => {
       .sort({ fechaPublicacion: -1, createdAt: -1, _id: -1 })
       .lean();
 
-    // Compatibilidad en caso de que el frontend pida el array directo vía header
     if (req.headers['x-legacy-response'] === 'true') {
       return res.json(news);
     }
@@ -51,7 +49,7 @@ const getNewsById = async (req, res) => {
     const { id } = req.params;
 
     const newsItem = await News.findById(id);
-    if (!newsItem) {
+    if (!newsItem || newsItem.publicado === false || newsItem.publicado === 0) {
       return res.status(404).json({ error: 'Noticia no encontrada' });
     }
 
@@ -89,21 +87,30 @@ const createNews = async (req, res) => {
       return res.status(400).json({ error: 'El título y municipio son obligatorios' });
     }
 
+    // Requisito obligatorio: Portada requerida
+    if (!imagenPrincipal || !imagenPrincipal.trim()) {
+      return res.status(400).json({ error: 'La imagen de portada es obligatoria' });
+    }
+
+    // Normalización de municipio del usuario
+    const userMunicipio = req.user?.municipioAsignado ? req.user.municipioAsignado.toLowerCase().trim() : '';
+
     // Validación de permisos según rol
-    if (req.user && req.user.rol !== 'SUPER_ADMIN' && targetMunicipio !== req.user.municipioAsignado?.toLowerCase()) {
+    if (req.user && req.user.rol !== 'SUPER_ADMIN' && targetMunicipio !== userMunicipio) {
       return res.status(403).json({
         error: `No tenés permisos para publicar noticias en el municipio '${targetMunicipio}'`
       });
     }
 
     const newNews = new News({
+      idOriginal: `manual-${Date.now()}`,
       municipio: targetMunicipio,
       municipioId: targetMunicipio,
       titulo,
       subtitulo: subtitulo || '',
       contenidoMarkdown: contenidoMarkdown || '',
       categoria: categoria ? categoria.toUpperCase().trim() : 'GENERAL',
-      imagenPrincipal: imagenPrincipal || '',
+      imagenPrincipal: imagenPrincipal.trim(),
       galeria: galeria || [],
       videos: videos || [],
       destacada: destacada || false,
@@ -120,7 +127,7 @@ const createNews = async (req, res) => {
     });
   } catch (error) {
     console.error('Error al crear noticia:', error);
-    return res.status(500).json({ error: 'Error al guardar la noticia' });
+    return res.status(500).json({ error: 'Error al guardar la noticia', detalle: error.message });
   }
 };
 
@@ -141,6 +148,12 @@ const updateNews = async (req, res) => {
     }
 
     const updateData = { ...req.body };
+
+    // Validar portada obligatoria si la actualizan
+    if (updateData.imagenPrincipal !== undefined && (!updateData.imagenPrincipal || !updateData.imagenPrincipal.trim())) {
+      return res.status(400).json({ error: 'La imagen de portada no puede estar vacía' });
+    }
+
     if (updateData.municipio || updateData.municipioId) {
       const cleanMun = (updateData.municipio || updateData.municipioId).toLowerCase().trim();
       updateData.municipio = cleanMun;
@@ -148,6 +161,11 @@ const updateNews = async (req, res) => {
     }
     if (updateData.categoria) {
       updateData.categoria = updateData.categoria.toUpperCase().trim();
+    }
+
+    // Asegurar mapeo explícito de contenidoMarkdown
+    if (updateData.contenidoMarkdown !== undefined) {
+      updateData.contenidoMarkdown = updateData.contenidoMarkdown;
     }
 
     const updatedNews = await News.findByIdAndUpdate(
@@ -162,11 +180,11 @@ const updateNews = async (req, res) => {
     });
   } catch (error) {
     console.error('Error al actualizar la noticia:', error);
-    return res.status(500).json({ error: 'Error interno al actualizar la noticia' });
+    return res.status(500).json({ error: 'Error interno al actualizar la noticia', detalle: error.message });
   }
 };
 
-// 5. DELETE: Eliminar una noticia (Ruta Privada)
+// 5. DELETE: Baja lógica de una noticia (Ruta Privada)
 const deleteNews = async (req, res) => {
   try {
     const { id } = req.params;
@@ -182,11 +200,13 @@ const deleteNews = async (req, res) => {
       return res.status(403).json({ error: 'No tenés permisos para eliminar esta noticia' });
     }
 
-    await News.findByIdAndDelete(id);
+    // BAJA LÓGICA: Se marca publicado como false/0 en lugar de eliminar el registro
+    newsItem.publicado = false;
+    await newsItem.save();
 
-    return res.json({ mensaje: 'Noticia eliminada correctamente' });
+    return res.json({ mensaje: 'Noticia dada de baja correctamente (Baja Lógica)' });
   } catch (error) {
-    console.error('Error al eliminar la noticia:', error);
+    console.error('Error al dar de baja la noticia:', error);
     return res.status(500).json({ error: 'Error interno al eliminar la noticia' });
   }
 };
