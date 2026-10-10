@@ -6,34 +6,21 @@ const getNewsByMunicipio = async (req, res) => {
     const { municipio } = req.query;
 
     if (!municipio) {
-      return res.status(400).json({ error: 'Debes especificar el parámetro municipio (slug o id)' });
+      return res.status(400).json({ error: 'Debes especificar el municipio' });
     }
 
     const municipioClean = municipio.toString().trim();
 
-    // Filtra por municipio (coincidencia flexible e insensible a mayúsculas/minúsculas)
-    // Soporta tanto si en la BD el campo se llama "municipio" o "municipioId"
-    const queryFilter = {
-      $and: [
-        {
-          $or: [
-            { municipio: { $regex: new RegExp(`^${municipioClean}$`, 'i') } },
-            { municipioId: { $regex: new RegExp(`^${municipioClean}$`, 'i') } }
-          ]
-        },
-        { publicado: { $ne: false } } // Devuelve noticias marcadas como true o sin el flag explícito
+    // Consulta simplificada con expresiones regulares
+    const news = await News.find({
+      $or: [
+        { municipio: new RegExp(municipioClean, 'i') },
+        { municipioId: new RegExp(municipioClean, 'i') }
       ]
-    };
+    }).lean();
 
-    const news = await News.find(queryFilter)
-      .select('idOriginal titulo subtitulo imagenPrincipal categoria municipio municipioId publicado fechaPublicacion createdAt galeria videos')
-      .sort({ fechaPublicacion: -1, createdAt: -1, _id: -1 })
-      .lean();
-
-    // Compatibilidad en caso de que el frontend requiera array directo
-    if (req.headers['x-legacy-response'] === 'true') {
-      return res.json(news);
-    }
+    // Log para revisar directo en el dashboard de Render
+    console.log(`[DEBUG] Buscando '${municipioClean}'. Noticias encontradas: ${news.length}`);
 
     return res.json({
       total: news.length,
@@ -44,6 +31,7 @@ const getNewsByMunicipio = async (req, res) => {
     return res.status(500).json({ error: 'Error al consultar las noticias' });
   }
 };
+
 
 // 2. GET: Obtener una noticia por su ID (_id de MongoDB)
 const getNewsById = async (req, res) => {

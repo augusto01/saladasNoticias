@@ -13,30 +13,28 @@ const NewsList = () => {
 
   useEffect(() => {
     const fetchNews = async () => {
-      try {
-        setLoading(true);
-        setError(null);
+        try {
+          setLoading(true);
+          setError(null);
 
-        // Petición al backend filtrando por el municipio actual
-        const response = await axios.get(`${BACKEND_URL}/news`, {
-          params: { municipio: MUNICIPIO_ID }
-        });
+          // Consulta al endpoint correcto en español /noticias
+          const response = await axios.get(`${BACKEND_URL}/noticias`, {
+            params: { municipio: MUNICIPIO_ID }
+          });
 
-        // Soporta respuesta en formato array directo o dentro de { data: [...] }
-        const newsData = Array.isArray(response.data) 
-          ? response.data 
-          : response.data.data || [];
+          // Extrae la lista de noticias de response.data.data si es un objeto, 
+          // o de response.data si viniera como array directo
+          const newsArray = response.data?.data || (Array.isArray(response.data) ? response.data : []);
 
-        setNews(newsData);
-      } catch (err) {
-        console.error('Error al cargar las noticias:', err);
-        setError('No se pudieron cargar las noticias. Intente nuevamente más tarde.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchNews();
+          setNews(newsArray);
+        } catch (err) {
+          console.error('Error al cargar las noticias:', err);
+          setError('No se pudieron cargar las noticias. Intente nuevamente más tarde.');
+        } finally {
+          setLoading(false);
+        }
+      };
+          fetchNews();
   }, [BACKEND_URL, MUNICIPIO_ID]);
 
   if (loading) {
