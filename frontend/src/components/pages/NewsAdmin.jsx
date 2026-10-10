@@ -251,21 +251,7 @@ export default function NewsAdmin() {
     item.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleLogout = async () => {
-    try {
-      // 1. Notificar al backend
-      await API.post('/auth/logout');
-    } catch (error) {
-      console.warn('Error al notificar logout al backend:', error);
-    } finally {
-      // 2. Limpiar el token/usuario del almacenamiento local
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-
-      // 3. Redirigir al Login
-      navigate('/login');
-    }
-  };
+ 
 
   return (
     <div className="container-fluid py-3 px-2 px-md-4 bg-light min-vh-100">
