@@ -110,7 +110,7 @@ export default function HeaderCorrientes({
       <div className="corrientes-full-width-banner">
         <a href="https://www.argentina.gob.ar" target="_blank" rel="noopener noreferrer">
           <img 
-            src="/728x90publi_banner web.gif" 
+            src="/728x90publi_bannerweb.gif" 
             alt="Publicidad Institucional" 
             className="corrientes-banner-img"
             onError={(e) => { e.target.style.display = 'none'; }}
