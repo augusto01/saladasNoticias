@@ -15,22 +15,19 @@ connectDB();
 // Configuración de CORS dinámica
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-  : ['http://localhost:3000', 'http://localhost:5173', 'https://saladasnoticias.com'];
+  : ['http://localhost:3000', 'http://localhost:5173'];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Permitir solicitudes sin origen (Postman, cron jobs) o presentes en la lista / wildcard '*'
-    if (!origin || allowedOrigins.includes(origin) || allowedOrigins.includes('*')) {
+    // Si no hay origen (Postman/scripts), o si la lista incluye '*' o el origen exacto
+    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn(`⚠️ Origen no reconocido en la lista de CORS: ${origin}`);
-      // Permitir la solicitud reflejando el origen para evitar caídas en producción
-      callback(null, true);
+      console.warn(`⚠️ Origen no especificado en la lista: ${origin}`);
+      callback(null, true); // Fallback permisivo
     }
   },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  credentials: true
 }));
 
 // Middlewares para parsear el cuerpo de las peticiones HTTP
