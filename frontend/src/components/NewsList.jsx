@@ -1,129 +1,275 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { Search, Filter, Newspaper } from 'lucide-react';
 import axios from 'axios';
 
-const NewsList = () => {
-  const [news, setNews] = useState([]);
+import WeatherWidget from './WeatherWidget';
+
+// Importación de Headers específicos por municipio
+import HeaderSaladas from './Layout/Saladas/HeaderSaladas';
+import HeaderCorrientes from './Layout/Corrientes/HeaderCorrientes';
+import HeaderItuzaingo from './Layout/Ituzaingo/HeaderItuzaingo';
+import HeaderSantaRosa from './Layout/SR/HeaderSantaRosa';
+
+import { configActual } from '../config/municipios';
+import '../styles/NewsList.css';
+
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const MUNICIPIO_ID = import.meta.env.VITE_MUNICIPIO_ID || import.meta.env.VITE_MUNICIPIO;
+
+const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
+
+function parseSafeDate(dateString) {
+  if (!dateString) return new Date(0);
+  const date = new Date(dateString);
+  return isNaN(date.getTime()) ? new Date(0) : date;
+}
+
+function formatDate(dateString) {
+  const date = parseSafeDate(dateString);
+  if (date.getTime() === 0) return dateString || '';
+
+  return new Intl.DateTimeFormat('es-AR', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }).format(date);
+}
+
+export default function NewsList() {
+  const [newsSummary, setNewsSummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Obtiene la URL base y el ID del municipio desde las variables de entorno de Vite (.env)
-  const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || 'https://tu-backend.onrender.com/api';
-  const MUNICIPIO_ID = import.meta.env.VITE_MUNICIPIO_ID || 'saladas';
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("Todas");
 
   useEffect(() => {
     const fetchNews = async () => {
-        try {
-          setLoading(true);
-          setError(null);
+      try {
+        setLoading(true);
+        setError(null);
 
-          // Consulta al endpoint correcto en español /noticias
-          const response = await axios.get(`${BACKEND_URL}/noticias`, {
-            params: { municipio: MUNICIPIO_ID }
-          });
+        const response = await axios.get(`${BACKEND_URL}/noticias`, {
+          params: { municipio: MUNICIPIO_ID }
+        });
 
-          // Extrae la lista de noticias de response.data.data si es un objeto, 
-          // o de response.data si viniera como array directo
-          const newsArray = response.data?.data || (Array.isArray(response.data) ? response.data : []);
+        const newsArray = response.data?.data || (Array.isArray(response.data) ? response.data : []);
+        setNewsSummary(newsArray);
+      } catch (err) {
+        console.error('Error al cargar noticias de la API:', err);
+        setError('No se pudieron obtener las noticias.');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-          setNews(newsArray);
-        } catch (err) {
-          console.error('Error al cargar las noticias:', err);
-          setError('No se pudieron cargar las noticias. Intente nuevamente más tarde.');
-        } finally {
-          setLoading(false);
-        }
-      };
-          fetchNews();
-  }, [BACKEND_URL, MUNICIPIO_ID]);
+    if (MUNICIPIO_ID) {
+      fetchNews();
+    }
+  }, []);
 
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-[300px]">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600"></div>
-      </div>
-    );
-  }
+  const dynamicCategories = [
+    "Todas",
+    ...Array.from(
+      new Set(
+        newsSummary
+          .map((item) => item.categoria || item.category)
+          .filter(Boolean)
+          .map((cat) => cat.trim().toUpperCase())
+      )
+    ),
+  ];
 
-  if (error) {
-    return (
-      <div className="text-center py-10 text-red-600 font-semibold">
-        {error}
-      </div>
-    );
-  }
+  const filteredNews = newsSummary.filter((item) => {
+    const cat = item.categoria || item.category || "";
+    const matchesCategory =
+      selectedCategory === "Todas" ||
+      cat.toUpperCase() === selectedCategory.toUpperCase();
 
-  if (news.length === 0) {
-    return (
-      <div className="text-center py-10 text-gray-500">
-        No hay noticias publicadas para esta localidad en este momento.
-      </div>
-    );
-  }
+    const title = item.titulo || item.title || "";
+    const summary = item.subtitulo || item.summary || item.resumen || "";
+    const matchesSearch =
+      title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      summary.toLowerCase().includes(searchTerm.toLowerCase());
+
+    return matchesCategory && matchesSearch;
+  });
+
+  const sortedNews = [...filteredNews].sort((a, b) => {
+    const timeA = parseSafeDate(a.fechaPublicacion || a.createdAt || a.date).getTime();
+    const timeB = parseSafeDate(b.fechaPublicacion || b.createdAt || b.date).getTime();
+    return timeB - timeA;
+  });
+
+  const hasNews = sortedNews.length > 0;
+  const mainNews = hasNews ? sortedNews[0] : null;
+  const secondaryNews = hasNews ? sortedNews.slice(1) : [];
+
+  const sortedAllNews = [...newsSummary].sort((a, b) => {
+    const timeA = parseSafeDate(a.fechaPublicacion || a.createdAt || a.date).getTime();
+    const timeB = parseSafeDate(b.fechaPublicacion || b.createdAt || b.date).getTime();
+    return timeB - timeA;
+  });
+
+  const renderHeader = () => {
+    const municipio = MUNICIPIO_ID?.toLowerCase().trim();
+
+    const headerProps = {
+      configActual,
+      searchTerm,
+      setSearchTerm,
+      selectedCategory,
+      setSelectedCategory,
+      dynamicCategories
+    };
+
+    switch (municipio) {
+      case 'saladas':
+        return <HeaderSaladas {...headerProps} />;
+      case 'corrientes':
+        return <HeaderCorrientes {...headerProps} />;
+      case 'ituzaingo':
+        return <HeaderItuzaingo {...headerProps} />;
+      case 'santarosa':
+      case 'santa-rosa':
+      case 'santa_rosa':
+        return <HeaderSantaRosa {...headerProps} />;
+      default:
+        return <HeaderItuzaingo {...headerProps} />;
+    }
+  };
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h2 className="text-3xl font-bold mb-6 text-gray-800 border-b-2 border-blue-600 pb-2 capitalize">
-        Últimas Noticias - {MUNICIPIO_ID}
-      </h2>
+    <>
+      {/* HEADER POR FUERA DEL CONTENEDOR PARA OCUPAR EL 100% DEL ANCHO */}
+      {renderHeader()}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {news.map((item) => (
-          <article 
-            key={item._id} 
-            className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col justify-between"
-          >
-            <div>
-              {item.imagenPrincipal && (
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={item.imagenPrincipal}
-                    alt={item.titulo}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      e.target.src = '/placeholder-news.jpg'; // Imagen de respaldo si falla
-                    }}
-                  />
-                  {item.categoria && (
-                    <span className="absolute top-2 left-2 bg-blue-600 text-white text-xs font-bold px-2 py-1 rounded uppercase">
-                      {item.categoria}
-                    </span>
-                  )}
+      <div className="news-container">
+
+        {/* CONTENIDO PRINCIPAL */}
+        <div className="news-grid">
+          <section className="news-main-column">
+            {loading ? (
+              <div className="text-center my-5 py-5">
+                <div className="spinner-border text-primary" role="status">
+                  <span className="visually-hidden">Cargando noticias...</span>
                 </div>
-              )}
-
-              <div className="p-4">
-                <p className="text-xs text-gray-500 mb-1">
-                  {item.fechaPublicacion 
-                    ? new Date(item.fechaPublicacion).toLocaleDateString('es-AR', {
-                        day: '2-digit',
-                        month: '2-digit',
-                        year: 'numeric'
-                      })
-                    : ''}
-                </p>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
-                  {item.titulo}
-                </h3>
-                <p className="text-gray-600 text-sm line-clamp-3 mb-4">
-                  {item.subtitulo}
+                <p className="mt-3 text-muted">Cargando noticias en tiempo real...</p>
+              </div>
+            ) : !hasNews ? (
+              <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
+                <Newspaper size={48} className="mx-auto text-muted mb-3" />
+                <h3>Aún no hay noticias en {configActual?.nombre || 'la localidad'}</h3>
+                <p className="text-muted mb-0">
+                  No se encontraron publicaciones con los filtros o búsquedas seleccionadas.
                 </p>
               </div>
+            ) : (
+              <>
+                {/* NOTICIA DESTACADA */}
+                {mainNews && (
+                  <Link to={`/noticias/${mainNews._id || mainNews.id}`} className="featured-news-card">
+                    <div className="featured-img-wrapper">
+                      <img 
+                        src={mainNews.imagenPrincipal || mainNews.image || mainNews.imagen} 
+                        alt={mainNews.titulo || mainNews.title} 
+                        className="featured-img" 
+                        onError={(e) => {
+                          e.target.onerror = null; 
+                          e.target.src = DEFAULT_PLACEHOLDER;
+                        }}
+                      />
+                      <span className="news-badge">{mainNews.categoria || mainNews.category}</span>
+                    </div>
+                    <div className="featured-content">
+                      <span className="news-date">{formatDate(mainNews.fechaPublicacion || mainNews.createdAt || mainNews.date)}</span>
+                      <h2 className="featured-title">{mainNews.titulo || mainNews.title}</h2>
+                      <p className="featured-summary">{mainNews.subtitulo || mainNews.summary || mainNews.resumen}</p>
+                    </div>
+                  </Link>
+                )}
+
+                {/* GRILLA SECUNDARIA */}
+                {secondaryNews.length > 0 && (
+                  <div className="secondary-news-grid">
+                    {secondaryNews.map((item, index) => {
+                      const itemId = item._id || item.id || index;
+                      return (
+                        <Link 
+                          to={`/noticias/${itemId}`} 
+                          key={itemId} 
+                          className="secondary-news-card"
+                        >
+                          <div className="secondary-img-wrapper">
+                            <img 
+                              src={item.imagenPrincipal || item.image || item.imagen} 
+                              alt={item.titulo || item.title} 
+                              className="secondary-img" 
+                              onError={(e) => {
+                                e.target.onerror = null; 
+                                e.target.src = DEFAULT_PLACEHOLDER;
+                              }}
+                            />
+                            <span className="news-badge-sm">{item.categoria || item.category}</span>
+                          </div>
+                          <div className="secondary-content">
+                            <span className="news-date">{formatDate(item.fechaPublicacion || item.createdAt || item.date)}</span>
+                            <h3 className="secondary-title">{item.titulo || item.title}</h3>
+                            <p className="secondary-summary">{item.subtitulo || item.summary || item.resumen}</p>
+                          </div>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </>
+            )}
+          </section>
+
+          {/* SIDEBAR */}
+          <aside className="news-sidebar">
+            <div className="sidebar-widget">
+              <WeatherWidget />
             </div>
 
-            <div className="p-4 pt-0">
-              <Link
-                to={`/noticia/${item._id}`}
-                className="inline-block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-medium py-2 px-4 rounded transition-colors duration-200"
+            {sortedAllNews.length > 0 && (
+              <div className="sidebar-widget popular-widget">
+                <h3 className="widget-title">Lo más leído</h3>
+                <ul className="popular-list">
+                  {sortedAllNews.slice(0, 3).map((news, index) => {
+                    const newsId = news._id || news.id || index;
+                    return (
+                      <li key={newsId}>
+                        <Link to={`/noticias/${newsId}`} className="popular-item">
+                          <span className="popular-number">0{index + 1}</span>
+                          <p className="popular-text">{news.titulo || news.title}</p>
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              </div>
+            )}
+
+            <div className="sidebar-widget ad-widget">
+              <a 
+                href="https://www.argentina.gob.ar" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="ad-banner-link"
               >
-                Leer noticia completa
-              </Link>
+                <img 
+                  src="/300x300bannerweb.gif" 
+                  alt="Publicidad institucional" 
+                  className="ad-banner-300-img"
+                />
+              </a>
             </div>
-          </article>
-        ))}
-      </div>
-    </div>
-  );
-};
+          </aside>
 
-export default NewsList;
+        </div>
+      </div>
+    </>
+  );
+}

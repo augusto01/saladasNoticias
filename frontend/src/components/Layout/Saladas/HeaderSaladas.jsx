@@ -4,11 +4,11 @@ import './HeaderSaladas.css';
 
 export default function HeaderSaladas({
   configActual,
-  searchTerm,
-  setSearchTerm,
-  selectedCategory,
-  setSelectedCategory,
-  dynamicCategories
+  searchTerm = '',
+  setSearchTerm = () => {},
+  selectedCategory = 'Todas',
+  setSelectedCategory = () => {},
+  dynamicCategories = ['Todas', 'POLICIALES', 'SOCIEDAD', 'DEPORTES', 'POLITICA']
 }) {
   // Estado para el clima dinámico de Saladas
   const [clima, setClima] = useState({ temp: '--', min: '--', max: '--' });
@@ -113,11 +113,11 @@ export default function HeaderSaladas({
       <nav className="saladas-nav-bar">
         <div className="container-fluid d-flex align-items-center justify-content-between overflow-x-auto">
           <div className="saladas-nav-list">
-            {dynamicCategories.map((cat) => (
+            {(dynamicCategories || []).map((cat) => (
               <button
                 key={cat}
                 type="button"
-                className={`saladas-nav-item ${selectedCategory.toUpperCase() === cat.toUpperCase() ? 'active' : ''}`}
+                className={`saladas-nav-item ${(selectedCategory || '').toUpperCase() === cat.toUpperCase() ? 'active' : ''}`}
                 onClick={() => setSelectedCategory(cat)}
               >
                 {cat === 'Todas' ? 'PORTADA' : cat}
