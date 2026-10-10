@@ -10,13 +10,19 @@ export const municipios = {
     id: 'santarosa',
     slug: 'santarosa',
     nombre: 'Municipalidad de Santa Rosa',
-    logo: '/img/logos/01_Logotipo.png'
+    logo: '/img/logos/santarosalogo.png'
   },
   seguitucorrientes: {
     id: 'seguitucorrientes',
     slug: 'seguitucorrientes',
     nombre: 'Seguí Tu Corrientes',
     logo: '/img/logos/01_Logotipo.png'
+  },
+  ituzaingo: {
+    id: 'ituzaingo',
+    slug: 'primiciasituzaingo',
+    nombre: 'Primicias Ituzaingo',
+    logo: '/img/logos/ituzaingologo.png'
   }
 };
 

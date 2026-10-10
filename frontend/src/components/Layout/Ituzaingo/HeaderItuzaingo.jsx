@@ -189,7 +189,7 @@ export default function HeaderItuzaingo({
       <div className="ituzaingo-full-width-banner">
         <a href="https://www.argentina.gob.ar" target="_blank" rel="noopener noreferrer">
           <img 
-            src="/728x90publi_banner web.gif" 
+            src="/728x90publi_bannerweb.gif" 
             alt="Publicidad Institucional" 
             className="ituzaingo-banner-img"
             onError={(e) => { e.target.style.display = 'none'; }}
