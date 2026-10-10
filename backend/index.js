@@ -13,23 +13,44 @@ const app = express();
 connectDB();
 
 // Configuración de CORS Dinámica (Garantiza que saladasnoticias.com y cualquier origen reciban headers válidos sin error 500)
+// Configuración de CORS Dinámica
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-  : ['https://saladasnoticias.com', 'https://primiciasituzaingo.com','https://santarosanoticias.com','https://enfoquecorrientes.com','http://localhost:5173', 'http://localhost:3000','seguitucorrientes.netlify.app'];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim().replace(/\/$/, '')) 
+  : [
+      'https://saladasnoticias.com', 
+      'https://primiciasituzaingo.com',
+      'https://santarosanoticias.com',
+      'https://enfoquecorrientes.com',
+      'https://seguitucorrientes.netlify.app', // <-- Agregado https://
+      'http://localhost:5173', 
+      'http://localhost:3000'
+    ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Si no hay origen (Postman/scripts), o si es un origen permitido o wildcard '*'
-    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
+    // Peticiones sin origen (Postman, cURL, scripts del servidor)
+    if (!origin) return callback(null, true);
+
+    const originLimpio = origin.trim().replace(/\/$/, '');
+
+    // Permitir si coincide exactamente o si termina en .netlify.app
+    if (
+      allowedOrigins.includes('*') || 
+      allowedOrigins.includes(originLimpio) ||
+      originLimpio.endsWith('.netlify.app')
+    ) {
       return callback(null, true);
     }
-    // Fallback permissivo: permite el origen enviando 'null, true' para NUNCA lanzar un Error 500
-    return callback(null, true);
+
+    return callback(null, true); // Fallback permisivo
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Manejar explícitamente las peticiones de verificación previa (Preflight)
+app.options('*', cors());
 
 // Middlewares para parsear el cuerpo de las peticiones HTTP
 app.use(express.json({ limit: '10mb' }));
