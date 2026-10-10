@@ -1,3 +1,4 @@
+import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 // CONFIGURACIÓN DINÁMICA
@@ -39,25 +40,36 @@ import NewsDetail from '../components/pages/NewsDetail';
 // Página 404
 import NotFound from '../components/pages/NotFound';
 
+// Helper para evitar entrar a /login si ya estás autenticado
+const PublicOnlyRoute = ({ children }) => {
+  const token = localStorage.getItem('token');
+  return token ? <Navigate to="/admin/noticias" replace /> : children;
+};
+
 const Rutas = () => {
   return (
     <Routes>
-      {/* Autenticación y Administración */}
-      <Route path="/login" element={<Login />} />
-      
+      {/* Autenticación: Si ya hay token, redirige directo al admin */}
+      <Route 
+        path="/login" 
+        element={
+          <PublicOnlyRoute>
+            <Login />
+          </PublicOnlyRoute>
+        } 
+      />
+
+      {/* Panel de Administración Protegido */}
       <Route element={<ProtectedRoute />}>
         <Route path="/admin/noticias" element={<NewsAdmin />} />
+        {/* Alias opcional /admin que redirige a /admin/noticias */}
+        <Route path="/admin" element={<Navigate to="/admin/noticias" replace />} />
       </Route>
 
-      {/* Las rutas que estan comentadas son las que no estan activas 
-      en este momento pero pueden servir para despues */}
+      {/* Rutas Públicas */}
       <Route path="/" element={<Portada />} />
       <Route path="/noticias" element={<Noticias />} />
       <Route path="/noticias/:id" element={<NewsDetail />} />
-      {/* <Route path="/ejecutivo" element={<Ejecutivo />} /> */}
-      {/* <Route path="/hcd" element={<HCD />} /> */}
-      {/* <Route path="/boletines" element={<Boletines />} /> */}
-      {/* <Route path="/carta-organica" element={<CartaOrganica />} /> */}
 
       {/* Ruta Exclusiva para Saladas */}
       <Route 
@@ -71,25 +83,7 @@ const Rutas = () => {
         } 
       />
 
-      {/* <Route path="/galeria" element={<Galeria />} /> */}
-      {/* <Route path="/contacto" element={<Contacto />} /> */}
-
-      {/* Servicios */}
-      {/* <Route path="/turnos" element={<Turnos />} /> */}
-      {/* <Route path="/entradas" element={<Entradas />} /> */}
-
-      {/* Turismo / Cultura */}
-      {/* <Route path="/museo" element={<Museo />} /> */}
-      {/* <Route path="/estudiantina" element={<Estudiantina />} /> */}
-
-      {/* Carnavales y agrupaciones */}
-      {/* <Route path="/carnavales" element={<Carnavales />} /> */}
-      {/* <Route path="/carnavales/sambatuque" element={<Sambatuque />} /> */}
-      {/* <Route path="/carnavales/carisma" element={<CarismaShow />} /> */}
-      {/* <Route path="/carnavales/ibera" element={<Ibera />} /> */}
-      {/* <Route path="/carnavales/xango" element={<Xango />} /> */}
-
-      {/* Ruta comodín para capturar cualquier URL inexistente (404) */}
+      {/* Ruta comodín (404) */}
       <Route path="*" element={<NotFound />} />
     </Routes>
   );
