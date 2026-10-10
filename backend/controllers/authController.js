@@ -35,6 +35,31 @@ exports.register = async (req, res) => {
   }
 };
 
+// src/services/authService.js
+
+// controllers/authController.js
+exports.logout = async (req, res) => {
+  try {
+    // Si manejás cookies de sesión
+    res.clearCookie('token', {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none'
+    });
+
+    return res.status(200).json({
+      status: 'success',
+      message: 'Sesión cerrada correctamente'
+    });
+  } catch (error) {
+    console.error('Error al cerrar sesión:', error);
+    return res.status(500).json({
+      error: 'Ocurrió un error al cerrar la sesión'
+    });
+  }
+};
+
+
 // POST /api/auth/login
 exports.login = async (req, res) => {
   try {

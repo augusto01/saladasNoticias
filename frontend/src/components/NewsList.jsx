@@ -69,6 +69,8 @@ export default function NewsList() {
     }
   }, []);
 
+  
+
   const dynamicCategories = [
     "Todas",
     ...Array.from(

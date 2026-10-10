@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import API from '../../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { configActual } from '../../config/municipios';
+import { logout } from '../../routes';
 import {
   Plus,
   Pencil,
@@ -234,6 +235,17 @@ export default function NewsAdmin() {
     item.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const handleLogout = () => {
+    // 1. Ejecutar la función para limpiar el storage
+    logout();
+
+    // 2. Redirigir al usuario al Login
+    navigate('/login');
+
+    // 3. Opcional: Forzar un refresco si querés asegurar que los estados globales se limpien de cero
+    // window.location.href = '/login';
+  };
+
   return (
     <div className="container-fluid py-3 px-2 px-md-4 bg-light min-vh-100">
       
@@ -335,11 +347,10 @@ export default function NewsAdmin() {
             </button>
 
             <button 
-              className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-              onClick={logout}
+              onClick={handleLogout} 
+              className="btn btn-outline-danger btn-sm"
             >
-              <LogOut size={16} />
-              <span>Salir</span>
+              Cerrar Sesión
             </button>
           </div>
         </div>
