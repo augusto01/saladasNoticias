@@ -39,17 +39,26 @@ exports.register = async (req, res) => {
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
+    const cleanEmail = email ? email.trim().toLowerCase() : '';
 
-    const cleanEmail = email.trim().toLowerCase();
+    console.log('--- INTENTO DE LOGIN ---');
+    console.log('1. Email buscando:', cleanEmail);
 
     const user = await User.findOne({ email: cleanEmail });
+    
     if (!user) {
+      console.log('❌ FALLO: El usuario NO existe en la base de datos activa');
       return res.status(400).json({ error: 'Credenciales inválidas' });
     }
 
+    console.log('2. Usuario encontrado en BD:', user.email);
+
     // Comparar la contraseña ingresada con el hash guardado
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log('3. Resultado bcrypt.compare:', isMatch);
+
     if (!isMatch) {
+      console.log('❌ FALLO: La contraseña ingresada no coincide con el hash guardado');
       return res.status(400).json({ error: 'Credenciales inválidas' });
     }
 
@@ -65,6 +74,8 @@ exports.login = async (req, res) => {
       process.env.JWT_SECRET || 'secretkey', 
       { expiresIn: '8h' }
     );
+
+    console.log('✅ LOGIN EXITOSO');
 
     res.json({
       token,
