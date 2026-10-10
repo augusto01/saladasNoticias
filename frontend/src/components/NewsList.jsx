@@ -142,11 +142,10 @@ export default function NewsList() {
 
   return (
     <>
-      {/* HEADER POR FUERA DEL CONTENEDOR PARA OCUPAR EL 100% DEL ANCHO */}
+      {/* HEADER FULL WIDTH */}
       {renderHeader()}
 
       <div className="news-container">
-
         {/* CONTENIDO PRINCIPAL */}
         <div className="news-grid">
           <section className="news-main-column">
@@ -172,7 +171,7 @@ export default function NewsList() {
                   <Link to={`/noticias/${mainNews._id || mainNews.id}`} className="featured-news-card">
                     <div className="featured-img-wrapper">
                       <img 
-                        src={mainNews.imagenPrincipal || mainNews.image || mainNews.imagen} 
+                        src={mainNews.imagenPrincipal || DEFAULT_PLACEHOLDER} 
                         alt={mainNews.titulo || mainNews.title} 
                         className="featured-img" 
                         onError={(e) => {
@@ -203,7 +202,7 @@ export default function NewsList() {
                         >
                           <div className="secondary-img-wrapper">
                             <img 
-                              src={item.imagenPrincipal || item.image || item.imagen} 
+                              src={item.imagenPrincipal || DEFAULT_PLACEHOLDER} 
                               alt={item.titulo || item.title} 
                               className="secondary-img" 
                               onError={(e) => {

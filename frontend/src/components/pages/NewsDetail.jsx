@@ -51,18 +51,17 @@ export default function NewsDetail() {
         setLoading(true);
         setError(null);
 
-        // 1. Obtener la noticia principal por ID desde MongoDB/Render
+        // 1. Cargar noticia detallada desde MongoDB
         const resDetail = await axios.get(`${BACKEND_URL}/noticias/${id}`);
         const dataDetail = resDetail.data?.data || resDetail.data;
         setNewsItem(dataDetail);
 
-        // 2. Obtener otras noticias relacionadas del mismo municipio
+        // 2. Cargar otras noticias del mismo municipio para la grilla inferior
         const resOthers = await axios.get(`${BACKEND_URL}/noticias`, {
           params: { municipio: MUNICIPIO_ID }
         });
         const allNews = resOthers.data?.data || (Array.isArray(resOthers.data) ? resOthers.data : []);
         
-        // Excluir la noticia actual y tomar las primeras 3
         const filtered = allNews
           .filter((item) => (item._id || item.id) !== id)
           .slice(0, 3);
@@ -102,7 +101,7 @@ export default function NewsDetail() {
     );
   }
 
-  const mainImgSrc = newsItem.imagenPrincipal || newsItem.image || newsItem.imagen;
+  const mainImgSrc = newsItem.imagenPrincipal || DEFAULT_PLACEHOLDER;
   const rawMarkdown = newsItem.contenidoMarkdown || newsItem.contenido || '';
 
   return (
@@ -124,7 +123,7 @@ export default function NewsDetail() {
         <p className="detail-summary">{newsItem.subtitulo || newsItem.summary || newsItem.resumen}</p>
       </header>
 
-      {/* BANNER INSTITUCIONAL HORIZONTAL (INICIO) */}
+      {/* BANNER INSTITUCIONAL HORIZONTAL */}
       <div className="detail-ad-banner-container">
         <div className="detail-ad-box">
           <img 
@@ -150,7 +149,7 @@ export default function NewsDetail() {
         />
       </div>
 
-      {/* CUERPO DE LA NOTICIA DESDE MONGODB */}
+      {/* CUERPO DE LA NOTICIA (MARKDOWN) */}
       <div className="detail-content">
         {rawMarkdown ? (
           <ReactMarkdown
@@ -242,7 +241,7 @@ export default function NewsDetail() {
         </section>
       )}
 
-      {/* BANNER INSTITUCIONAL HORIZONTAL (FINAL) */}
+      {/* BANNER INSTITUCIONAL HORIZONTAL */}
       <div className="detail-ad-banner-container">
         <div className="detail-ad-box">
           <img 
@@ -273,7 +272,7 @@ export default function NewsDetail() {
                 >
                   <div className="more-news-img-wrapper">
                     <img 
-                      src={item.imagenPrincipal || item.image || item.imagen} 
+                      src={item.imagenPrincipal || DEFAULT_PLACEHOLDER} 
                       alt={item.titulo || item.title} 
                       className="more-news-img"
                       onError={(e) => {
