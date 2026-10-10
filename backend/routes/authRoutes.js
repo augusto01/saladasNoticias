@@ -8,7 +8,7 @@ router.post('/register', register);
 
 // Login
 router.post('/login', login);
-router.post('/logout', authController.logout);
+router.post('/logout', logout);
 
 // Logout (Usamos la función desestructurada 'logout' en lugar de 'authController.logout')
 router.post('/logout', logout);

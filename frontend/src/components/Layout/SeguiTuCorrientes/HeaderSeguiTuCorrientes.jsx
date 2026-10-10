@@ -15,10 +15,10 @@ export default function HeaderSeguiTuCorrientes(props) {
   const [terminoLocal, setTerminoLocal] = useState(props.searchTerm || '');
   const [mostrarBuscador, setMostrarBuscador] = useState(false);
 
-  // Datos dinámicos del municipio activo
-  const esSaladas = configActual?.id === 'saladas';
-  const logoMunicipio = configActual?.logo || (esSaladas ? '/img/logos/saladas.png' : '/img/logos/01_Logotipo.png');
-  const nombreMunicipio = configActual?.nombre || 'Portal de Noticias';
+  // Propiedades obtenidas de la configuración del municipio o valores genéricos de la marca
+  const logoHeader = configActual?.logo || '/img/logos/01_Logotipo.png';
+  const nombreSitio = configActual?.nombre || 'Seguí Tu Corrientes';
+  const hashtagBase = configActual?.id ? `#${configActual.id.toUpperCase()}` : '#SEGUITUCORRIENTES';
 
   // Manejador en tiempo real mientras el usuario escribe
   const manejarCambioInput = (e) => {
@@ -45,7 +45,7 @@ export default function HeaderSeguiTuCorrientes(props) {
   };
 
   return (
-    <header className={`segui-header-compacto ${esSaladas ? 'header-saladas' : ''}`}>
+    <header className="segui-header-compacto">
       {/* 1. BARRA SUPERIOR: Tendencias (Hashtags) y Fecha */}
       <div className="segui-top-bar">
         <div className="segui-top-container">
@@ -64,9 +64,7 @@ export default function HeaderSeguiTuCorrientes(props) {
                   </button>
                 ))
               ) : (
-                <span className="tag-estatico">
-                  #{esSaladas ? 'SALADAS' : 'SEGUITUCORRIENTES'}
-                </span>
+                <span className="tag-estatico">{hashtagBase}</span>
               )}
             </div>
           </div>
@@ -76,13 +74,13 @@ export default function HeaderSeguiTuCorrientes(props) {
         </div>
       </div>
 
-      {/* 2. HEADER PRINCIPAL CON LOGO DINÁMICO */}
+      {/* 2. HEADER PRINCIPAL */}
       <div className="segui-main-bar">
         <div className="segui-main-container">
           <Link to="/" className="segui-brand" onClick={() => setSelectedCategory && setSelectedCategory('Todas')}>
             <img 
-              src={logoMunicipio} 
-              alt={nombreMunicipio} 
+              src={logoHeader} 
+              alt={nombreSitio} 
               className="segui-logo-img"
             />
           </Link>
