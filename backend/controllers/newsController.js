@@ -3,32 +3,27 @@ const News = require('../models/News');
 // 1. GET: Obtener noticias de un municipio específico
 const getNewsByMunicipio = async (req, res) => {
   try {
-    const { municipio } = req.query;
+    // 1. Ver a qué base de datos física está conectado Mongoose
+    const dbName = mongoose.connection.db.databaseName;
+    
+    // 2. Contar TODOS los documentos en la colección 'news' sin filtrar por nada
+    const totalEnColeccion = await News.countDocuments({});
 
-    if (!municipio) {
-      return res.status(400).json({ error: 'Debes especificar el municipio' });
-    }
+    // 3. Traer un solo documento para ver qué campos tiene guardados exactamente
+    const unDocumento = await News.findOne({}).lean();
 
-    const municipioClean = municipio.toString().trim();
-
-    // Consulta simplificada con expresiones regulares
-    const news = await News.find({
-      $or: [
-        { municipio: new RegExp(municipioClean, 'i') },
-        { municipioId: new RegExp(municipioClean, 'i') }
-      ]
-    }).lean();
-
-    // Log para revisar directo en el dashboard de Render
-    console.log(`[DEBUG] Buscando '${municipioClean}'. Noticias encontradas: ${news.length}`);
+    console.log(`[DEBUG] Conectado a BD: "${dbName}"`);
+    console.log(`[DEBUG] Documentos totales en 'news': ${totalEnColeccion}`);
+    console.log(`[DEBUG] Ejemplo de documento:`, unDocumento);
 
     return res.json({
-      total: news.length,
-      data: news
+      dbConectada: dbName,
+      totalDocumentosEnBD: totalEnColeccion,
+      ejemploDocumento: unDocumento
     });
   } catch (error) {
-    console.error('Error al obtener noticias:', error);
-    return res.status(500).json({ error: 'Error al consultar las noticias' });
+    console.error('Error en depuración:', error);
+    return res.status(500).json({ error: error.message });
   }
 };
 
