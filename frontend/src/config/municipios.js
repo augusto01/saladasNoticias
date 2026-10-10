@@ -18,6 +18,12 @@ export const municipios = {
     nombre: 'Seguí Tu Corrientes',
     logo: '/img/logos/01_Logotipo.png'
   },
+  corrientes: {
+    id: 'corrientes',
+    slug: 'corrientes',
+    nombre: 'corrientes',
+    logo: '/img/logos/enfoquecorrienteslogo.png'
+  },
   ituzaingo: {
     id: 'ituzaingo',
     slug: 'primiciasituzaingo',
