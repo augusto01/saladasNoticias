@@ -1,20 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const { register, login, logout } = require('../controllers/authController');
+const verifyToken = require('../middlewares/authMiddleware');
 
-// Log Middleware para ver peticiones entrantes
-router.use((req, res, next) => {
-  console.log(`[AUTH ROUTE] ${req.method} ${req.originalUrl}`);
-  next();
-});
-
+// Registro
 router.post('/register', register);
+
+// Login
 router.post('/login', login);
 
-// Ruta de Logout
-router.post('/logout', (req, res, next) => {
-  console.log('👉 Petición de /logout recibida en authRoutes');
-  logout(req, res, next);
-});
+// Logout (Usamos la función desestructurada 'logout' en lugar de 'authController.logout')
+router.post('/logout', logout);
 
 module.exports = router;
