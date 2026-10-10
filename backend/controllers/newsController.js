@@ -9,9 +9,10 @@ const getNewsByMunicipio = async (req, res) => {
       return res.status(400).json({ error: 'Debes especificar el parámetro municipio' });
     }
 
-    const municipioClean = municipio.toString().trim();
+    // Sanitización segura del string
+    const municipioClean = String(municipio).trim();
 
-    // Filtra por municipio y excluye las dadas de baja lógicamente (publicado != false / publicado != 0)
+    // Filtro flexible compatible con insensible a mayúsculas/minúsculas
     const queryFilter = {
       $and: [
         {
@@ -20,7 +21,7 @@ const getNewsByMunicipio = async (req, res) => {
             { municipioId: { $regex: new RegExp(`^${municipioClean}$`, 'i') } }
           ]
         },
-        { publicado: { $ne: false,$ne: 0 } } // Excluye bajas lógicas
+        { publicado: { $ne: false,$ne: 0 } }
       ]
     };
 
@@ -38,11 +39,14 @@ const getNewsByMunicipio = async (req, res) => {
       data: news
     });
   } catch (error) {
-    console.error('Error al obtener noticias:', error);
-    return res.status(500).json({ error: 'Error al consultar las noticias' });
+    console.error('❌ Error en getNewsByMunicipio:', error);
+    // Retorna status 500 asegurando responder JSON con headers
+    return res.status(500).json({ 
+      error: 'Error interno al consultar las noticias',
+      message: error.message 
+    });
   }
 };
-
 // 2. GET: Obtener una noticia por su ID (_id de MongoDB)
 const getNewsById = async (req, res) => {
   try {

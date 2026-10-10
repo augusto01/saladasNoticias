@@ -9,37 +9,27 @@ dotenv.config();
 // Inicializar la aplicación Express
 const app = express();
 
-// Conectar a la Base de Datos (MongoDB)
+// Conectar a la Base de Datos (MongoDB Atlas)
 connectDB();
 
-// Configuración de CORS dinámica
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-  : ['http://localhost:3000', 'http://localhost:5173'];
-
+// Configuración de CORS Dinámica (Compatible con credenciales y dominios personalizados)
 app.use(cors({
-  origin: (origin, callback) => {
-    // Si no hay origen (Postman/scripts), o si la lista incluye '*' o el origen exacto
-    if (!origin || allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.warn(`⚠️ Origen no especificado en la lista: ${origin}`);
-      callback(null, true); // Fallback permisivo
-    }
-  },
-  credentials: true
+  origin: true, // Refleja dinámicamente el origen de la solicitud (saladasnoticias.com, localhost, etc.)
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
 // Middlewares para parsear el cuerpo de las peticiones HTTP
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Registro de Rutas (Soporta /api/noticias y /api/news para máxima compatibilidad)
+// Registro de Rutas
 const newsRoutes = require('./routes/newsRoutes');
 
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/noticias', newsRoutes);
-app.use('/api/news', newsRoutes);
+app.use('/api/news', newsRoutes); // Alias por compatibilidad
 app.use('/api/municipios', require('./routes/municipioRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 
@@ -59,10 +49,15 @@ app.use((req, res, next) => {
 
 // Middleware para manejo global de errores 500 del servidor
 app.use((err, req, res, next) => {
-  console.error('Error no controlado:', err.stack);
+  console.error('❌ Error no controlado en servidor:', err.stack);
+  
+  // Garantizar que la respuesta de error incluya los headers de CORS
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
+
   res.status(500).json({ 
     error: 'Ocurrió un error interno en el servidor',
-    details: process.env.NODE_ENV === 'development' ? err.message : undefined 
+    details: err.message 
   });
 });
 
