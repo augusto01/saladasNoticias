@@ -9,7 +9,6 @@ import {
   Image as ImageIcon,
   CheckCircle,
   XCircle,
-  Star,
   LogOut,
   RefreshCw,
   Search
@@ -37,13 +36,13 @@ export default function NewsAdmin() {
   const [destacada, setDestacada] = useState(false);
   const [publicado, setPublicado] = useState(true);
 
-  // Estados de subida de archivos
+  // Estados de subida de archivos y envío
   const [uploadingMainImg, setUploadingMainImg] = useState(false);
   const [uploadingGaleria, setUploadingGaleria] = useState(false);
   const [saving, setSaving] = useState(false);
 
   // Municipio activo
-  const municipioSlug = configActual.id || configActual.slug || 'saladas';
+  const municipioSlug = configActual.id || configActual.slug || 'santarosa';
 
   // Cargar noticias desde la API
   const fetchNoticias = async () => {
@@ -78,13 +77,14 @@ export default function NewsAdmin() {
     setShowModal(true);
   };
 
-  // Abrir Modal para Editar
+  // Abrir Modal para Editar (Lógica de Markdown integrada)
   const handleOpenEditModal = (noticia) => {
     setEditingId(noticia._id);
     setTitulo(noticia.titulo || '');
     setSubtitulo(noticia.subtitulo || '');
     setCategoria(noticia.categoria || 'GESTIÓN');
-    setContenidoMarkdown(noticia.contenidoMarkdown || '');
+    // Mapeo completo del contenido en Markdown
+    setContenidoMarkdown(noticia.contenidoMarkdown || noticia.contenido || '');
     setImagenPrincipal(noticia.imagenPrincipal || '');
     setGaleria(noticia.galeria || noticia.gallery || []);
     setDestacada(noticia.destacada || false);
@@ -122,7 +122,7 @@ export default function NewsAdmin() {
     if (files.length === 0) return;
 
     if (galeria.length + files.length > 3) {
-      alert(`Solo podés cargar un máximo de 3 imágenes en la galería. Currently tenés ${galeria.length}.`);
+      alert(`Solo podés cargar un máximo de 3 imágenes en la galería. Actuarás con ${galeria.length}.`);
       return;
     }
 
@@ -163,14 +163,21 @@ export default function NewsAdmin() {
       return;
     }
 
+    // Validación estricta de portada obligatoria
+    if (!imagenPrincipal || !imagenPrincipal.trim()) {
+      alert('La imagen de portada es obligatoria para publicar una noticia.');
+      return;
+    }
+
     setSaving(true);
     const payload = {
+      municipio: municipioSlug,
       municipioId: municipioSlug,
-      titulo,
-      subtitulo,
-      categoria: categoria.toUpperCase(),
-      contenidoMarkdown,
-      imagenPrincipal,
+      titulo: titulo.trim(),
+      subtitulo: subtitulo.trim(),
+      categoria: categoria.toUpperCase().trim(),
+      contenidoMarkdown: contenidoMarkdown.trim(),
+      imagenPrincipal: imagenPrincipal.trim(),
       galeria,
       destacada,
       publicado
@@ -187,26 +194,26 @@ export default function NewsAdmin() {
       fetchNoticias();
     } catch (error) {
       console.error('Error al guardar noticia:', error);
-      alert('Ocurrió un error al guardar la noticia.');
+      alert(error.response?.data?.error || 'Ocurrió un error al guardar la noticia.');
     } finally {
       setSaving(false);
     }
   };
 
-  // Eliminar Noticia
+  // Baja Lógica de la Noticia (Despublicar / Marcar publicado = false)
   const handleDelete = async (id, tituloNoticia) => {
-    if (window.confirm(`¿Estás seguro de que deseas eliminar la noticia "${tituloNoticia}"?`)) {
+    if (window.confirm(`¿Estás seguro de que deseas dar de baja la noticia "${tituloNoticia}"?`)) {
       try {
         await API.delete(`/noticias/${id}`);
         fetchNoticias();
       } catch (error) {
-        console.error('Error al eliminar la noticia:', error);
-        alert('No se pudo eliminar la noticia.');
+        console.error('Error al dar de baja la noticia:', error);
+        alert('No se pudo dar de baja la noticia.');
       }
     }
   };
 
-  // Filtrado de noticias
+  // Filtrado de noticias por búsqueda
   const noticiasFiltradas = noticias.filter((item) =>
     item.titulo?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     item.categoria?.toLowerCase().includes(searchTerm.toLowerCase())
@@ -215,7 +222,7 @@ export default function NewsAdmin() {
   return (
     <div className="container-fluid py-3 px-2 px-md-4 bg-light min-vh-100">
       
-      {/* ESTILOS INLINE DE RESPONSIVIDAD PARA EL MODAL Y PANTALLAS PEQUEÑAS */}
+      {/* ESTILOS DE RESPONSIVIDAD PARA EL MODAL */}
       <style>{`
         .custom-modal-overlay {
           position: fixed;
@@ -355,7 +362,7 @@ export default function NewsAdmin() {
           </div>
         ) : noticiasFiltradas.length === 0 ? (
           <div className="text-center py-5 text-muted">
-            <p className="mb-0 fs-5">No se encontraron noticias creadas.</p>
+            <p className="mb-0 fs-5">No se encontraron noticias registradas.</p>
           </div>
         ) : (
           <div className="table-responsive">
@@ -428,7 +435,7 @@ export default function NewsAdmin() {
                         <button
                           className="btn btn-sm btn-outline-danger p-1"
                           onClick={() => handleDelete(item._id, item.titulo)}
-                          title="Eliminar"
+                          title="Dar de baja"
                         >
                           <Trash2 size={15} />
                         </button>
@@ -456,6 +463,7 @@ export default function NewsAdmin() {
                 className="btn-close" 
                 onClick={() => setShowModal(false)}
                 aria-label="Cerrar"
+                disabled={saving}
               ></button>
             </div>
 
@@ -488,6 +496,8 @@ export default function NewsAdmin() {
                       <option value="DEPORTES">DEPORTES</option>
                       <option value="SALUD">SALUD</option>
                       <option value="EDUCACIÓN">EDUCACIÓN</option>
+                      <option value="POLICIALES">POLICIALES</option>
+                      <option value="LOCALES">LOCALES</option>
                     </select>
                   </div>
                 </div>
@@ -504,9 +514,21 @@ export default function NewsAdmin() {
                   />
                 </div>
 
-                {/* Imagen Principal */}
+                {/* Imagen Principal (REQUERIDA) */}
                 <div className="mb-3">
-                  <label className="form-label fw-bold small mb-1">Imagen Principal</label>
+                  <label className="form-label fw-bold small mb-1">Imagen de Portada (Obligatoria) *</label>
+                  
+                  <div className="input-group input-group-sm mb-2">
+                    <input
+                      type="url"
+                      className="form-control"
+                      placeholder="https://... URL de la portada"
+                      value={imagenPrincipal}
+                      onChange={(e) => setImagenPrincipal(e.target.value)}
+                      required
+                    />
+                  </div>
+
                   <input
                     type="file"
                     className="form-control form-control-sm"
@@ -515,7 +537,7 @@ export default function NewsAdmin() {
                     disabled={uploadingMainImg}
                   />
                   {uploadingMainImg && (
-                    <small className="text-primary mt-1 d-block">Subiendo a Supabase...</small>
+                    <small className="text-primary mt-1 d-block">Subiendo imagen de portada...</small>
                   )}
                   {imagenPrincipal && (
                     <div className="mt-2 position-relative d-inline-block border rounded p-1">
@@ -635,7 +657,7 @@ export default function NewsAdmin() {
 
               </div>
 
-              {/* BOTONES FIJOS EN EL PIE DEL MODAL */}
+              {/* BOTONES CON SPINNER ANTI DOBLE SUBMIT EN EL PIE DEL MODAL */}
               <div className="custom-modal-footer">
                 <button
                   type="button"
@@ -647,10 +669,17 @@ export default function NewsAdmin() {
                 </button>
                 <button
                   type="submit"
-                  className="btn btn-primary btn-sm fw-bold"
+                  className="btn btn-primary btn-sm fw-bold d-flex align-items-center justify-content-center gap-2"
                   disabled={saving || uploadingMainImg || uploadingGaleria}
                 >
-                  {saving ? 'Guardando...' : editingId ? 'Guardar Cambios' : 'Crear Noticia'}
+                  {saving ? (
+                    <>
+                      <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                      <span>Guardando...</span>
+                    </>
+                  ) : (
+                    editingId ? 'Guardar Cambios' : 'Crear Noticia'
+                  )}
                 </button>
               </div>
             </form>
