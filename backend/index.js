@@ -21,19 +21,17 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'https://primiciasituzaingo.com',
       'https://santarosanoticias.com',
       'https://enfoquecorrientes.com',
-      'https://seguitucorrientes.netlify.app', // <-- Agregado https://
+      'https://seguitucorrientes.netlify.app',
       'http://localhost:5173', 
       'http://localhost:3000'
     ];
 
 app.use(cors({
   origin: (origin, callback) => {
-    // Peticiones sin origen (Postman, cURL, scripts del servidor)
     if (!origin) return callback(null, true);
 
     const originLimpio = origin.trim().replace(/\/$/, '');
 
-    // Permitir si coincide exactamente o si termina en .netlify.app
     if (
       allowedOrigins.includes('*') || 
       allowedOrigins.includes(originLimpio) ||
@@ -42,15 +40,17 @@ app.use(cors({
       return callback(null, true);
     }
 
-    return callback(null, true); // Fallback permisivo
+    return callback(null, true);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
 
-// Manejar explícitamente las peticiones de verificación previa (Preflight)
-app.options('*', cors());
+// ✅ Expresión regular compatible para peticiones Preflight
+app.options(/(.*)/, cors());
+
+
 
 // Middlewares para parsear el cuerpo de las peticiones HTTP
 app.use(express.json({ limit: '10mb' }));

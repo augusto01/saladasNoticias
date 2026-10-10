@@ -59,7 +59,7 @@ export default function HeaderSaladas(props) {
 
   return (
     <header className="saladas-header-exacto">
-      {/* 1. SECCIÓN SUPERIOR */}
+      {/* 1. SECCIÓN SUPERIOR CON TRES COLUMNAS */}
       <div className="saladas-top-bar">
         <div className="saladas-top-container">
           
@@ -74,6 +74,10 @@ export default function HeaderSaladas(props) {
                 onChange={manejarCambioInput}
               />
             </form>
+
+            <div className="saladas-weather-clean">
+              <WeatherWidget />
+            </div>
           </div>
 
           {/* CENTRO: LOGO + FECHA */}
@@ -121,19 +125,20 @@ export default function HeaderSaladas(props) {
         </div>
       </nav>
 
-      {/* 3. BANNER PUBLICITARIO */}
+      {/* 3. BANNER PUBLICITARIO DESDE PUBLIC */}
       <div className="saladas-banner-wrapper">
         <a 
           href="https://www.corrientes.gob.ar" 
           target="_blank" 
           rel="noopener noreferrer"
+          className="saladas-banner-link"
         >
           <img 
             src="/728x90publi_bannerweb.gif" 
             alt="Gobierno de Corrientes" 
             className="saladas-banner-img"
             onError={(e) => {
-              e.target.style.display = 'none';
+              console.warn("No se pudo cargar /728x90publi_bannerweb.gif. Verificá que el archivo esté guardado en la carpeta frontend/public/");
             }}
           />
         </a>
