@@ -2,22 +2,25 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
-// POST /api/auth/register (Para crear usuarios administradores o redactores)
+// POST /api/auth/register
 exports.register = async (req, res) => {
   try {
     const { nombre, email, password, rol, municipioAsignado } = req.body;
 
-    const existingUser = await User.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+
+    const existingUser = await User.findOne({ email: cleanEmail });
     if (existingUser) {
       return res.status(400).json({ error: 'El email ya está registrado' });
     }
 
+    // Generar el salt y el hash con bcryptjs
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
       nombre,
-      email,
+      email: cleanEmail,
       password: hashedPassword,
       rol: rol || 'EDITOR_MUNICIPIO',
       municipioAsignado: municipioAsignado ? municipioAsignado.toLowerCase() : null
@@ -27,6 +30,7 @@ exports.register = async (req, res) => {
 
     res.status(201).json({ message: 'Usuario registrado correctamente' });
   } catch (error) {
+    console.error('Error en register:', error);
     res.status(500).json({ error: 'Error en el servidor al registrar usuario' });
   }
 };
@@ -36,17 +40,19 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const cleanEmail = email.trim().toLowerCase();
+
+    const user = await User.findOne({ email: cleanEmail });
     if (!user) {
       return res.status(400).json({ error: 'Credenciales inválidas' });
     }
 
+    // Comparar la contraseña ingresada con el hash guardado
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(400).json({ error: 'Credenciales inválidas' });
     }
 
-    // Payload con los datos clave del usuario
     const payload = {
       id: user._id,
       nombre: user.nombre,
@@ -71,6 +77,7 @@ exports.login = async (req, res) => {
       }
     });
   } catch (error) {
+    console.error('Error en login:', error);
     res.status(500).json({ error: 'Error en el servidor durante el login' });
   }
 };
