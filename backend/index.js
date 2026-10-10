@@ -12,37 +12,19 @@ const app = express();
 // Conectar a la Base de Datos (MongoDB Atlas)
 connectDB();
 
-// Configurar CORS
-const allowedOrigins = process.env.ALLOWED_ORIGINS 
-  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim()) 
-  : ['http://localhost:3000', 'http://localhost:5173', 'https://saladasnoticias.com'];
-
+// Configuración de CORS Dinámica (Garantiza que saladasnoticias.com y cualquier origen reciban headers válidos sin error 500)
 app.use(cors({
-  origin: (origin, callback) => {
-    // 1. Permitir solicitudes sin origen (Postman, scripts locales, server-to-server)
-    if (!origin) {
-      return callback(null, true);
-    }
-
-    // 2. Si la variable es '*' o el origen está explícitamente en la lista
-    if (allowedOrigins.includes('*') || allowedOrigins.includes(origin)) {
-      return callback(null, true);
-    }
-
-    // 3. FALLBACK PERMISIVO: En lugar de hacer callback(new Error(...)), 
-    // permitimos la petición para evitar que Express crashee
-    console.warn(`⚠️ Origen recibido fuera de lista, permitiendo por fallback: ${origin}`);
-    return callback(null, true);
-  },
+  origin: true, // Refleja automáticamente el Origin de la petición enviada por el navegador
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
 // Middlewares para parsear el cuerpo de las peticiones HTTP
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
-// Registro de Rutas
+// Importación y Registro de Rutas
 const newsRoutes = require('./routes/newsRoutes');
 
 app.use('/api/auth', require('./routes/authRoutes'));
@@ -51,7 +33,7 @@ app.use('/api/news', newsRoutes); // Alias por compatibilidad
 app.use('/api/municipios', require('./routes/municipioRoutes'));
 app.use('/api/upload', require('./routes/uploadRoutes'));
 
-// Ruta base de estado de la API
+// Ruta base de comprobación de estado de la API
 app.get('/', (req, res) => {
   res.json({
     status: 'OK',
@@ -67,19 +49,19 @@ app.use((req, res, next) => {
 
 // Middleware para manejo global de errores 500 del servidor
 app.use((err, req, res, next) => {
-  console.error('❌ Error no controlado en servidor:', err.stack);
-  
-  // Garantizar que la respuesta de error incluya los headers de CORS
+  console.error('❌ Error no controlado en el servidor:', err.stack);
+
+  // Asegura responder con cabeceras CORS activas en caso de excepción no controlada
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
   res.header('Access-Control-Allow-Credentials', 'true');
 
   res.status(500).json({ 
     error: 'Ocurrió un error interno en el servidor',
-    details: err.message 
+    details: process.env.NODE_ENV === 'development' ? err.message : undefined 
   });
 });
 
-// Arrancar el servidor
+// Arrancar el servidor Express
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Servidor ejecutándose en el puerto ${PORT}`);
