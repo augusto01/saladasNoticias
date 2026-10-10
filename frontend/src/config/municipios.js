@@ -66,11 +66,12 @@ export const MUNICIPIOS = {
 
 // Lee la clave del municipio desde el archivo .env (Por defecto usa saladas)
 // Lee VITE_MUNICIPIO (el que tenés cargado en Netlify)
-const municipioActivoKey = (
+const claveMunicipio = (
   import.meta.env.VITE_MUNICIPIO || 
   import.meta.env.VITE_MUNICIPIO_ID || 
   'saladas'
 ).toLowerCase().trim();
 
+// 2. Usarla para exportar la configuración
+export const configActual = municipios[claveMunicipio] || municipios.saladas
 
-export const configActual = MUNICIPIOS[claveMunicipio] || MUNICIPIOS.saladas;
