@@ -1,33 +1,49 @@
 const News = require('../models/News');
-const mongoose = require('mongoose');
 
 // 1. GET: Obtener noticias de un municipio específico
 const getNewsByMunicipio = async (req, res) => {
   try {
-    // 1. Ver a qué base de datos física está conectado Mongoose
-    const dbName = mongoose.connection.db.databaseName;
-    
-    // 2. Contar TODOS los documentos en la colección 'news' sin filtrar por nada
-    const totalEnColeccion = await News.countDocuments({});
+    const { municipio } = req.query;
 
-    // 3. Traer un solo documento para ver qué campos tiene guardados exactamente
-    const unDocumento = await News.findOne({}).lean();
+    if (!municipio) {
+      return res.status(400).json({ error: 'Debes especificar el parámetro municipio' });
+    }
 
-    console.log(`[DEBUG] Conectado a BD: "${dbName}"`);
-    console.log(`[DEBUG] Documentos totales en 'news': ${totalEnColeccion}`);
-    console.log(`[DEBUG] Ejemplo de documento:`, unDocumento);
+    const municipioClean = municipio.toString().trim();
+
+    // Filtra por municipio de forma flexible (insensible a mayúsculas/minúsculas)
+    // Busca tanto en "municipio" como en "municipioId" para maxima compatibilidad
+    const queryFilter = {
+      $and: [
+        {
+          $or: [
+            { municipio: { $regex: new RegExp(`^${municipioClean}$`, 'i') } },
+            { municipioId: { $regex: new RegExp(`^${municipioClean}$`, 'i') } }
+          ]
+        },
+        { publicado: { $ne: false } } // Retorna publicadas o sin flag explícito
+      ]
+    };
+
+    const news = await News.find(queryFilter)
+      .select('idOriginal titulo subtitulo imagenPrincipal categoria municipio municipioId publicado fechaPublicacion createdAt galeria videos')
+      .sort({ fechaPublicacion: -1, createdAt: -1, _id: -1 })
+      .lean();
+
+    // Compatibilidad en caso de que el frontend pida el array directo vía header
+    if (req.headers['x-legacy-response'] === 'true') {
+      return res.json(news);
+    }
 
     return res.json({
-      dbConectada: dbName,
-      totalDocumentosEnBD: totalEnColeccion,
-      ejemploDocumento: unDocumento
+      total: news.length,
+      data: news
     });
   } catch (error) {
-    console.error('Error en depuración:', error);
-    return res.status(500).json({ error: error.message });
+    console.error('Error al obtener noticias:', error);
+    return res.status(500).json({ error: 'Error al consultar las noticias' });
   }
 };
-
 
 // 2. GET: Obtener una noticia por su ID (_id de MongoDB)
 const getNewsById = async (req, res) => {
@@ -73,7 +89,7 @@ const createNews = async (req, res) => {
       return res.status(400).json({ error: 'El título y municipio son obligatorios' });
     }
 
-    // Validación de permisos según el rol del usuario autenticado por JWT
+    // Validación de permisos según rol
     if (req.user && req.user.rol !== 'SUPER_ADMIN' && targetMunicipio !== req.user.municipioAsignado?.toLowerCase()) {
       return res.status(403).json({
         error: `No tenés permisos para publicar noticias en el municipio '${targetMunicipio}'`
@@ -82,7 +98,7 @@ const createNews = async (req, res) => {
 
     const newNews = new News({
       municipio: targetMunicipio,
-      municipioId: targetMunicipio, // Guarda en ambos campos para mantener consistencia
+      municipioId: targetMunicipio,
       titulo,
       subtitulo: subtitulo || '',
       contenidoMarkdown: contenidoMarkdown || '',
@@ -120,7 +136,6 @@ const updateNews = async (req, res) => {
 
     const currentMunicipio = newsItem.municipio || newsItem.municipioId;
 
-    // Control de acceso por rol
     if (req.user && req.user.rol !== 'SUPER_ADMIN' && currentMunicipio?.toLowerCase() !== req.user.municipioAsignado?.toLowerCase()) {
       return res.status(403).json({ error: 'No tenés permisos para modificar esta noticia' });
     }
@@ -163,7 +178,6 @@ const deleteNews = async (req, res) => {
 
     const currentMunicipio = newsItem.municipio || newsItem.municipioId;
 
-    // Control de acceso por rol
     if (req.user && req.user.rol !== 'SUPER_ADMIN' && currentMunicipio?.toLowerCase() !== req.user.municipioAsignado?.toLowerCase()) {
       return res.status(403).json({ error: 'No tenés permisos para eliminar esta noticia' });
     }
