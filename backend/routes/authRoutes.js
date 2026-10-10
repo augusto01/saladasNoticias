@@ -1,13 +1,20 @@
 const express = require('express');
 const router = express.Router();
 const { register, login, logout } = require('../controllers/authController');
-const verifyToken = require('../middlewares/authMiddleware');
 
-// Registro (Podemos protegerlo más adelante solo para SUPER_ADMIN)
+// Log Middleware para ver peticiones entrantes
+router.use((req, res, next) => {
+  console.log(`[AUTH ROUTE] ${req.method} ${req.originalUrl}`);
+  next();
+});
+
 router.post('/register', register);
-
-// Login
 router.post('/login', login);
-router.post('/logout', authController.logout);
+
+// Ruta de Logout
+router.post('/logout', (req, res, next) => {
+  console.log('👉 Petición de /logout recibida en authRoutes');
+  logout(req, res, next);
+});
 
 module.exports = router;

@@ -55,7 +55,7 @@ exports.logout = async (req, res) => {
     return res.status(500).json({
       error: 'Ocurrió un error al cerrar la sesión'
     });
-  }
+  }};
 
 // POST /api/auth/login
 exports.login = async (req, res) => {

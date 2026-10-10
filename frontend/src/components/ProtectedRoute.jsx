@@ -1,19 +1,34 @@
 import React from 'react';
 import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
 
 export default function ProtectedRoute() {
-  const { token, loading } = useAuth();
+  const token = localStorage.getItem('token');
 
-  if (loading) {
-    return (
-      <div className="d-flex justify-content-center align-items-center py-5">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Cargando sesión...</span>
-        </div>
-      </div>
-    );
+  // Si no hay token guardado, redirige de inmediato al login
+  if (!token) {
+    return <Navigate to="/login" replace />;
   }
 
-  return token ? <Outlet /> : <Navigate to="/login" replace />;
+  // Opcional: Validar si el JWT está expirado leyendo su payload de forma segura
+  try {
+    const payloadBase64 = token.split('.')[1];
+    if (payloadBase64) {
+      const decodedJson = JSON.parse(atob(payloadBase64));
+      const exp = decodedJson.exp;
+      
+      // Si el tiempo actual superó el tiempo de expiración (exp en segundos)
+      if (exp && Date.now() >= exp * 1000) {
+        console.warn('🔒 Token JWT expirado. Limpiando sesión...');
+        localStorage.clear();
+        return <Navigate to="/login" replace />;
+      }
+    }
+  } catch (e) {
+    // Si el token es inválido o no se puede decodificar, limpiar y salir
+    console.error('🔒 Token corrupto o inválido:', e);
+    localStorage.clear();
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
 }

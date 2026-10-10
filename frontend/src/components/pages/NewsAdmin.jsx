@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import API from '../../../services/api';
 import { useAuth } from '../../context/AuthContext';
 import { configActual } from '../../config/municipios';
@@ -15,7 +16,8 @@ import {
 } from 'lucide-react';
 
 export default function NewsAdmin() {
-  const { user, logout } = useAuth();
+  const { user, logout: logoutContext } = useAuth();
+  const navigate = useNavigate();
 
   // Estado para la lista de noticias y carga
   const [noticias, setNoticias] = useState([]);
@@ -77,29 +79,12 @@ export default function NewsAdmin() {
     setShowModal(true);
   };
 
-  const handleLogout = async () => {
-    try {
-      // 1. Notificar al backend
-      await API.post('/auth/logout');
-    } catch (error) {
-      console.warn('Error al notificar logout al backend:', error);
-    } finally {
-      // 2. Limpiar el token/usuario del almacenamiento local
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-
-      // 3. Redirigir al Login
-      navigate('/login');
-    }
-  };
-
-  // Abrir Modal para Editar (Lógica de Markdown integrada)
+  // Abrir Modal para Editar
   const handleOpenEditModal = (noticia) => {
     setEditingId(noticia._id);
     setTitulo(noticia.titulo || '');
     setSubtitulo(noticia.subtitulo || '');
     setCategoria(noticia.categoria || 'GESTIÓN');
-    // Mapeo completo del contenido en Markdown
     setContenidoMarkdown(noticia.contenidoMarkdown || noticia.contenido || '');
     setImagenPrincipal(noticia.imagenPrincipal || '');
     setGaleria(noticia.galeria || noticia.gallery || []);
@@ -108,7 +93,7 @@ export default function NewsAdmin() {
     setShowModal(true);
   };
 
-  // Subir Imagen Principal a Supabase
+  // Subir Imagen Principal
   const handleMainImageUpload = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -170,7 +155,7 @@ export default function NewsAdmin() {
     setGaleria((prev) => prev.filter((_, idx) => idx !== indexToRemove));
   };
 
-  // Guardar Noticia (Crear o Actualizar)
+  // Guardar Noticia
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -179,7 +164,6 @@ export default function NewsAdmin() {
       return;
     }
 
-    // Validación estricta de portada obligatoria
     if (!imagenPrincipal || !imagenPrincipal.trim()) {
       alert('La imagen de portada es obligatoria para publicar una noticia.');
       return;
@@ -216,7 +200,7 @@ export default function NewsAdmin() {
     }
   };
 
-  // Baja Lógica de la Noticia (Despublicar / Marcar publicado = false)
+  // Baja Lógica de la Noticia
   const handleDelete = async (id, tituloNoticia) => {
     if (window.confirm(`¿Estás seguro de que deseas dar de baja la noticia "${tituloNoticia}"?`)) {
       try {
@@ -226,6 +210,41 @@ export default function NewsAdmin() {
         console.error('Error al dar de baja la noticia:', error);
         alert('No se pudo dar de baja la noticia.');
       }
+    }
+  };
+
+  // Cierre de sesión corregido y robusto
+// --- FUNCIÓN DE LOGOUT CON DEBUGGING / LOGS Y ALERTS ---
+  const handleLogout = async (e) => {
+    if (e) e.preventDefault();
+    console.log('🔴 [DEBUG 1] Botón de salir cliqueado');
+    alert('[DEBUG 1] Click detectado en botón Salir');
+
+    try {
+      console.log('🔴 [DEBUG 2] Enviando petición POST a /auth/logout');
+      const res = await API.post('/auth/logout');
+      console.log('✅ [DEBUG 3] Respuesta del servidor al logout:', res.data);
+    } catch (error) {
+      console.error('⚠️ [DEBUG ERROR] Error en petición backend de logout:', error);
+      alert(`[DEBUG WARNING] La API devolvió un error al cerrar sesión: ${error.message}`);
+    } finally {
+      console.log('🔴 [DEBUG 4] Limpiando LocalStorage...');
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      localStorage.removeItem('usuario');
+      localStorage.clear();
+
+      if (logoutContext) {
+        console.log('🔴 [DEBUG 5] Ejecutando logoutContext()');
+        logoutContext();
+      }
+
+      alert('[DEBUG 6] Limpieza completada. Redirigiendo a /login...');
+      console.log('🔴 [DEBUG 7] Redirigiendo con navigate("/login")');
+      
+      // Fuerza la navegación y recarga para evitar bloqueos
+      navigate('/login');
+      window.location.href = '/login';
     }
   };
 
@@ -335,9 +354,10 @@ export default function NewsAdmin() {
               <span>Nueva Noticia</span>
             </button>
 
+            {/* AHORA INVOCA CORRECTAMENTE handleLogout */}
             <button 
               className="btn btn-outline-danger btn-sm d-flex align-items-center gap-1"
-              onClick={logout}
+              onClick={handleLogout}
             >
               <LogOut size={16} />
               <span>Salir</span>
@@ -514,6 +534,7 @@ export default function NewsAdmin() {
                       <option value="EDUCACIÓN">EDUCACIÓN</option>
                       <option value="POLICIALES">POLICIALES</option>
                       <option value="LOCALES">LOCALES</option>
+                      <option value="SEGUÍ TU CORRIENTES">SEGUÍ TU CORRIENTES</option>
                     </select>
                   </div>
                 </div>
@@ -530,7 +551,7 @@ export default function NewsAdmin() {
                   />
                 </div>
 
-                {/* Imagen Principal (REQUERIDA) */}
+                {/* Imagen Principal */}
                 <div className="mb-3">
                   <label className="form-label fw-bold small mb-1">Imagen de Portada (Obligatoria) *</label>
                   
