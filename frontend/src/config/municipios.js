@@ -147,6 +147,19 @@ export const municipios = {
       dark: '#26170d'
     }
   },
+
+  aldiaporctes: {
+    id: 'aldiaporctes',
+    slug: 'aldiaporctes',
+    nombre: 'AL DÍA POR CTES',
+    logo: '/img/logos/aldiaporcorrienteslogo.png',
+    colores: {
+      primary: '#ea580c',   // Naranja vibrante / Acento
+      secondary: '#18181b', // Negro / Gris oscuro para la marquesina
+      accent: '#f8fafc',    // Blanco / Gris claro
+      dark: '#09090b'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno

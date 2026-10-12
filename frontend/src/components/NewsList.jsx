@@ -18,6 +18,7 @@ import HeaderRedMesopotamia from './Layout/RedMesopotamia/HeaderRedMesopotamia';
 import HeaderEnterateCorrientes from './Layout/EnterateCorrientes/HeaderEnterateCorrientes';
 import HeaderEstasAlDia from './Layout/EstasAlDia/HeaderEstasAlDia';
 import HeaderSietePuntas from './Layout/SietePuntas/HeaderSietePuntas';
+import HeaderAlDiaPorCtes from './Layout/AlDiaPorCtes/HeaderAlDiaPorCtes';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -202,6 +203,12 @@ export default function NewsList() {
       case 'siete_puntas':
       case 'sietepuntas':
         return <HeaderSietePuntas {...headerProps} />;
+
+      case 'aldiaporctes':
+      case 'al-dia-por-ctes':
+      case 'al_dia_por_ctes':
+      case 'aldiacorrientes':
+        return <HeaderAlDiaPorCtes {...headerProps} />;
 
         
 
