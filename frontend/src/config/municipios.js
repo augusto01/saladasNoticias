@@ -110,6 +110,18 @@ export const municipios = {
       dark: '#2d140b'
     }
   },
+  enteratecorrientes: {
+    id: 'enteratecorrientes',
+    slug: 'enteratecorrientes',
+    nombre: 'ENTERATE CORRIENTES',
+    logo: '/img/logos/enteratecorrientes.png',
+    colores: {
+      primary: '#e60067',   // Magenta / Rosa Neón
+      secondary: '#4a0040', // Púrpura oscuro
+      accent: '#fdf2f8',    // Rosa suave para fondos
+      dark: '#260021'
+    }
+  }
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno
