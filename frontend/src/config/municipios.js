@@ -134,6 +134,19 @@ export const municipios = {
       dark: '#0f172a'
     }
   },
+
+  sietepuntasnoticias: {
+    id: 'sietepuntasnoticias',
+    slug: 'sietepuntasnoticias',
+    nombre: 'SIETE PUNTAS NOTICIAS',
+    logo: '/img/logos/sietepuntasnoticias.png',
+    colores: {
+      primary: '#3b2314',   // Marrón sepia / oscuro
+      secondary: '#1c1917', // Negro carbón
+      accent: '#f5f2eb',    // Fondo crema / papel
+      dark: '#26170d'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno

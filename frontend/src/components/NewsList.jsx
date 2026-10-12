@@ -17,6 +17,7 @@ import HeaderLaPrimiciaNordeste from './Layout/LaPrimiciaNordeste/HeaderLaPrimic
 import HeaderRedMesopotamia from './Layout/RedMesopotamia/HeaderRedMesopotamia';
 import HeaderEnterateCorrientes from './Layout/EnterateCorrientes/HeaderEnterateCorrientes';
 import HeaderEstasAlDia from './Layout/EstasAlDia/HeaderEstasAlDia';
+import HeaderSietePuntas from './Layout/SietePuntas/HeaderSietePuntas';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -195,6 +196,12 @@ export default function NewsList() {
       case 'estas-al-dia-ctes':
       case 'estas_al_dia_ctes':
         return <HeaderEstasAlDia {...headerProps} />;
+
+      case 'sietepuntasnoticias':
+      case 'siete-puntas':
+      case 'siete_puntas':
+      case 'sietepuntas':
+        return <HeaderSietePuntas {...headerProps} />;
 
         
 
