@@ -1,0 +1,217 @@
+.itu-header-container {
+  width: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--itu-green, #032e1e);
+  color: #ffffff;
+}
+
+/* FRANJA PRINCIPAL VERDE BOTELLA */
+.itu-main-bar {
+  padding: 24px 0 16px 0;
+  background-color: var(--itu-green, #032e1e);
+}
+
+.itu-main-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* ESTRUCTURA LATERAL */
+.itu-left-box,
+.itu-right-box {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.itu-right-box {
+  justify-content: flex-end;
+}
+
+.itu-search-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  padding: 6px;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.itu-search-btn:hover {
+  color: var(--itu-gold, #d4af37);
+  transform: scale(1.1);
+}
+
+.itu-search-form {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: 6px 14px;
+}
+
+.itu-search-form input {
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  outline: none;
+  font-size: 0.85rem;
+  width: 140px;
+}
+
+.itu-search-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.itu-close-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* CENTRO: BRANDING (ISOTIPO + LOGO + SLOGAN) */
+.itu-center-brand {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 2;
+}
+
+.itu-brand-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 8px;
+  transition: transform 0.2s ease;
+}
+
+.itu-brand-link:hover {
+  transform: scale(1.01);
+}
+
+.itu-iso-img {
+  height: 58px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+
+.itu-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: brightness(0) invert(1); /* Asegura contraste blanco sobre fondo verde si el PNG es oscuro */
+}
+
+.itu-slogan {
+  font-size: 0.78rem;
+  letter-spacing: 2px;
+  color: #e5e7eb;
+  font-weight: 600;
+  margin-top: 4px;
+  text-align: center;
+}
+
+/* NAVEGACIÓN CENTRADA CON LÍNEA DIVISORIA */
+.itu-nav {
+  margin-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding-top: 14px;
+}
+
+.itu-nav-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 28px;
+}
+
+.itu-nav-item {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 0.88rem;
+  letter-spacing: 1px;
+  padding: 4px 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.itu-nav-item:hover,
+.itu-nav-item.activo {
+  color: var(--itu-gold, #d4af37);
+  transform: translateY(-1px);
+}
+
+/* BANNER PUBLICITARIO */
+.itu-ad-banner-container {
+  background-color: #ffffff;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #f0f0f0;
+}
+
+.itu-ad-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* RESPONSIVIDAD */
+@media (max-width: 768px) {
+  .itu-main-inner {
+    padding: 0 16px;
+  }
+
+  .itu-iso-img {
+    height: 44px;
+  }
+
+  .itu-logo-img {
+    height: 34px;
+  }
+
+  .itu-slogan {
+    font-size: 0.68rem;
+    letter-spacing: 1px;
+  }
+
+  .itu-nav-inner {
+    justify-content: flex-start;
+    overflow-x: auto;
+    padding: 0 16px 6px 16px;
+    gap: 16px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .itu-nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+
+  .itu-nav-item {
+    font-size: 0.8rem;
+  }
+}

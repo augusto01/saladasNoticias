@@ -19,6 +19,7 @@ import HeaderEnterateCorrientes from './Layout/EnterateCorrientes/HeaderEnterate
 import HeaderEstasAlDia from './Layout/EstasAlDia/HeaderEstasAlDia';
 import HeaderSietePuntas from './Layout/SietePuntas/HeaderSietePuntas';
 import HeaderAlDiaPorCtes from './Layout/AlDiaPorCtes/HeaderAlDiaPorCtes';
+import HeaderElPortalDeItu from './Layout/ElPortalDeItu/HeaderElPortalDeItu';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -209,6 +210,12 @@ export default function NewsList() {
       case 'al_dia_por_ctes':
       case 'aldiacorrientes':
         return <HeaderAlDiaPorCtes {...headerProps} />;
+
+      case 'elportaldeitu':
+      case 'el-portal-de-itu':
+      case 'el_portal_de_itu':
+      case 'ituzaingo':
+        return <HeaderElPortalDeItu {...headerProps} />;
 
         
 

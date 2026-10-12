@@ -160,6 +160,18 @@ export const municipios = {
       dark: '#09090b'
     }
   },
+  elportaldeitu: {
+    id: 'elportaldeitu',
+    slug: 'elportaldeitu',
+    nombre: 'EL PORTAL DE ITU',
+    logo: '/img/logos/elportaldeitu.png',
+    colores: {
+      primary: '#d4af37',   // Dorado
+      secondary: '#032e1e', // Verde bosque profundo
+      accent: '#022015',    // Verde oscuro
+      dark: '#01150e'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno
