@@ -172,6 +172,19 @@ export const municipios = {
       dark: '#01150e'
     }
   },
+
+  corrientesnewshoy: {
+    id: 'corrientesnewshoy',
+    slug: 'corrientesnewshoy',
+    nombre: 'CORRIENTES NEWS HOY',
+    logo: '/img/logos/corrientesnewshoy.png',
+    colores: {
+      primary: '#5b21b6',   // Violeta / Morado
+      secondary: '#4c1d95', // Violeta oscuro
+      accent: '#f3f4f6',    // Gris claro píldora
+      dark: '#1e1b4b'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno

@@ -20,6 +20,7 @@ import HeaderEstasAlDia from './Layout/EstasAlDia/HeaderEstasAlDia';
 import HeaderSietePuntas from './Layout/SietePuntas/HeaderSietePuntas';
 import HeaderAlDiaPorCtes from './Layout/AlDiaPorCtes/HeaderAlDiaPorCtes';
 import HeaderElPortalDeItu from './Layout/ElPortalDeItu/HeaderElPortalDeItu';
+import HeaderCorrientesNewsHoy from './Layout/CorrientesNewsHoy/HeaderCorrientesNewsHoy';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -216,6 +217,12 @@ export default function NewsList() {
       case 'el_portal_de_itu':
       case 'ituzaingo':
         return <HeaderElPortalDeItu {...headerProps} />;
+
+      case 'corrientesnewshoy':
+      case 'corrientes-news-hoy':
+      case 'corrientes_news_hoy':
+      case 'corrientesnews':
+        return <HeaderCorrientesNewsHoy {...headerProps} />;
 
         
 
