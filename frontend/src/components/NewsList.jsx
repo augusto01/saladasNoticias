@@ -5,22 +5,20 @@ import axios from 'axios';
 
 import WeatherWidget from './WeatherWidget';
 
-// Importación de Headers específicos por municipio
+// Importación de Headers específicos por municipio y medios
 import HeaderSaladas from './Layout/Saladas/HeaderSaladas';
 import HeaderCorrientes from './Layout/Corrientes/HeaderCorrientes';
 import HeaderItuzaingo from './Layout/Ituzaingo/HeaderItuzaingo';
 import HeaderSantaRosa from './Layout/SR/HeaderSantaRosa';
 import HeaderSeguiTuCorrientes from './Layout/SeguiTuCorrientes/HeaderSeguiTuCorrientes';
+import HeaderNorNoticias from './Layout/NorNoticias/HeaderNorNoticias';
+import HeaderPrimiciasCorrientes from './Layout/PrimiciasCorrientes/HeaderPrimiciasCorrientes';
 
-import { configActual } from '../config/municipios';
+import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 const MUNICIPIO_ID = import.meta.env.VITE_MUNICIPIO || import.meta.env.VITE_MUNICIPIO_ID || configActual?.id || 'saladas';
-
-console.log("VITE_MUNICIPIO actual:", import.meta.env.VITE_MUNICIPIO);
-console.log("MUNICIPIO_ID resuelto:", MUNICIPIO_ID);
-console.log("configActual:", configActual);
 
 const DEFAULT_PLACEHOLDER = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='800' height='500' viewBox='0 0 800 500' fill='%23f1f5f9'><rect width='100%' height='100%' fill='%23f1f5f9'/><path d='M360 210 L440 210 L440 290 L360 290 Z' fill='none' stroke='%2394a3b8' stroke-width='4'/><circle cx='385' cy='235' r='10' fill='%2394a3b8'/><path d='M365 280 L395 245 L415 265 L425 255 L435 280 Z' fill='%2394a3b8'/><text x='50%' y='340' font-family='sans-serif' font-size='20' font-weight='600' fill='%2364748b' text-anchor='middle'>Imagen no disponible</text></svg>";
 
@@ -48,6 +46,11 @@ export default function NewsList() {
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
+
+  // Resolver municipio clave e información de colores
+  const municipioClave = (MUNICIPIO_ID || configActual?.id || 'saladas').toLowerCase().trim();
+  const infoMunicipio = municipios?.[municipioClave] || configActual || municipios?.saladas;
+  const colores = infoMunicipio?.colores || { primary: '#cca010', secondary: '#a17917', accent: '#faf8f2', dark: '#1e293b' };
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -86,7 +89,6 @@ export default function NewsList() {
     ),
   ];
 
-  // Extraer etiquetas/hashtags de las noticias cargadas de la base de datos
   const tags = Array.from(
     new Set(
       newsSummary.flatMap((item) => item.tags || item.etiquetas || [])
@@ -125,9 +127,8 @@ export default function NewsList() {
     return timeB - timeA;
   });
 
+  // Este switch selecciona qué header mostrar según el municipio o tenant actual
   const renderHeader = () => {
-    const municipio = (MUNICIPIO_ID || configActual?.id || 'saladas').toLowerCase().trim();
-
     const headerProps = {
       configActual,
       searchTerm,
@@ -137,24 +138,40 @@ export default function NewsList() {
       setSelectedCategory,
       dynamicCategories,
       tags,
-      noticias: newsSummary
+      noticias: newsSummary,
+      tenant: municipioClave
     };
 
-    switch (municipio) {
+    switch (municipioClave) {
       case 'saladas':
         return <HeaderSaladas {...headerProps} />;
+
       case 'corrientes':
         return <HeaderCorrientes {...headerProps} />;
+
       case 'ituzaingo':
         return <HeaderItuzaingo {...headerProps} />;
+
       case 'santarosa':
       case 'santa-rosa':
       case 'santa_rosa':
         return <HeaderSantaRosa {...headerProps} />;
+
       case 'seguitucorrientes':
       case 'segui-tu-corrientes':
       case 'segui_tu_corrientes':
         return <HeaderSeguiTuCorrientes {...headerProps} />;
+
+      case 'nornoticiasya':
+      case 'nor-noticias':
+      case 'nor_noticias':
+        return <HeaderNorNoticias {...headerProps} />;
+
+      case 'primiciascorrientes':
+      case 'primicias-corrientes':
+      case 'primicias_corrientes':
+        return <HeaderPrimiciasCorrientes {...headerProps} />;
+
       default:
         return <HeaderSaladas {...headerProps} />;
     }
@@ -165,7 +182,15 @@ export default function NewsList() {
       {/* HEADER FULL WIDTH */}
       {renderHeader()}
 
-      <div className="news-container">
+      <div 
+        className="news-container"
+        style={{
+          '--color-primary': colores.primary,
+          '--color-secondary': colores.secondary,
+          '--color-accent': colores.accent,
+          '--color-dark': colores.dark || '#1e293b'
+        }}
+      >
         {/* CONTENIDO PRINCIPAL */}
         <div className="news-grid">
           <section className="news-main-column">
@@ -179,7 +204,7 @@ export default function NewsList() {
             ) : !hasNews ? (
               <div className="no-news-found card p-5 text-center my-4 border-0 shadow-sm">
                 <Newspaper size={48} className="mx-auto text-muted mb-3" />
-                <h3>Aún no hay noticias en {configActual?.nombre || 'la localidad'}</h3>
+                <h3>Aún no hay noticias en {infoMunicipio?.nombre || configActual?.nombre || 'la localidad'}</h3>
                 <p className="text-muted mb-0">
                   No se encontraron publicaciones con los filtros o búsquedas seleccionadas.
                 </p>
@@ -273,7 +298,7 @@ export default function NewsList() {
 
             <div className="sidebar-widget ad-widget">
               <a 
-                href="https://www.argentina.gob.ar" 
+                href="https://www.corrientes.gob.ar" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="ad-banner-link"
@@ -282,6 +307,9 @@ export default function NewsList() {
                   src="/300x300bannerweb.gif" 
                   alt="Publicidad institucional" 
                   className="ad-banner-300-img"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                  }}
                 />
               </a>
             </div>

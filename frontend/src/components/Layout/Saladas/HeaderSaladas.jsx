@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import WeatherWidget from '../../WeatherWidget';
+import { municipios } from '../../../config/municipios'; // Ajustá la ruta según la ubicación de tu config
 import './HeaderSaladas.css';
 
-// SVG Íconos de Redes Sociales
 const XIcon = () => (
   <svg width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
     <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
@@ -30,6 +30,11 @@ const WhatsappIcon = () => (
 );
 
 export default function HeaderSaladas(props) {
+  // Obtener tenant actual o usar 'saladas' por defecto
+  const tenantKey = props.tenant || 'saladas';
+  const infoMunicipio = municipios[tenantKey] || municipios.saladas;
+  const { colores, logo, nombre } = infoMunicipio;
+
   const dynamicCategories = props.dynamicCategories || props.categories || props.categorias || [];
   const selectedCategory = props.selectedCategory || props.category || props.categoria || '';
   const setSelectedCategory = props.setSelectedCategory || props.onSelectCategory || props.setCategory;
@@ -58,12 +63,18 @@ export default function HeaderSaladas(props) {
   const fechaFormateada = fechaHoy.charAt(0).toUpperCase() + fechaHoy.slice(1);
 
   return (
-    <header className="saladas-header-exacto">
+    <header 
+      className="saladas-header-exacto"
+      style={{
+        '--primary-color': colores.primary,
+        '--secondary-color': colores.secondary,
+        '--accent-color': colores.accent
+      }}
+    >
       {/* 1. SECCIÓN SUPERIOR CON TRES COLUMNAS */}
       <div className="saladas-top-bar">
         <div className="saladas-top-container">
           
-          {/* IZQUIERDA: BUSCADOR + WEATHER WIDGET (SOLO TEXTO) */}
           <div className="saladas-left-box">
             <form className="saladas-search-box" onSubmit={manejarEnvioFormulario}>
               <Search size={16} className="search-icon" />
@@ -75,21 +86,18 @@ export default function HeaderSaladas(props) {
               />
             </form>
 
-            <div className="saladas-weather-clean">
-              <WeatherWidget />
-            </div>
+           
           </div>
 
-          {/* CENTRO: LOGO + FECHA */}
           <div className="saladas-center-box">
             <Link to="/" onClick={() => setSelectedCategory && setSelectedCategory('Todas')}>
               <img 
-                src="/img/logos/saladaslogo.png" 
-                alt="Saladas Noticias" 
+                src={logo} 
+                alt={nombre} 
                 className="saladas-logo-img"
                 onError={(e) => {
                   e.target.onerror = null;
-                  e.target.src = '/img/logos/saladas.png';
+                  e.target.src = '/img/logos/saladaslogo.png';
                 }}
               />
             </Link>
@@ -98,7 +106,6 @@ export default function HeaderSaladas(props) {
             </div>
           </div>
 
-          {/* DERECHA: REDES SOCIALES */}
           <div className="saladas-right-box">
             <a href="https://x.com" target="_blank" rel="noreferrer" title="X"><XIcon /></a>
             <a href="https://facebook.com" target="_blank" rel="noreferrer" title="Facebook"><FacebookIcon /></a>
@@ -109,7 +116,7 @@ export default function HeaderSaladas(props) {
         </div>
       </div>
 
-      {/* 2. BARRA DE NAVEGACIÓN DORADA */}
+      {/* 2. BARRA DE NAVEGACIÓN CON COLOR DINÁMICO */}
       <nav className="saladas-gold-nav">
         <div className="saladas-nav-container">
           {(dynamicCategories || []).map((cat) => (
@@ -125,20 +132,19 @@ export default function HeaderSaladas(props) {
         </div>
       </nav>
 
-      {/* 3. BANNER PUBLICITARIO DESDE PUBLIC */}
+      {/* 3. BANNER PUBLICITARIO */}
       <div className="saladas-banner-wrapper">
         <a 
           href="https://www.corrientes.gob.ar" 
           target="_blank" 
           rel="noopener noreferrer"
-          className="saladas-banner-link"
         >
           <img 
             src="/728x90publi_bannerweb.gif" 
             alt="Gobierno de Corrientes" 
             className="saladas-banner-img"
             onError={(e) => {
-              console.warn("No se pudo cargar /728x90publi_bannerweb.gif. Verificá que el archivo esté guardado en la carpeta frontend/public/");
+              e.target.style.display = 'none';
             }}
           />
         </a>

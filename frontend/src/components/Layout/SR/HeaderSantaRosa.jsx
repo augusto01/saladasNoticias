@@ -150,7 +150,7 @@ export default function HeaderSantaRosa({
       <div className="santarosa-full-width-banner">
         <a href="https://www.argentina.gob.ar" target="_blank" rel="noopener noreferrer">
           <img 
-            src="/728x90publi_banner web.gif" 
+            src="/728x90publi_bannerweb.gif" 
             alt="Publicidad Institucional" 
             className="santarosa-banner-img"
             onError={(e) => { e.target.style.display = 'none'; }}

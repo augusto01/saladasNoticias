@@ -1,0 +1,262 @@
+.m1-header-container {
+  width: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: var(--m1-red, #b91c1c);
+  color: #ffffff;
+}
+
+/* 1. TOP BAR NEGRO */
+.m1-top-bar {
+  background-color: var(--m1-black, #0a0a0a);
+  color: #ffffff;
+  font-size: 0.8rem;
+  padding: 6px 0;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.m1-top-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.m1-topics-group {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.m1-topics-group::-webkit-scrollbar {
+  display: none;
+}
+
+.m1-topics-label {
+  font-weight: 800;
+  white-space: nowrap;
+  font-size: 0.82rem;
+}
+
+.m1-topics-list {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.m1-topic-item {
+  background: transparent;
+  border: none;
+  color: #e2e8f0;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.m1-topic-item:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.m1-clima-link {
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: #e2e8f0;
+}
+
+/* 2. MAIN BAR ROJA */
+.m1-main-bar {
+  background-color: var(--m1-red, #b91c1c);
+  padding: 12px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.m1-main-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+/* LADO IZQUIERDO */
+.m1-left-box {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.m1-menu-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 0;
+}
+
+.m1-date-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* CENTRO LOGO */
+.m1-center-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+}
+
+.m1-logo-img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+  filter: brightness(0) invert(1); /* Fuerza a que el logo se vea blanco impecable sobre el rojo */
+}
+
+/* LADO DERECHO */
+.m1-right-box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  flex: 1;
+}
+
+.m1-search-trigger {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.m1-search-inline-form {
+  display: flex;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  padding: 4px 8px;
+}
+
+.m1-search-inline-form input {
+  border: none;
+  background: transparent;
+  color: #ffffff;
+  outline: none;
+  font-size: 0.85rem;
+  width: 140px;
+}
+
+.m1-search-inline-form input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.m1-search-close {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+}
+
+.m1-btn-newsletter {
+  background: transparent;
+  border: 1px solid #ffffff;
+  color: #ffffff;
+  padding: 8px 14px;
+  border-radius: 2px;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.m1-btn-newsletter:hover {
+  background-color: #ffffff;
+  color: var(--m1-red, #b91c1c);
+}
+
+/* 3. NAVEGACIÓN INFERIOR */
+.m1-bottom-nav {
+  background-color: var(--m1-dark-red, #991b1b);
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.m1-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.m1-nav-item {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 0.88rem;
+  padding: 10px 16px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.m1-nav-item:hover,
+.m1-nav-item.activo {
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+/* BANNER PUBLICIDAD PRIMICIAS CORRIENTES */
+.m1-ad-banner-container {
+  background-color: #111418;
+  padding: 8px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.m1-ad-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* RESPONSIVO MÓVIL */
+@media (max-width: 992px) {
+  .m1-date-text,
+  .m1-btn-newsletter {
+    display: none;
+  }
+
+  .m1-nav-inner {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+}
