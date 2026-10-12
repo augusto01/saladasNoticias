@@ -1,5 +1,25 @@
 const News = require('../models/News');
 
+// Helper para sanitizar y limpiar nombres de archivos/rutas (elimina acentos, 'ñ', espacios y caracteres especiales)
+const sanitizarNombreImagen = (nombreArchivo) => {
+  if (!nombreArchivo) return '';
+  
+  // Si viene una ruta (ej: "general/1234_mi_imagen.jpg"), dividimos para sanitizar el nombre real del archivo
+  const partes = nombreArchivo.split('/');
+  const nombreReal = partes.pop();
+  
+  const nombreLimpio = nombreReal
+    .normalize('NFD')                        // Separa letras de sus tildes o marcas diacríticas
+    .replace(/[\u0300-\u036f]/g, '')          // Elimina tildes y acentos
+    .replace(/ñ/g, 'n')                       // Reemplaza 'ñ' por 'n'
+    .replace(/Ñ/g, 'N')                       // Reemplaza 'Ñ' por 'N'
+    .replace(/[^a-zA-Z0-9._-]/g, '_')         // Reemplaza caracteres no alfanuméricos por '_'
+    .replace(/_+/g, '_');                     // Evita guiones bajos duplicados
+
+  // Reconstruye la ruta original con el nombre de archivo limpio
+  return partes.length > 0 ? `${partes.join('/')}/${nombreLimpio}` : nombreLimpio;
+};
+
 // 1. GET: Obtener noticias de un municipio específico
 const getNewsByMunicipio = async (req, res) => {
   try {
@@ -40,13 +60,13 @@ const getNewsByMunicipio = async (req, res) => {
     });
   } catch (error) {
     console.error('❌ Error en getNewsByMunicipio:', error);
-    // Retorna status 500 asegurando responder JSON con headers
     return res.status(500).json({ 
       error: 'Error interno al consultar las noticias',
       message: error.message 
     });
   }
 };
+
 // 2. GET: Obtener una noticia por su ID (_id de MongoDB)
 const getNewsById = async (req, res) => {
   try {
@@ -96,6 +116,9 @@ const createNews = async (req, res) => {
       return res.status(400).json({ error: 'La imagen de portada es obligatoria' });
     }
 
+    // Sanitizar el nombre/ruta de la imagen principal
+    const imagenPrincipalLimpia = sanitizarNombreImagen(imagenPrincipal.trim());
+
     // Normalización de municipio del usuario
     const userMunicipio = req.user?.municipioAsignado ? req.user.municipioAsignado.toLowerCase().trim() : '';
 
@@ -114,7 +137,7 @@ const createNews = async (req, res) => {
       subtitulo: subtitulo || '',
       contenidoMarkdown: contenidoMarkdown || '',
       categoria: categoria ? categoria.toUpperCase().trim() : 'GENERAL',
-      imagenPrincipal: imagenPrincipal.trim(),
+      imagenPrincipal: imagenPrincipalLimpia,
       galeria: galeria || [],
       videos: videos || [],
       destacada: destacada || false,
@@ -158,11 +181,17 @@ const updateNews = async (req, res) => {
       return res.status(400).json({ error: 'La imagen de portada no puede estar vacía' });
     }
 
+    // Sanitizar el nombre/ruta de la imagen si fue provista
+    if (updateData.imagenPrincipal && typeof updateData.imagenPrincipal === 'string') {
+      updateData.imagenPrincipal = sanitizarNombreImagen(updateData.imagenPrincipal.trim());
+    }
+
     if (updateData.municipio || updateData.municipioId) {
       const cleanMun = (updateData.municipio || updateData.municipioId).toLowerCase().trim();
       updateData.municipio = cleanMun;
       updateData.municipioId = cleanMun;
     }
+
     if (updateData.categoria) {
       updateData.categoria = updateData.categoria.toUpperCase().trim();
     }
