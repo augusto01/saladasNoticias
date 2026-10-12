@@ -185,6 +185,19 @@ export const municipios = {
       dark: '#1e1b4b'
     }
   },
+
+  laredcorrentina: {
+    id: 'laredcorrentina',
+    slug: 'laredcorrentina',
+    nombre: 'LA RED CORRENTINA',
+    logo: '/img/logos/laredcorrentina.png',
+    colores: {
+      primary: '#0f766e',   // Verde azulado / Esmeralda
+      secondary: '#064e3b', // Verde oscuro institucional
+      accent: '#f1f5f9',    // Gris claro
+      dark: '#022c22'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno

@@ -1,0 +1,209 @@
+.lrc-header-container {
+  width: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+/* 1. TOP BAR VERDE OSCURO */
+.lrc-top-bar {
+  background-color: var(--lrc-dark-green, #064e3b);
+  color: #ffffff;
+  padding: 8px 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
+.lrc-top-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.lrc-top-links {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.lrc-top-links a {
+  color: #ffffff;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.lrc-top-links a:hover {
+  opacity: 0.8;
+}
+
+/* 2. BARRA PRINCIPAL */
+.lrc-main-bar {
+  padding: 20px 0;
+  background-color: #ffffff;
+}
+
+.lrc-main-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+}
+
+/* BRANDING LOGOS */
+.lrc-brand-box {
+  display: flex;
+  align-items: center;
+}
+
+.lrc-logo-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-decoration: none;
+}
+
+.lrc-iso-img {
+  height: 48px;
+  width: auto;
+  object-fit: contain;
+}
+
+.lrc-logo-img {
+  height: 44px;
+  width: auto;
+  object-fit: contain;
+}
+
+/* BUSCADOR ROUNDED */
+.lrc-search-box {
+  display: flex;
+  align-items: center;
+}
+
+.lrc-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 14px;
+  width: 280px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.lrc-search-form:focus-within {
+  border-color: var(--lrc-teal, #0f766e);
+  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+}
+
+.lrc-search-icon {
+  color: #94a3b8;
+}
+
+.lrc-search-form input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.88rem;
+  color: #0f172a;
+  width: 100%;
+}
+
+.lrc-clear-btn {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+/* 3. NAVEGACIÓN INFERIOR CON SUBRAYADO */
+.lrc-bottom-nav {
+  background-color: #ffffff;
+  border-top: 1px solid #f1f5f9;
+  padding: 0 0 4px 0;
+}
+
+.lrc-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 32px;
+}
+
+.lrc-nav-item {
+  background: transparent;
+  border: none;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #334155;
+  padding: 12px 0;
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s ease;
+}
+
+.lrc-nav-item:hover,
+.lrc-nav-item.activo {
+  color: var(--lrc-teal, #0f766e);
+}
+
+.lrc-nav-item.activo::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: var(--lrc-teal, #0f766e);
+  border-radius: 2px;
+}
+
+/* BANNER PUBLICITARIO */
+.lrc-banner-container {
+  background-color: #f8fafc;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  border-top: 1px solid #e2e8f0;
+}
+
+.lrc-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+}
+
+/* RESPONSIVIDAD (MOBILE & TABLET) */
+@media (max-width: 768px) {
+  .lrc-top-inner {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .lrc-main-inner {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .lrc-search-form {
+    width: 100%;
+  }
+  .lrc-nav-inner {
+    overflow-x: auto;
+    scrollbar-width: none;
+    gap: 18px;
+  }
+  .lrc-nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+}

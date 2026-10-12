@@ -21,6 +21,7 @@ import HeaderSietePuntas from './Layout/SietePuntas/HeaderSietePuntas';
 import HeaderAlDiaPorCtes from './Layout/AlDiaPorCtes/HeaderAlDiaPorCtes';
 import HeaderElPortalDeItu from './Layout/ElPortalDeItu/HeaderElPortalDeItu';
 import HeaderCorrientesNewsHoy from './Layout/CorrientesNewsHoy/HeaderCorrientesNewsHoy';
+import HeaderLaRedCorrentina from './Layout/LaRedCorrentina/HeaderLaRedCorrentina';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -223,6 +224,12 @@ export default function NewsList() {
       case 'corrientes_news_hoy':
       case 'corrientesnews':
         return <HeaderCorrientesNewsHoy {...headerProps} />;
+
+      case 'laredcorrentina':
+      case 'la-red-correntina':
+      case 'la_red_correntina':
+      case 'redcorrentina':
+        return <HeaderLaRedCorrentina {...headerProps} />;
 
         
 

@@ -32,6 +32,8 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'https://aldiaporctes.netlify.app',
       'https://elportaldeitu.netlify.app',
       'https://corrientesnewshoy.netlify.app',
+      'https://laredcorrentina.netlify.app',
+      
 
       
       
