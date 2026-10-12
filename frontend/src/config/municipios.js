@@ -7,8 +7,8 @@ export const municipios = {
     nombre: 'Municipalidad de Saladas',
     logo: '/img/logos/saladaslogo.png',
     colores: {
-      primary: '#cca010',   // Dorado / Amarillo principal
-      secondary: '#a17917', // Marrón / Dorado oscuro
+      primary: '#e6db0d',   // Dorado / Amarillo principal
+      secondary: '#eb4a10', // Marrón / Dorado oscuro
       accent: '#fdfbf7',    // Crema de fondo
       dark: '#1e293b'
     }
