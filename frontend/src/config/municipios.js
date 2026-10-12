@@ -85,6 +85,31 @@ export const municipios = {
       dark: '#0f172a'
     }
   },
+  laprimicianordeste: {
+    id: 'laprimicianordeste',
+    slug: 'laprimicianordeste',
+    nombre: 'LA PRIMICIA NORDESTE',
+    logo: '/img/logos/laprimicianordeste.png',
+    colores: {
+      primary: '#bf6216',   // Dorado / Ochre cálido
+      secondary: '#3b0a0a', // Bordó / Borravino oscuro
+      accent: '#faf8f5',    // Fondo crema claro
+      dark: '#240505'
+    }
+  },
+
+  redmesopotamialdia: {
+    id: 'redmesopotamialdia',
+    slug: 'redmesopotamialdia',
+    nombre: 'RED MESOPOTAMIA AL DÍA',
+    logo: '/img/logos/redmesopotamialdia.png',
+    colores: {
+      primary: '#b84c28',   // Terracota
+      secondary: '#8c3116', // Terracota oscuro
+      accent: '#f8f6f0',    // Arena / Crema
+      dark: '#2d140b'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno

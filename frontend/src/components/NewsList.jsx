@@ -13,6 +13,8 @@ import HeaderSantaRosa from './Layout/SR/HeaderSantaRosa';
 import HeaderSeguiTuCorrientes from './Layout/SeguiTuCorrientes/HeaderSeguiTuCorrientes';
 import HeaderNorNoticias from './Layout/NorNoticias/HeaderNorNoticias';
 import HeaderPrimiciasCorrientes from './Layout/PrimiciasCorrientes/HeaderPrimiciasCorrientes';
+import HeaderLaPrimiciaNordeste from './Layout/LaPrimiciaNordeste/HeaderLaPrimiciaNordeste';
+import HeaderRedMesopotamia from './Layout/RedMesopotamia/HeaderRedMesopotamia';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -171,6 +173,18 @@ export default function NewsList() {
       case 'primicias-corrientes':
       case 'primicias_corrientes':
         return <HeaderPrimiciasCorrientes {...headerProps} />;
+
+      case 'laprimicianordeste':
+      case 'la-primicia-nordeste':
+      case 'la_primicia_nordeste':
+        return <HeaderLaPrimiciaNordeste {...headerProps} />;
+
+      case 'redmesopotamialdia':
+      case 'red-mesopotamia':
+      case 'red_mesopotamia':
+        return <HeaderRedMesopotamia {...headerProps} />;
+
+        
 
       default:
         return <HeaderSaladas {...headerProps} />;

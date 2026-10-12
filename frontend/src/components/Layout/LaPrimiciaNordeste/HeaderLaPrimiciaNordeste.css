@@ -1,0 +1,252 @@
+.beacon-header-container {
+  width: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+/* BARRA PRINCIPAL CON BACKGROUND BORDÓ SUAVE */
+.beacon-main-bar {
+  padding: 22px 0 18px 0;
+  background-color: rgba(59, 10, 10, 0.05); /* Bordó suave transparente */
+  border-bottom: 1px solid rgba(59, 10, 10, 0.12);
+}
+
+.beacon-main-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+/* LADO IZQUIERDO: FECHA Y BUSCADOR */
+.beacon-left-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  font-size: 0.82rem;
+  color: #4b5563;
+  font-weight: 500;
+}
+
+.beacon-date {
+  white-space: nowrap;
+}
+
+.beacon-divider-sm {
+  color: #d1d5db;
+}
+
+.beacon-search-btn {
+  background: transparent;
+  border: none;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0;
+  transition: color 0.2s ease;
+}
+
+.beacon-search-btn:hover {
+  color: var(--beacon-red, #b91c1c);
+}
+
+.beacon-search-inline {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #ffffff;
+  border: 1px solid #d1d5db;
+  padding: 5px 10px;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.beacon-search-inline input {
+  border: none;
+  background: transparent;
+  outline: none;
+  font-size: 0.82rem;
+  width: 140px;
+  color: #111827;
+}
+
+.beacon-search-inline button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+}
+
+/* CENTRO: ISOTIPO + LOGO MÁS GRANDES */
+.beacon-center-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1.5;
+}
+
+.beacon-logo-link {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-decoration: none;
+  gap: 6px;
+  transition: transform 0.2s ease;
+}
+
+.beacon-logo-link:hover {
+  transform: scale(1.01);
+}
+
+.beacon-iso-img {
+  height: 42px; /* Agrandado */
+  width: auto;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 1px 2px rgba(0,0,0,0.1));
+}
+
+.beacon-logo-img {
+  height: 62px; /* Agrandado */
+  width: auto;
+  object-fit: contain;
+  display: block;
+}
+
+/* LADO DERECHO: REDES SOCIALES */
+.beacon-right-box {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1;
+}
+
+.beacon-social-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.beacon-social-links a {
+  color: #111827;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+}
+
+.beacon-social-links a:hover {
+  color: var(--beacon-red, #b91c1c);
+  transform: translateY(-2px);
+}
+
+/* BANNER PUBLICITARIO */
+.beacon-ad-banner-container {
+  background-color: #fafafa;
+  padding: 10px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-top: 1px solid #f3f4f6;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.beacon-ad-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+  display: block;
+  margin: 0 auto;
+}
+
+/* NAVEGACIÓN EDITORIAL CON SEPARADORES | */
+.beacon-bottom-nav {
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+  border-bottom: 2px solid var(--beacon-red, #b91c1c);
+  padding: 10px 0;
+}
+
+.beacon-nav-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.beacon-nav-item {
+  background: transparent;
+  border: none;
+  color: #374151;
+  font-weight: 700;
+  font-size: 0.8rem;
+  letter-spacing: 0.6px;
+  padding: 4px 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.beacon-nav-item:hover,
+.beacon-nav-item.activo {
+  color: var(--beacon-red, #b91c1c);
+}
+
+.beacon-nav-separator {
+  color: var(--beacon-red, #b91c1c);
+  font-weight: 400;
+  font-size: 0.85rem;
+  user-select: none;
+}
+
+/* RESPONSIVIDAD (MOBILE & TABLET) */
+@media (max-width: 992px) {
+  .beacon-main-inner {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .beacon-left-box,
+  .beacon-right-box {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .beacon-date {
+    display: none;
+  }
+
+  .beacon-iso-img {
+    height: 34px;
+  }
+
+  .beacon-logo-img {
+    height: 48px;
+  }
+
+  .beacon-nav-inner {
+    justify-content: flex-start;
+    overflow-x: auto;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+  }
+
+  .beacon-nav-inner::-webkit-scrollbar {
+    display: none;
+  }
+}
