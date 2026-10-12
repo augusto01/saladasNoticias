@@ -121,7 +121,19 @@ export const municipios = {
       accent: '#fdf2f8',    // Rosa suave para fondos
       dark: '#260021'
     }
-  }
+  },
+  estasaldiactes: {
+    id: 'estasaldiactes',
+    slug: 'estasaldiactes',
+    nombre: 'ESTÁS AL DÍA CTES',
+    logo: '/img/logos/estasaldiactes.png',
+    colores: {
+      primary: '#1d4ed8',   // Azul
+      secondary: '#1e293b', // Azul oscuro para la barra URGENTE
+      accent: '#ef4444',    // Rojo para el badge "URGENTE"
+      dark: '#0f172a'
+    }
+  },
 };
 
 // 2. DESPUÉS obtenemos la clave desde la variable de entorno

@@ -16,6 +16,7 @@ import HeaderPrimiciasCorrientes from './Layout/PrimiciasCorrientes/HeaderPrimic
 import HeaderLaPrimiciaNordeste from './Layout/LaPrimiciaNordeste/HeaderLaPrimiciaNordeste';
 import HeaderRedMesopotamia from './Layout/RedMesopotamia/HeaderRedMesopotamia';
 import HeaderEnterateCorrientes from './Layout/EnterateCorrientes/HeaderEnterateCorrientes';
+import HeaderEstasAlDia from './Layout/EstasAlDia/HeaderEstasAlDia';
 
 import { configActual, municipios } from '../config/municipios';
 import '../styles/NewsList.css';
@@ -189,6 +190,11 @@ export default function NewsList() {
       case 'enterate-corrientes':
       case 'enterate_corrientes':
         return <HeaderEnterateCorrientes {...headerProps} />;
+
+      case 'estasaldiactes':
+      case 'estas-al-dia-ctes':
+      case 'estas_al_dia_ctes':
+        return <HeaderEstasAlDia {...headerProps} />;
 
         
 
