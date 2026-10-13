@@ -32,7 +32,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'https://sietepuntasnoticias.netlify.app',
       'https://aldiaporctes.netlify.app',
       'http://elportaldeitu.com',
-      'https://corrientesnewshoy.netlify.app',
+      'https://corrientesnewshoy.com',
       'https://laredcorrentina.com',
       
 
