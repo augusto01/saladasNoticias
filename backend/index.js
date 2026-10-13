@@ -22,6 +22,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'https://santarosanoticias.com',
       'https://enfoquecorrientes.com',
       'https://seguitucorrientes.netlify.app',
+      'https://seguitucorrientes.com',
       'https://primiciascorrientes.netlify.app',
       'https://nornoticiasya.netlify.app',
       'https://redmesopotamialdia.netlify.app',
