@@ -5,6 +5,9 @@ import axios from 'axios';
 
 import WeatherWidget from './WeatherWidget';
 
+//partes del layout
+import Footer from './Layout/Footer/Footer'; // Ajusta la ruta según tu estructura
+
 // Importación de Headers específicos por municipio y medios
 import HeaderSaladas from './Layout/Saladas/HeaderSaladas';
 import HeaderCorrientes from './Layout/Corrientes/HeaderCorrientes';
@@ -380,8 +383,14 @@ export default function NewsList() {
             </div>
           </aside>
 
+          
+
         </div>
+
+       
       </div>
+       {/* 3. FOOTER CON BANNER DEL GOBIERNO */}
+        <Footer />
     </>
   );
 }

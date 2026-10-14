@@ -1,0 +1,41 @@
+.portal-footer {
+  width: 100%;
+  margin-top: 40px;
+  background-color: #ffffff;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* BANNER INSTITUCIONAL */
+.footer-banner-container {
+  background-color: #f9fafb;
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.footer-banner-img {
+  max-width: 100%;
+  height: auto;
+  max-height: 90px;
+  object-fit: contain;
+  display: block;
+}
+
+/* BARRA INFERIOR DE DERECHOS */
+.footer-bottom-bar {
+  background-color: #111827;
+  color: #9ca3af;
+  padding: 16px 24px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.footer-bottom-inner p {
+  margin: 0;
+}
+
+.footer-bottom-inner strong {
+  color: #ffffff;
+}
