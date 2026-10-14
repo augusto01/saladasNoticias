@@ -338,7 +338,9 @@ export default function NewsList() {
               <WeatherWidget />
             </div>
 
-            {sortedAllNews.length > 0 && (
+           {
+            /**
+             * {sortedAllNews.length > 0 && (
               <div className="sidebar-widget popular-widget">
                 <h3 className="widget-title">Lo más leído</h3>
                 <ul className="popular-list">
@@ -356,6 +358,8 @@ export default function NewsList() {
                 </ul>
               </div>
             )}
+             */
+           } 
 
             <div className="sidebar-widget ad-widget">
               <a 
