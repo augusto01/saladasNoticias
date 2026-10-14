@@ -5,8 +5,8 @@ import axios from 'axios';
 
 import WeatherWidget from './WeatherWidget';
 
-//partes del layout
-import Footer from './Layout/Footer/Footer'; // Ajusta la ruta según tu estructura
+// Partes del layout
+import Footer from './Layout/Footer/Footer';
 
 // Importación de Headers específicos por municipio y medios
 import HeaderSaladas from './Layout/Saladas/HeaderSaladas';
@@ -51,7 +51,12 @@ function formatDate(dateString) {
   }).format(date);
 }
 
-export default function NewsList() {
+export default function NewsList({ tenant }) {
+  // Resolver municipio clave e información del tenant actual
+  const municipioClave = (tenant || MUNICIPIO_ID || configActual?.id || 'saladas').toLowerCase().trim();
+  const infoMunicipio = municipios?.[municipioClave] || configActual || municipios?.saladas;
+  const colores = infoMunicipio?.colores || { primary: '#cca010', secondary: '#a17917', accent: '#faf8f2', dark: '#1e293b' };
+
   const [newsSummary, setNewsSummary] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -59,11 +64,7 @@ export default function NewsList() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
 
-  // Resolver municipio clave e información de colores
-  const municipioClave = (MUNICIPIO_ID || configActual?.id || 'saladas').toLowerCase().trim();
-  const infoMunicipio = municipios?.[municipioClave] || configActual || municipios?.saladas;
-  const colores = infoMunicipio?.colores || { primary: '#cca010', secondary: '#a17917', accent: '#faf8f2', dark: '#1e293b' };
-
+  // Fetch de noticias
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -88,6 +89,30 @@ export default function NewsList() {
       fetchNews();
     }
   }, []);
+
+  // EFECTO: Actualiza dinámicamente el <title> de la pestaña según el dominio/tenant
+  useEffect(() => {
+    const host = window.location.hostname.toLowerCase();
+    let nombrePortal = infoMunicipio?.nombre;
+
+    if (!nombrePortal) {
+      if (host.includes('aldiaporctes')) nombrePortal = 'AL DÍA POR CTES';
+      else if (host.includes('elportaldeitu')) nombrePortal = 'EL PORTAL DE ITU';
+      else if (host.includes('corrientesnewshoy')) nombrePortal = 'CORRIENTES NEWS HOY';
+      else if (host.includes('laredcorrentina')) nombrePortal = 'LA RED CORRENTINA';
+      else if (host.includes('sietepuntas')) nombrePortal = 'SIETE PUNTAS NOTICIAS';
+      else if (host.includes('enteratecorrientes')) nombrePortal = 'ENTERATE CORRIENTES';
+      else if (host.includes('estasaldia')) nombrePortal = 'ESTÁS AL DÍA CTES';
+      else if (host.includes('primiciascorrientes')) nombrePortal = 'PRIMICIAS CORRIENTES';
+      else if (host.includes('nornoticias')) nombrePortal = 'NOR NOTICIAS YA';
+      else if (host.includes('seguitucorrientes')) nombrePortal = 'SEGUÍ TU CORRIENTES';
+      else if (host.includes('redmesopotamia')) nombrePortal = 'RED MESOPOTAMIA AL DÍA';
+      else if (host.includes('laprimicianordeste')) nombrePortal = 'LA PRIMICIA NORDESTE';
+      else nombrePortal = 'Noticias de la Región';
+    }
+
+    document.title = `${nombrePortal} | Las noticias al instante`;
+  }, [municipioClave, infoMunicipio]);
 
   const dynamicCategories = [
     "Todas",
@@ -133,13 +158,7 @@ export default function NewsList() {
   const mainNews = hasNews ? sortedNews[0] : null;
   const secondaryNews = hasNews ? sortedNews.slice(1) : [];
 
-  const sortedAllNews = [...newsSummary].sort((a, b) => {
-    const timeA = parseSafeDate(a.fechaPublicacion || a.createdAt || a.date).getTime();
-    const timeB = parseSafeDate(b.fechaPublicacion || b.createdAt || b.date).getTime();
-    return timeB - timeA;
-  });
-
-  // Este switch selecciona qué header mostrar según el municipio o tenant actual
+  // Selección del Header correspondiente al portal activo
   const renderHeader = () => {
     const headerProps = {
       configActual,
@@ -219,7 +238,6 @@ export default function NewsList() {
       case 'elportaldeitu':
       case 'el-portal-de-itu':
       case 'el_portal_de_itu':
-      case 'ituzaingo':
         return <HeaderElPortalDeItu {...headerProps} />;
 
       case 'corrientesnewshoy':
@@ -234,15 +252,13 @@ export default function NewsList() {
       case 'redcorrentina':
         return <HeaderLaRedCorrentina {...headerProps} />;
 
-        
-
       default:
         return <HeaderSaladas {...headerProps} />;
     }
   };
 
   return (
-    <>
+    <div className="news-list-container">
       {/* HEADER FULL WIDTH */}
       {renderHeader()}
 
@@ -341,29 +357,6 @@ export default function NewsList() {
               <WeatherWidget />
             </div>
 
-           {
-            /**
-             * {sortedAllNews.length > 0 && (
-              <div className="sidebar-widget popular-widget">
-                <h3 className="widget-title">Lo más leído</h3>
-                <ul className="popular-list">
-                  {sortedAllNews.slice(0, 3).map((news, index) => {
-                    const newsId = news._id || news.id || index;
-                    return (
-                      <li key={newsId}>
-                        <Link to={`/noticias/${newsId}`} className="popular-item">
-                          <span className="popular-number">0{index + 1}</span>
-                          <p className="popular-text">{news.titulo || news.title}</p>
-                        </Link>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
-            )}
-             */
-           } 
-
             <div className="sidebar-widget ad-widget">
               <a 
                 href="https://www.corrientes.gob.ar" 
@@ -382,15 +375,11 @@ export default function NewsList() {
               </a>
             </div>
           </aside>
-
-          
-
         </div>
-
-       
       </div>
-       {/* 3. FOOTER CON BANNER DEL GOBIERNO */}
-        <Footer />
-    </>
+
+      {/* FOOTER FULL WIDTH CON BANNER INSTITUCIONAL Y DATOS DEL PORTAL */}
+      <Footer tenantInfo={infoMunicipio} />
+    </div>
   );
 }

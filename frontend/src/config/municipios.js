@@ -4,7 +4,7 @@ export const municipios = {
   saladas: {
     id: 'saladas',
     slug: 'saladas',
-    nombre: 'Municipalidad de Saladas',
+    nombre: 'La voz de Santa Rosa',
     logo: '/img/logos/saladaslogo.png',
     colores: {
       primary: '#e6db0d',   // Dorado / Amarillo principal
@@ -16,7 +16,7 @@ export const municipios = {
   santarosa: {
     id: 'santarosa',
     slug: 'santarosa',
-    nombre: 'Municipalidad de Santa Rosa',
+    nombre: 'Santa Rosa Noticias ',
     logo: '/img/logos/santarosalogo.png',
     colores: {
       primary: '#dc2626',   // Rojo principal
@@ -64,7 +64,7 @@ export const municipios = {
   nornoticiasya: {
     id: 'nornoticiasya',
     slug: 'nornoticiasya',
-    nombre: 'NORNOTICIASYA',
+    nombre: 'Nor Noticias YA',
     logo: '/img/logos/nornoticiasya.png',
     colores: {
       primary: '#8cf043',   // Verde lima
