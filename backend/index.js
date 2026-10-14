@@ -27,7 +27,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'https://redmesopotamialdia.com',
       'https://laprimicianordeste.com',
       'https://enteratecorrientes.com',
-      'https://estasaldiacorrientes.com',
+      'https://estasaldiactes.com',
       'https://sietepuntasnoticias.com',
       'https:/aldiaporctes.com',
       'http://elportaldeitu.com',
