@@ -29,7 +29,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS
       'https://enteratecorrientes.com',
       'https://estasaldiactes.com',
       'https://sietepuntasnoticias.com',
-      'https:/aldiaporctes.com',
+      'https://aldiaporctes.com',
       'http://elportaldeitu.com',
       'https://corrientesnewshoy.com',
       'https://laredcorrentina.com',
