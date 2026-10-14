@@ -17,7 +17,7 @@ connectDB();
 const allowedOrigins = process.env.ALLOWED_ORIGINS 
   ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim().replace(/\/$/, '')) 
   : [
-      'https://saladasnoticias.com', 
+      'https://lavozdesantarosa.com', 
       'https://primiciasituzaingo.com',
       'https://santarosanoticias.com',
       'https://enfoquecorrientes.com',
