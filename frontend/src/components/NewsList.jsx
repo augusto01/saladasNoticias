@@ -354,7 +354,7 @@ export default function NewsList({ tenant }) {
           {/* SIDEBAR */}
           <aside className="news-sidebar">
             <div className="sidebar-widget">
-              <WeatherWidget />
+              <WeatherWidget tenant={municipioClave} />
             </div>
 
             <div className="sidebar-widget ad-widget">

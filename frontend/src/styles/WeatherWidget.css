@@ -1,107 +1,187 @@
+/* CONTENEDOR PRINCIPAL Y TARJETA */
 .weather-card-link {
   text-decoration: none;
-  color: inherit;
   display: block;
-  transition: transform 0.2s ease;
+  margin-bottom: 20px; /* Margen para separarse de los otros widgets */
 }
 
-.weather-card-link:hover {
-  transform: translateY(-2px);
-}
-
-/* --- TARJETA DE CLIMA AESTHETIC EN FONDO BLANCO --- */
 .weather-card {
-  background: var(--bg-card, #ffffff);
-  color: #1e293b; /* Gris oscuro/grafito aesthetic */
-  border-radius: 12px;
-  padding: 1.1rem;
-  border: 1px solid var(--border-color, #e2e8f0);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.04);
-  cursor: pointer;
-  transition: all 0.25s ease;
+  padding: 20px 22px; /* Ampliado de 14px a 20px arriba/abajo y 22px a los lados */
+  border-radius: 14px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 14px; /* Separación interna entre el header y el cuerpo del clima */
 }
 
-.weather-card-link:hover .weather-card {
-  border-color: var(--color-primary, #1e3a8a);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
-}
-
+/* HEADER DEL WIDGET */
 .weather-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  font-size: 0.8rem;
+  align-items: center;
+  padding-bottom: 6px; /* Espacio extra debajo de la ciudad */
+}
+
+.weather-city {
   font-weight: 700;
-  color: var(--color-primary, #1e3a8a); /* Usa el primario del municipio */
-  text-transform: uppercase;
-  letter-spacing: 0.6px;
-  margin-bottom: 0.6rem;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
 }
 
 .weather-external-icon {
-  color: #64748b; /* Gris slate suave */
-  opacity: 0.7;
-  transition: opacity 0.2s ease, transform 0.2s ease;
+  opacity: 0.6;
+  transition: opacity 0.2s ease;
 }
 
-.weather-card-link:hover .weather-external-icon {
+.weather-card:hover .weather-external-icon {
   opacity: 1;
-  color: var(--color-primary, #1e3a8a);
 }
 
+/* CUERPO DEL CLIMA */
 .weather-body {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.4rem;
+  align-items: center;
+  padding-top: 4px;
 }
 
 .weather-temp-group {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: 14px; /* Mayor separación entre el ícono animado y la temperatura */
 }
 
 .weather-temp {
-  font-size: 2rem;
+  font-size: 2rem; /* Ligeramente más grande para dar jerarquía */
   font-weight: 800;
-  color: #0f172a; /* Negro suave / Slate ultra oscuro */
   line-height: 1;
 }
 
 .weather-label {
-  font-size: 0.9rem;
-  color: #475569; /* Gris medio estético */
+  font-size: 0.85rem;
   font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  opacity: 0.9;
+  padding-left: 8px; /* Pequeño respiro con respecto a la temperatura */
 }
 
 .weather-status {
-  font-size: 0.8rem;
-  color: #64748b; /* Gris secundario para detalles */
-  font-weight: 500;
-  padding-top: 0.4rem;
-  border-top: 1px dashed #f1f5f9; /* Separador sutil */
+  font-size: 0.9rem;
+  padding: 10px 0;
+  color: #94a3b8;
 }
 
-/* --- COLORES DE ICONOS (Ajustados para contrastar bien en blanco) --- */
+/* ==========================================================
+   VARIACIONES VISUALES POR SITIO (MANTIENEN PADDINGS AMPLIOS)
+   ========================================================== */
+
+/* ITUZAINGÓ */
+.weather-card.theme-ituzaingo {
+  background: linear-gradient(135deg, #064e3b 0%, #0284c7 100%);
+  color: #ffffff;
+  border-left: 5px solid #38bdf8;
+  box-shadow: 0 4px 14px rgba(2, 132, 199, 0.25);
+}
+
+/* SANTA ROSA */
+.weather-card.theme-santarosa {
+  background: linear-gradient(135deg, #7c2d12 0%, #c2410c 100%);
+  color: #fff7ed;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(194, 65, 12, 0.2);
+}
+
+/* SIETE PUNTAS */
+.weather-card.theme-sietepuntas {
+  background: rgba(30, 41, 59, 0.85);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #f8fafc;
+  border-radius: 16px;
+}
+
+/* ENFOQUE CORRIENTES */
+.weather-card.theme-enfoque {
+  background: #09090b;
+  border: 1px solid #27272a;
+  color: #fafafa;
+  border-bottom: 4px solid #eab308;
+}
+
+/* LA RED CORRENTINA */
+.weather-card.theme-lared {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 100%);
+  color: #ffffff;
+  border-radius: 12px;
+}
+
+/* AL DÍA POR CTES */
+.weather-card.theme-aldia {
+  background: #ffffff;
+  color: #0f172a;
+  border: 2px solid #0f172a;
+  box-shadow: 5px 5px 0px #0f172a;
+}
+.weather-card.theme-aldia .weather-city,
+.weather-card.theme-aldia .weather-temp {
+  color: #0f172a;
+}
+
+/* DEFAULT */
+.weather-card.theme-default {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #ffffff;
+  border-radius: 12px;
+}
+
+/* ==========================================================
+   ANIMACIONES E ÍCONOS
+   ========================================================== */
 .weather-icon {
-  width: 30px;
-  height: 30px;
-  flex-shrink: 0;
+  width: 36px; /* Aumentado ligeramente para acompañar el nuevo padding */
+  height: 36px;
 }
 
-.weather-icon.sun { 
-  color: #d97706; /* Ambar cálido en lugar de amarillo fluo */
+.weather-icon.sun {
+  color: #fbbf24;
+  animation: spinSun 14s linear infinite;
 }
-.weather-icon.cloud { 
-  color: #64748b; /* Gris slate tenue */
+
+.weather-icon.cloud {
+  color: #cbd5e1;
+  animation: floatCloud 3s ease-in-out infinite alternate;
 }
-.weather-icon.rain { 
-  color: #0284c7; /* Azul cielo vibrante */
+
+.weather-icon.rain {
+  color: #38bdf8;
+  animation: bounceRain 1.5s ease-in-out infinite alternate;
 }
-.weather-icon.storm { 
-  color: #7c3aed; /* Púrpura profundo */
+
+.weather-icon.storm {
+  color: #facc15;
+  animation: flashStorm 1.6s ease-in-out infinite;
 }
-.weather-icon.snow { 
-  color: #38bdf8; /* Azul hielo */
+
+@keyframes spinSun {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes floatCloud {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
+}
+
+@keyframes bounceRain {
+  from { transform: translateY(-2px); }
+  to { transform: translateY(2px); }
+}
+
+@keyframes flashStorm {
+  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 2px #facc15); }
+  50% { transform: scale(1.1); filter: drop-shadow(0 0 10px #facc15); }
 }
