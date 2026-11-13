@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Search, Filter, Newspaper } from 'lucide-react';
+import { Newspaper } from 'lucide-react';
 import axios from 'axios';
 
 import WeatherWidget from './WeatherWidget';
-
-// Partes del layout
 import Footer from './Layout/Footer/Footer';
 
 // Importación de Headers específicos por municipio y medios
@@ -51,8 +49,41 @@ function formatDate(dateString) {
   }).format(date);
 }
 
+// Configurador de posición, formato y variante de color según el sitio
+function getSiteWeatherLayout(clave) {
+  const host = typeof window !== "undefined" ? window.location.hostname.toLowerCase() : "";
+  const id = `${clave} ${host}`;
+
+  // 1. Barra superior horizontal (Siete Puntas, Corrientes News Hoy, Enterate Corrientes)
+  if (id.includes('sietepuntas') || id.includes('corrientesnewshoy') || id.includes('enteratecorrientes')) {
+    return { position: 'top-bar', format: 'banner', styleVariant: 'brand', reverseGrid: false };
+  }
+
+  // 2. Sidebar a la IZQUIERDA + Clima abajo (Primicias Ituzaingó, Santa Rosa Noticias, La Red Correntina, Nor Noticias)
+  if (id.includes('primiciasituzaingo') || id.includes('santarosanoticias') || id.includes('laredcorrentina') || id.includes('nornoticias')) {
+    return { position: 'sidebar-bottom', format: 'card', styleVariant: 'light', reverseGrid: true };
+  }
+
+  // 3. Encima de la noticia principal (Formato compacto) + Sidebar a la izquierda (Al Día por Ctes, Red Mesopotamia, La Primicia Nordeste)
+  if (id.includes('aldiaporctes') || id.includes('redmesopotamia') || id.includes('laprimicianordeste')) {
+    return { position: 'above-featured', format: 'compact', styleVariant: 'dark', reverseGrid: true };
+  }
+
+  // 4. Sidebar derecha, clima abajo del banner (La Voz de Santa Rosa, Seguí tu Corrientes)
+  if (id.includes('lavozdesantarosa') || id.includes('seguitucorriente')) {
+    return { position: 'sidebar-bottom', format: 'card', styleVariant: 'brand', reverseGrid: false };
+  }
+
+  // 5. Píldora divisoria entre la noticia destacada y la grilla secundaria (Enfoque Corrientes, Primicias Ya Corrientes, Estás al Día Ctes)
+  if (id.includes('enfoque') || id.includes('primiciasyacorrientes') || id.includes('estasaldiactes')) {
+    return { position: 'between-news', format: 'pill', styleVariant: 'light', reverseGrid: false };
+  }
+
+  // 6. Clásico sidebar derecho arriba con fondo claro y acento del sitio (El Portal de Itu, Saladas, etc.)
+  return { position: 'sidebar-top', format: 'card', styleVariant: 'light', reverseGrid: false };
+}
+
 export default function NewsList({ tenant }) {
-  // Resolver municipio clave e información del tenant actual
   const municipioClave = (tenant || MUNICIPIO_ID || configActual?.id || 'saladas').toLowerCase().trim();
   const infoMunicipio = municipios?.[municipioClave] || configActual || municipios?.saladas;
   const colores = infoMunicipio?.colores || { primary: '#cca010', secondary: '#a17917', accent: '#faf8f2', dark: '#1e293b' };
@@ -64,7 +95,8 @@ export default function NewsList({ tenant }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Todas");
 
-  // Fetch de noticias
+  const layoutConfig = getSiteWeatherLayout(municipioClave);
+
   useEffect(() => {
     const fetchNews = async () => {
       try {
@@ -90,7 +122,6 @@ export default function NewsList({ tenant }) {
     }
   }, []);
 
-  // EFECTO: Actualiza dinámicamente el <title> de la pestaña según el dominio/tenant
   useEffect(() => {
     const host = window.location.hostname.toLowerCase();
     let nombrePortal = infoMunicipio?.nombre;
@@ -105,9 +136,13 @@ export default function NewsList({ tenant }) {
       else if (host.includes('estasaldia')) nombrePortal = 'ESTÁS AL DÍA CTES';
       else if (host.includes('primiciascorrientes')) nombrePortal = 'PRIMICIAS CORRIENTES';
       else if (host.includes('nornoticias')) nombrePortal = 'NOR NOTICIAS YA';
-      else if (host.includes('seguitucorrientes')) nombrePortal = 'SEGUÍ TU CORRIENTES';
+      else if (host.includes('seguitucorriente')) nombrePortal = 'SEGUÍ TU CORRIENTES';
       else if (host.includes('redmesopotamia')) nombrePortal = 'RED MESOPOTAMIA AL DÍA';
       else if (host.includes('laprimicianordeste')) nombrePortal = 'LA PRIMICIA NORDESTE';
+      else if (host.includes('lavozdesantarosa')) nombrePortal = 'LA VOZ DE SANTA ROSA';
+      else if (host.includes('santarosanoticias')) nombrePortal = 'SANTA ROSA NOTICIAS';
+      else if (host.includes('primiciasituzaingo')) nombrePortal = 'PRIMICIAS ITUZAINGÓ';
+      else if (host.includes('enfoquecorrientes')) nombrePortal = 'ENFOQUE CORRIENTES';
       else nombrePortal = 'Noticias de la Región';
     }
 
@@ -158,7 +193,6 @@ export default function NewsList({ tenant }) {
   const mainNews = hasNews ? sortedNews[0] : null;
   const secondaryNews = hasNews ? sortedNews.slice(1) : [];
 
-  // Selección del Header correspondiente al portal activo
   const renderHeader = () => {
     const headerProps = {
       configActual,
@@ -174,95 +208,92 @@ export default function NewsList({ tenant }) {
     };
 
     switch (municipioClave) {
-      case 'saladas':
-        return <HeaderSaladas {...headerProps} />;
-
-      case 'corrientes':
-        return <HeaderCorrientes {...headerProps} />;
-
-      case 'ituzaingo':
-        return <HeaderItuzaingo {...headerProps} />;
-
+      case 'saladas': return <HeaderSaladas {...headerProps} />;
+      case 'corrientes': return <HeaderCorrientes {...headerProps} />;
+      case 'ituzaingo': return <HeaderItuzaingo {...headerProps} />;
       case 'santarosa':
       case 'santa-rosa':
-      case 'santa_rosa':
-        return <HeaderSantaRosa {...headerProps} />;
-
+      case 'santa_rosa': return <HeaderSantaRosa {...headerProps} />;
       case 'seguitucorrientes':
       case 'segui-tu-corrientes':
-      case 'segui_tu_corrientes':
-        return <HeaderSeguiTuCorrientes {...headerProps} />;
-
+      case 'segui_tu_corrientes': return <HeaderSeguiTuCorrientes {...headerProps} />;
       case 'nornoticiasya':
       case 'nor-noticias':
-      case 'nor_noticias':
-        return <HeaderNorNoticias {...headerProps} />;
-
+      case 'nor_noticias': return <HeaderNorNoticias {...headerProps} />;
       case 'primiciascorrientes':
       case 'primicias-corrientes':
-      case 'primicias_corrientes':
-        return <HeaderPrimiciasCorrientes {...headerProps} />;
-
+      case 'primicias_corrientes': return <HeaderPrimiciasCorrientes {...headerProps} />;
       case 'laprimicianordeste':
       case 'la-primicia-nordeste':
-      case 'la_primicia_nordeste':
-        return <HeaderLaPrimiciaNordeste {...headerProps} />;
-
+      case 'la_primicia_nordeste': return <HeaderLaPrimiciaNordeste {...headerProps} />;
       case 'redmesopotamialdia':
       case 'red-mesopotamia':
-      case 'red_mesopotamia':
-        return <HeaderRedMesopotamia {...headerProps} />;
-
+      case 'red_mesopotamia': return <HeaderRedMesopotamia {...headerProps} />;
       case 'enteratecorrientes':
       case 'enterate-corrientes':
-      case 'enterate_corrientes':
-        return <HeaderEnterateCorrientes {...headerProps} />;
-
+      case 'enterate_corrientes': return <HeaderEnterateCorrientes {...headerProps} />;
       case 'estasaldiactes':
       case 'estas-al-dia-ctes':
-      case 'estas_al_dia_ctes':
-        return <HeaderEstasAlDia {...headerProps} />;
-
+      case 'estas_al_dia_ctes': return <HeaderEstasAlDia {...headerProps} />;
       case 'sietepuntasnoticias':
       case 'siete-puntas':
       case 'siete_puntas':
-      case 'sietepuntas':
-        return <HeaderSietePuntas {...headerProps} />;
-
+      case 'sietepuntas': return <HeaderSietePuntas {...headerProps} />;
       case 'aldiaporctes':
       case 'al-dia-por-ctes':
       case 'al_dia_por_ctes':
-      case 'aldiacorrientes':
-        return <HeaderAlDiaPorCtes {...headerProps} />;
-
+      case 'aldiacorrientes': return <HeaderAlDiaPorCtes {...headerProps} />;
       case 'elportaldeitu':
       case 'el-portal-de-itu':
-      case 'el_portal_de_itu':
-        return <HeaderElPortalDeItu {...headerProps} />;
-
+      case 'el_portal_de_itu': return <HeaderElPortalDeItu {...headerProps} />;
       case 'corrientesnewshoy':
       case 'corrientes-news-hoy':
       case 'corrientes_news_hoy':
-      case 'corrientesnews':
-        return <HeaderCorrientesNewsHoy {...headerProps} />;
-
+      case 'corrientesnews': return <HeaderCorrientesNewsHoy {...headerProps} />;
       case 'laredcorrentina':
       case 'la-red-correntina':
       case 'la_red_correntina':
-      case 'redcorrentina':
-        return <HeaderLaRedCorrentina {...headerProps} />;
-
-      default:
-        return <HeaderSaladas {...headerProps} />;
+      case 'redcorrentina': return <HeaderLaRedCorrentina {...headerProps} />;
+      default: return <HeaderSaladas {...headerProps} />;
     }
   };
+
+  const weatherBlock = (
+    <div className="sidebar-widget">
+      <WeatherWidget
+        tenant={municipioClave}
+        layout={layoutConfig.format}
+        styleVariant={layoutConfig.styleVariant}
+      />
+    </div>
+  );
+
+  const adBlock = (
+    <div className="sidebar-widget ad-widget">
+      <a
+        href="https://www.corrientes.gob.ar"
+        target="_blank"
+        rel="noopener noreferrer"
+        className="ad-banner-link"
+      >
+        <img
+          src="/300x300bannerweb.gif"
+          alt="Publicidad institucional"
+          className="ad-banner-300-img"
+          onError={(e) => {
+            e.target.style.display = 'none';
+          }}
+        />
+      </a>
+    </div>
+  );
 
   return (
     <div className="news-list-container">
       {/* HEADER FULL WIDTH */}
       {renderHeader()}
 
-      <div 
+      <div
         className="news-container"
         style={{
           '--color-primary': colores.primary,
@@ -271,9 +302,41 @@ export default function NewsList({ tenant }) {
           '--color-dark': colores.dark || '#1e293b'
         }}
       >
+        {/* OPCIÓN 1: CLIMA COMO BARRA SUPERIOR HORIZONTAL */}
+        {layoutConfig.position === 'top-bar' && (
+          <div style={{ marginBottom: '24px' }}>
+            <WeatherWidget
+              tenant={municipioClave}
+              layout="banner"
+              styleVariant={layoutConfig.styleVariant}
+            />
+          </div>
+        )}
+
         {/* CONTENIDO PRINCIPAL */}
-        <div className="news-grid">
-          <section className="news-main-column">
+        <div
+          className="news-grid"
+          style={
+            layoutConfig.reverseGrid
+              ? { display: 'flex', flexDirection: 'row-reverse', gap: '30px', alignItems: 'flex-start' }
+              : undefined
+          }
+        >
+          <section
+            className="news-main-column"
+            style={layoutConfig.reverseGrid ? { flex: 1, minWidth: 0 } : undefined}
+          >
+            {/* OPCIÓN 2: CLIMA COMPACTO JUSTO ENCIMA DE LA NOTICIA PRINCIPAL */}
+            {layoutConfig.position === 'above-featured' && (
+              <div style={{ marginBottom: '20px' }}>
+                <WeatherWidget
+                  tenant={municipioClave}
+                  layout="compact"
+                  styleVariant={layoutConfig.styleVariant}
+                />
+              </div>
+            )}
+
             {loading ? (
               <div className="text-center my-5 py-5">
                 <div className="spinner-border text-primary" role="status">
@@ -295,12 +358,12 @@ export default function NewsList({ tenant }) {
                 {mainNews && (
                   <Link to={`/noticias/${mainNews._id || mainNews.id}`} className="featured-news-card">
                     <div className="featured-img-wrapper">
-                      <img 
-                        src={mainNews.imagenPrincipal || DEFAULT_PLACEHOLDER} 
-                        alt={mainNews.titulo || mainNews.title} 
-                        className="featured-img" 
+                      <img
+                        src={mainNews.imagenPrincipal || DEFAULT_PLACEHOLDER}
+                        alt={mainNews.titulo || mainNews.title}
+                        className="featured-img"
                         onError={(e) => {
-                          e.target.onerror = null; 
+                          e.target.onerror = null;
                           e.target.src = DEFAULT_PLACEHOLDER;
                         }}
                       />
@@ -314,24 +377,33 @@ export default function NewsList({ tenant }) {
                   </Link>
                 )}
 
+                {/* OPCIÓN 5: PÍLDORA DIVISORIA ENTRE NOTICIA DESTACADA Y GRILLA SECUNDARIA */}
+                {layoutConfig.position === 'between-news' && (
+                  <WeatherWidget
+                    tenant={municipioClave}
+                    layout="pill"
+                    styleVariant={layoutConfig.styleVariant}
+                  />
+                )}
+
                 {/* GRILLA SECUNDARIA */}
                 {secondaryNews.length > 0 && (
                   <div className="secondary-news-grid">
                     {secondaryNews.map((item, index) => {
                       const itemId = item._id || item.id || index;
                       return (
-                        <Link 
-                          to={`/noticias/${itemId}`} 
-                          key={itemId} 
+                        <Link
+                          to={`/noticias/${itemId}`}
+                          key={itemId}
                           className="secondary-news-card"
                         >
                           <div className="secondary-img-wrapper">
-                            <img 
-                              src={item.imagenPrincipal || DEFAULT_PLACEHOLDER} 
-                              alt={item.titulo || item.title} 
-                              className="secondary-img" 
+                            <img
+                              src={item.imagenPrincipal || DEFAULT_PLACEHOLDER}
+                              alt={item.titulo || item.title}
+                              className="secondary-img"
                               onError={(e) => {
-                                e.target.onerror = null; 
+                                e.target.onerror = null;
                                 e.target.src = DEFAULT_PLACEHOLDER;
                               }}
                             />
@@ -351,29 +423,30 @@ export default function NewsList({ tenant }) {
             )}
           </section>
 
-          {/* SIDEBAR */}
-          <aside className="news-sidebar">
-            <div className="sidebar-widget">
-              <WeatherWidget tenant={municipioClave} />
-            </div>
+          {/* SIDEBAR (Derecho o Izquierdo según reverseGrid) */}
+          <aside
+            className="news-sidebar"
+            style={layoutConfig.reverseGrid ? { width: '320px', flexShrink: 0 } : undefined}
+          >
+            {layoutConfig.position === 'sidebar-top' && (
+              <>
+                {weatherBlock}
+                {adBlock}
+              </>
+            )}
 
-            <div className="sidebar-widget ad-widget">
-              <a 
-                href="https://www.corrientes.gob.ar" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="ad-banner-link"
-              >
-                <img 
-                  src="/300x300bannerweb.gif" 
-                  alt="Publicidad institucional" 
-                  className="ad-banner-300-img"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
-              </a>
-            </div>
+            {layoutConfig.position === 'sidebar-bottom' && (
+              <>
+                {adBlock}
+                {weatherBlock}
+              </>
+            )}
+
+            {(layoutConfig.position === 'top-bar' || layoutConfig.position === 'above-featured' || layoutConfig.position === 'between-news') && (
+              <>
+                {adBlock}
+              </>
+            )}
           </aside>
         </div>
       </div>
